@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <scale
+        android:duration="300"
+        android:fillAfter="true"
+        android:fromXScale="0.6"
+        android:interpolator="@android:anim/overshoot_interpolator"
+        android:toXScale="1"/>
+    <alpha
+        android:duration="300"
+        android:fillAfter="true"
+        android:fromAlpha="0.5"
+        android:interpolator="@android:anim/overshoot_interpolator"
+        android:toAlpha="1"/>
+</set>

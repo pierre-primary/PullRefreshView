@@ -1,0 +1,52 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="WidgetProgressBar" parent="android:Widget.ProgressBar">　　
+        <item name="android:indeterminateDrawable">@drawable/progress_large_white</item>
+        <item name="android:indeterminateDuration">600</item>
+        <item name="android:minWidth">32dip</item>
+        　　
+        <item name="android:maxWidth">32dip</item>
+        　　
+        <item name="android:minHeight">32dip</item>
+        　　
+        <item name="android:maxHeight">32dip</item>
+    </style>
+
+    <style name="WidgetProgressBar.small">　　
+        <item name="android:minWidth">16dip</item>
+        　　
+        <item name="android:maxWidth">16dip</item>
+        　　
+        <item name="android:minHeight">16dip</item>
+        　　
+        <item name="android:maxHeight">16dip</item>
+    </style>
+
+    <style name="WidgetProgressBar.Large">　　
+        <item name="android:minWidth">48dip</item>
+        　　
+        <item name="android:maxWidth">48dip</item>
+        　　
+        <item name="android:minHeight">48dip</item>
+        　　
+        <item name="android:maxHeight">48dip</item>
+    </style>
+
+    <style name="WidgetProgressBar.xLarge">　　
+        <item name="android:minWidth">64dip</item>
+        　　
+        <item name="android:maxWidth">64dip</item>
+        　　
+        <item name="android:minHeight">64dip</item>
+        　　
+        <item name="android:maxHeight">64dip</item>
+    </style>
+</resources>

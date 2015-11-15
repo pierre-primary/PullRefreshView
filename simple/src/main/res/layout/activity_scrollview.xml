@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.ybao.pullrefreshview.layout.PullRefreshLayout
+    android:id="@+id/root"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary">
+
+    <com.ybao.simple.view.NormalHeaderView
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+    <com.ybao.demo.view.NormalFooterView
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.ybao.pullrefreshview.view.PullableScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="300.0dip"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="300.0dip"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="300.0dip"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="300.0dip"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="300.0dip"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="300.0dip"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="300.0dip"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="300.0dip"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="300.0dip"/>
+
+        </LinearLayout>
+
+    </com.ybao.pullrefreshview.view.PullableScrollView>
+
+</com.ybao.pullrefreshview.layout.PullRefreshLayout>

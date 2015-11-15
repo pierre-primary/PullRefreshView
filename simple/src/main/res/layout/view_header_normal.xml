@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="15.0dip"
+        android:layout_alignBottom="@+id/text"
+        android:background="@drawable/top_shadow"/>
+
+    <ImageView
+        android:id="@+id/tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:src="@mipmap/ic_pull_down"/>
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tag"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10.0dip"
+        android:paddingBottom="10dp"
+        android:text="刷新"
+        android:textColor="@android:color/white"/>
+
+
+    <ProgressBar
+        android:id="@+id/progress"
+        style="@style/WidgetProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"/>
+
+    <ImageView
+        android:id="@+id/state"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_centerInParent="true"
+        android:src="@mipmap/id_load_clone"
+        android:visibility="invisible"/>
+
+</RelativeLayout>

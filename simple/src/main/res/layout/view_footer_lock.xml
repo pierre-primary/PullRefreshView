@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    android:id="@+id/load_box"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:layout_alignParentBottom="true">
+
+
+    <ImageView
+        android:id="@+id/progress"
+        android:layout_width="32dip"
+        android:layout_height="32dip"
+        android:layout_centerInParent="true"
+        android:src="@mipmap/id_load_b"
+        android:visibility="invisible"/>
+
+    <ImageView
+        android:id="@+id/state"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_centerInParent="true"
+        android:src="@mipmap/id_load_clone_b"
+        android:visibility="invisible"/>
+</RelativeLayout>
