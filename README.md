@@ -23,19 +23,9 @@ PullRefreshLayout 在其基础上实现，下拉刷新和上拉加载 滑出方�
 ![](https://raw.githubusercontent.com/Y-bao/PullRefreshView/master/GIF/4.gif)
 ![](https://raw.githubusercontent.com/Y-bao/PullRefreshView/master/GIF/5.gif) 
 
-		public final static int LAYOUT_NORMAL = 0x0000;
-		public final static int LAYOUT_DRAWER_HEADER = 0x0001;
-		public final static int LAYOUT_SCROLLER_HEADER = 0x0010;
-		public final static int LAYOUT_DRAWER_FOOTER = 0x0100;
-		public final static int LAYOUT_SCROLLER_FOOTER = 0x1000;
-
-		public final static int LAYOUT_SCROLLER = LAYOUT_SCROLLER_HEADER | LAYOUT_SCROLLER_FOOTER;
-		public final static int LAYOUT_DRAWER = LAYOUT_DRAWER_HEADER | LAYOUT_DRAWER_FOOTER;
-
-		public final static int LAYOUT_HEADER_MASK = 0x0011;
-		public final static int LAYOUT_FOOTER_MASK = 0x1100;
-		
-		public void setLayoutType(int layoutType);
+		public final static int LAYOUT_NORMAL = 0x00;
+		public final static int LAYOUT_DRAWER = 0x01;
+		public final static int LAYOUT_SCROLLER = 0x10;
 
 其它图片展示
 -----------------------------------  
