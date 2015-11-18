@@ -1,4 +1,4 @@
-package com.ybao.simple.view;
+package com.ybao.pullrefreshview.simple.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -8,8 +8,8 @@ import android.widget.TextView;
 
 import com.nineoldandroids.view.ViewHelper;
 import com.ybao.pullrefreshview.layout.BaseHeaderView;
-import com.ybao.simple.R;
-import com.ybao.simple.utils.AnimUtil;
+import com.ybao.pullrefreshview.simple.R;
+import com.ybao.pullrefreshview.simple.utils.AnimUtil;
 
 /**
  * Created by Ybao on 2015/11/3 0003.
@@ -19,6 +19,7 @@ public class NormalHeaderView extends BaseHeaderView {
     View tagImg;
     View progress;
     View stateImg;
+
 
     public NormalHeaderView(Context context) {
         this(context, null);

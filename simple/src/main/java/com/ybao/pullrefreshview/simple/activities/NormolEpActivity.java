@@ -1,4 +1,4 @@
-package com.ybao.simple.activities;
+package com.ybao.pullrefreshview.simple.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,8 +7,7 @@ import android.widget.ListView;
 
 import com.ybao.pullrefreshview.layout.BaseFooterView;
 import com.ybao.pullrefreshview.layout.BaseHeaderView;
-import com.ybao.pullrefreshview.layout.RGPullRefreshLayout;
-import com.ybao.simple.R;
+import com.ybao.pullrefreshview.simple.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +15,8 @@ import java.util.List;
 /**
  * Created by Ybao on 2015/11/3 0003.
  */
-public class ScrollerEpActivity extends AppCompatActivity implements BaseHeaderView.OnRefreshListener, BaseFooterView.OnLoadListener {
+public class NormolEpActivity extends AppCompatActivity implements BaseHeaderView.OnRefreshListener, BaseFooterView.OnLoadListener {
 
-    RGPullRefreshLayout rgPullRefreshLayout;
     ListView listView;
     BaseHeaderView headerView;
     BaseFooterView footerView;
@@ -30,8 +28,8 @@ public class ScrollerEpActivity extends AppCompatActivity implements BaseHeaderV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scroller_ep);
-        rgPullRefreshLayout = (RGPullRefreshLayout) findViewById(R.id.root);
+        setContentView(R.layout.activity_normol_ep);
+
         listView = (ListView) findViewById(R.id.list);
         headerView = (BaseHeaderView) findViewById(R.id.header);
         footerView = (BaseFooterView) findViewById(R.id.footer);
@@ -39,14 +37,13 @@ public class ScrollerEpActivity extends AppCompatActivity implements BaseHeaderV
         list = getData(15);
 
         adapter = new ArrayAdapter(this, R.layout.item, list);
-        rgPullRefreshLayout.setLayoutType(RGPullRefreshLayout.LAYOUT_SCROLLER);
+
 
         listView.setAdapter(adapter);
 
         headerView.setOnRefreshListener(this);
         footerView.setOnLoadListener(this);
     }
-
 
     @Override
     public void onRefresh(BaseHeaderView baseHeaderView) {
@@ -88,3 +85,4 @@ public class ScrollerEpActivity extends AppCompatActivity implements BaseHeaderV
         return datas;
     }
 }
+

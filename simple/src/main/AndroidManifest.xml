@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    package="com.ybao.simple"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.ybao.pullrefreshview.simple">
 
     <application
         android:allowBackup="true"
@@ -11,55 +10,44 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activities.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activities.FlingActivity"
-            android:label="弹性拖动">
-        </activity>
+            android:label="弹性拖动"></activity>
         <activity
             android:name=".activities.NormalRefreshActivity"
-            android:label="经典下拉刷新">
-        </activity>
+            android:label="经典下拉刷新"></activity>
         <activity
             android:name=".activities.ExpandActivity"
-            android:label="其他拓展下拉刷新">
-        </activity>
+            android:label="其他拓展下拉刷新"></activity>
         <activity
             android:name=".activities.NormolEpActivity"
-            android:label="拓展控件（经典模式）">
-        </activity>
+            android:label="拓展控件（经典模式）"></activity>
         <activity
             android:name=".activities.RGActivity"
-            android:label="拓展控件（混合模式1）">
-        </activity>
+            android:label="拓展控件（混合模式1）"></activity>
         <activity
             android:name=".activities.RG2Activity"
-            android:label="拓展控件（混合模式2）">
-        </activity>
+            android:label="拓展控件（混合模式2）"></activity>
         <activity
             android:name=".activities.DrawerEpActivity"
-            android:label="拓展控件（抽屉模式）">
-        </activity>
+            android:label="拓展控件（抽屉模式）"></activity>
         <activity
             android:name=".activities.ScrollerEpActivity"
-            android:label="拓展控件（滑块模式）">
-        </activity>
+            android:label="拓展控件（滑块模式）"></activity>
         <activity
             android:name=".activities.AllViewActivity"
-            android:label="其他控件">
-        </activity>
+            android:label="其他控件"></activity>
         <activity
             android:name=".activities.ScrollViewActivity"
-            android:label="PullableScrollView">
-        </activity>
+            android:label="PullableScrollView"></activity>
         <activity
             android:name=".activities.TextViewActivity"
-            android:label="PullableTextView">
-        </activity>
+            android:label="PullableTextView"></activity>
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package com.ybao.demo;
+package com.ybao.simple;
 
 import org.junit.Test;
 

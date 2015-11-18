@@ -1,11 +1,11 @@
-package com.ybao.simple.activities;
+package com.ybao.pullrefreshview.simple.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.ybao.simple.R;
+import com.ybao.pullrefreshview.simple.R;
 
 import java.util.ArrayList;
 import java.util.List;

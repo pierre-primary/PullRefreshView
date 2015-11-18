@@ -1,4 +1,4 @@
-package com.ybao.simple.view;
+package com.ybao.pullrefreshview.simple.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -13,8 +13,10 @@ import com.nineoldandroids.view.ViewHelper;
 import com.ybao.pullrefreshview.layout.BaseHeaderView;
 import com.ybao.pullrefreshview.layout.FlingLayout;
 import com.ybao.pullrefreshview.layout.PullRefreshLayout;
-import com.ybao.simple.R;
-import com.ybao.simple.utils.AnimUtil;
+import com.ybao.pullrefreshview.layout.RGPullRefreshLayout;
+import com.ybao.pullrefreshview.simple.R;
+import com.ybao.pullrefreshview.simple.utils.AnimUtil;
+import com.ybao.pullrefreshview.utils.HeaderLayoutType;
 
 /**
  * Created by Ybao on 2015/11/3 0003.
@@ -28,6 +30,9 @@ public class LockHeaderView extends BaseHeaderView {
     Paint paint;
 
     int state = NONE;
+
+    @HeaderLayoutType
+    int layoutType = RGPullRefreshLayout.LAYOUT_SCROLLER;
 
     public LockHeaderView(Context context) {
         this(context, null);

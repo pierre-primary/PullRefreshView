@@ -6,14 +6,14 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
 
-    <com.ybao.simple.view.LockHeaderView
+    <com.ybao.pullrefreshview.simple.view.LockHeaderView
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"/>
 
 
-    <com.ybao.simple.view.NormalFooterView
+    <com.ybao.pullrefreshview.simple.view.NormalFooterView
         android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

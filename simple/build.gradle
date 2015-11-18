@@ -9,7 +9,7 @@ android {
         minSdkVersion 11
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.1"
     }
     buildTypes {
         release {
@@ -22,6 +22,6 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile project(':libs')
     compile 'com.nineoldandroids:library:2.4.0'
+    compile project(':libs')
 }

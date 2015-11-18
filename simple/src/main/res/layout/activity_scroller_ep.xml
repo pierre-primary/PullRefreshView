@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.ybao.simple.view.LockHeaderView
+    <com.ybao.pullrefreshview.simple.view.LockHeaderView
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
 
-    <com.ybao.simple.view.LockFooterView
+    <com.ybao.pullrefreshview.simple.view.LockFooterView
         android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

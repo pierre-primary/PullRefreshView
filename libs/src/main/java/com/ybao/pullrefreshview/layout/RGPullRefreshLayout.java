@@ -23,32 +23,33 @@ package com.ybao.pullrefreshview.layout;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.ybao.pullrefreshview.utils.FooterLayoutType;
+import com.ybao.pullrefreshview.utils.HeaderLayoutType;
 import com.ybao.pullrefreshview.utils.Loadable;
 import com.ybao.pullrefreshview.utils.Pullable;
 import com.ybao.pullrefreshview.utils.Refreshable;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 
 /**
  * Created by Ybao on 2015/11/7 0007.
  */
 public class RGPullRefreshLayout extends PullRefreshLayout {
-    public final static int LAYOUT_NORMAL = 0x0000;
-    public final static int LAYOUT_DRAWER_HEADER = 0x0001;
-    public final static int LAYOUT_SCROLLER_HEADER = 0x0010;
-    public final static int LAYOUT_DRAWER_FOOTER = 0x0100;
-    public final static int LAYOUT_SCROLLER_FOOTER = 0x1000;
+    public final static int LAYOUT_NORMAL = 0x00;
+    public final static int LAYOUT_DRAWER = 0x01;
+    public final static int LAYOUT_SCROLLER = 0x10;
 
-    public final static int LAYOUT_SCROLLER = LAYOUT_SCROLLER_HEADER | LAYOUT_SCROLLER_FOOTER;
-    public final static int LAYOUT_DRAWER = LAYOUT_DRAWER_HEADER | LAYOUT_DRAWER_FOOTER;
-
-    public final static int LAYOUT_HEADER_MASK = 0x0011;
-    public final static int LAYOUT_FOOTER_MASK = 0x1100;
+    private int headerLayoutType = LAYOUT_NORMAL;
+    private int footerLayoutType = LAYOUT_NORMAL;
 
     private FrameLayout viewBox, scrollerBox;
-    private int layoutType = LAYOUT_NORMAL;
+
 
     public RGPullRefreshLayout(Context context) {
         this(context, null);
@@ -84,20 +85,22 @@ public class RGPullRefreshLayout extends PullRefreshLayout {
         if (child instanceof Refreshable && mHeader == null) {
             mHeader = (Refreshable) child;
             mHeader.setPullRefreshLayout(this);
-            if (getLayoutHeaderType(layoutType) == LAYOUT_DRAWER_HEADER) {
+            headerLayoutType = getLayoutType(mHeader, HeaderLayoutType.class);
+            if (headerLayoutType == LAYOUT_DRAWER) {
                 addViewInFrameLayout(child, index, params);
                 return;
             }
         } else if (child instanceof Loadable && mFooter == null) {
             mFooter = (Loadable) child;
             mFooter.setPullRefreshLayout(this);
-            if (getLayoutFooterType(layoutType) == LAYOUT_DRAWER_FOOTER) {
+            footerLayoutType = getLayoutType(mFooter, FooterLayoutType.class);
+            if (footerLayoutType == LAYOUT_DRAWER) {
                 addViewInFrameLayout(child, index, params);
                 return;
             }
         } else if (child instanceof Pullable && mPullView == null) {
             mPullView = (Pullable) child;
-            if ((layoutType & LAYOUT_SCROLLER) != 0) {
+            if (headerLayoutType == LAYOUT_SCROLLER || footerLayoutType == LAYOUT_SCROLLER) {
                 addScrollInFrameLayout(child, index, params);
                 return;
             }
@@ -105,12 +108,12 @@ public class RGPullRefreshLayout extends PullRefreshLayout {
         super.addView(child, index, params);
     }
 
-    public static int getLayoutHeaderType(int type) {
-        return LAYOUT_HEADER_MASK & type;
+    public int getLayoutHeaderType() {
+        return headerLayoutType;
     }
 
-    public static int getLayoutFooterType(int type) {
-        return LAYOUT_FOOTER_MASK & type;
+    public int getLayoutFooterType() {
+        return footerLayoutType;
     }
 
 
@@ -118,13 +121,13 @@ public class RGPullRefreshLayout extends PullRefreshLayout {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         int height = getHeight();
-        if (mHeader != null && (getLayoutHeaderType(layoutType) == LAYOUT_SCROLLER_HEADER)) {
+        if (mHeader != null && headerLayoutType == LAYOUT_SCROLLER) {
             View mHeaderView = (View) mHeader;
             headerSpanHeight = mHeader.getSpanHeight();
             headerHeight = mHeaderView.getHeight();
             mHeaderView.layout(mHeaderView.getLeft(), 0, mHeaderView.getRight(), headerHeight);
         }
-        if (mFooter != null && (getLayoutFooterType(layoutType) == LAYOUT_SCROLLER_FOOTER)) {
+        if (mFooter != null && footerLayoutType == LAYOUT_SCROLLER) {
             View mFooterView = (View) mFooter;
             footerSpanHeight = mFooter.getSpanHeight();
             footerHeight = mFooterView.getHeight();
@@ -169,10 +172,10 @@ public class RGPullRefreshLayout extends PullRefreshLayout {
         if (viewBox == null) {
             return false;
         }
-        if ((getLayoutHeaderType(layoutType) == LAYOUT_DRAWER_HEADER) && y < 0) {
+        if (headerLayoutType == LAYOUT_DRAWER && y < 0) {
             return true;
         }
-        if ((getLayoutFooterType(layoutType) == LAYOUT_DRAWER_FOOTER) && y > 0) {
+        if (footerLayoutType == LAYOUT_DRAWER && y > 0) {
             return true;
         }
         return false;
@@ -183,10 +186,10 @@ public class RGPullRefreshLayout extends PullRefreshLayout {
         if (scrollerBox == null) {
             return false;
         }
-        if ((getLayoutHeaderType(layoutType) == LAYOUT_SCROLLER_HEADER) && y < 0) {
+        if (headerLayoutType == LAYOUT_SCROLLER && y < 0) {
             return true;
         }
-        if ((getLayoutFooterType(layoutType) == LAYOUT_SCROLLER_FOOTER) && y > 0) {
+        if (footerLayoutType == LAYOUT_SCROLLER && y > 0) {
             return true;
         }
         return false;
@@ -207,50 +210,21 @@ public class RGPullRefreshLayout extends PullRefreshLayout {
             }
         }
         return super.getOffsetTop();
-
     }
 
-    public void setLayoutType(int layoutType) {
-        if (this.layoutType == layoutType && (layoutType == LAYOUT_HEADER_MASK || layoutType == LAYOUT_FOOTER_MASK)) {
-            return;
-        }
-        this.layoutType = layoutType;
-        if (mHeader != null) {
-            View headerView = (View) mHeader;
-            removeView(headerView);
-            if (viewBox != null) {
-                viewBox.removeView(headerView);
+    private static int getLayoutType(Object object, Class<? extends Annotation> cls) {
+        Class<? extends Object> clazz = object.getClass();
+        Field[] declaredFields = clazz.getDeclaredFields();
+        for (Field f : declaredFields) {
+            if (f.getAnnotation(cls) != null) {
+                f.setAccessible(true);
+                try {
+                    return f.getInt(object);
+                } catch (Exception e) {
+                    Log.e("initLayoutType", e.getMessage());
+                }
             }
-            mHeader = null;
-            addView(headerView, headerView.getLayoutParams());
         }
-        if (mFooter != null) {
-            View footerView = (View) mFooter;
-            removeView(footerView);
-            if (viewBox != null) {
-                viewBox.removeView(footerView);
-            }
-            mFooter = null;
-            addView(footerView, footerView.getLayoutParams());
-        }
-
-        if (mPullView != null) {
-            View cev = (View) mPullView;
-            removeView(cev);
-            if (scrollerBox != null) {
-                scrollerBox.removeView(cev);
-            }
-            mPullView = null;
-            addView(cev, cev.getLayoutParams());
-        }
-
-        if (viewBox != null && viewBox.getChildCount() <= 0) {
-            removeView(viewBox);
-            viewBox = null;
-        }
-        if (scrollerBox != null && scrollerBox.getChildCount() <= 0) {
-            removeView(scrollerBox);
-            scrollerBox = null;
-        }
+        return LAYOUT_NORMAL;
     }
 }

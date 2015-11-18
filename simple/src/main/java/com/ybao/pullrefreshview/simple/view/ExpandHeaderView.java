@@ -1,4 +1,4 @@
-package com.ybao.simple.view;
+package com.ybao.pullrefreshview.simple.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -8,47 +8,51 @@ import android.view.ViewGroup;
 
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
-import com.ybao.pullrefreshview.layout.BaseFooterView;
+import com.ybao.pullrefreshview.layout.BaseHeaderView;
 import com.ybao.pullrefreshview.layout.FlingLayout;
 import com.ybao.pullrefreshview.layout.PullRefreshLayout;
-import com.ybao.simple.R;
-import com.ybao.simple.utils.AnimUtil;
+import com.ybao.pullrefreshview.layout.RGPullRefreshLayout;
+import com.ybao.pullrefreshview.simple.R;
+import com.ybao.pullrefreshview.simple.utils.AnimUtil;
+import com.ybao.pullrefreshview.utils.HeaderLayoutType;
 
 /**
  * Created by Ybao on 2015/11/3 0003.
  */
-public class ExpandFooterView extends BaseFooterView {
+public class ExpandHeaderView extends BaseHeaderView {
     View progress;
     View stateImg;
     View loadBox;
 
     int state = NONE;
+    @HeaderLayoutType
+    private final static int layoutType = RGPullRefreshLayout.LAYOUT_DRAWER;
 
-    public ExpandFooterView(Context context) {
+    public ExpandHeaderView(Context context) {
         this(context, null);
     }
 
-    public ExpandFooterView(Context context, AttributeSet attrs) {
+    public ExpandHeaderView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ExpandFooterView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ExpandHeaderView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
     private void init() {
-        LayoutInflater.from(getContext()).inflate(R.layout.view_footer_expand, this, true);
+        LayoutInflater.from(getContext()).inflate(R.layout.view_header_expand, this, true);
         progress = findViewById(R.id.progress);
         stateImg = findViewById(R.id.state);
         loadBox = findViewById(R.id.load_box);
-        setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 350));
+        setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 300));
     }
 
     @Override
     public void setPullRefreshLayout(PullRefreshLayout refreshLayout) {
         super.setPullRefreshLayout(refreshLayout);
-        refreshLayout.setMaxDistance(350);
+        refreshLayout.setMaxDistance(300);
     }
 
     @Override
@@ -71,12 +75,12 @@ public class ExpandFooterView extends BaseFooterView {
                 break;
             case PULLING:
                 break;
-            case LOOSENT_O_LOAD:
+            case LOOSENT_O_REFRESH:
                 break;
-            case LOADING:
+            case REFRESHING:
                 AnimUtil.startRotation(progress, ViewHelper.getRotation(progress) + 359.99f, 500, 0, -1);
                 break;
-            case LOAD_CLONE:
+            case REFRESH_CLONE:
                 AnimUtil.startShow(stateImg, 0.1f, 400, 200);
                 AnimUtil.startHide(progress);
                 break;

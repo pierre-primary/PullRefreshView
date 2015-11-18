@@ -1,4 +1,4 @@
-package com.ybao.simple.activities;
+package com.ybao.pullrefreshview.simple.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,8 +7,7 @@ import android.widget.ListView;
 
 import com.ybao.pullrefreshview.layout.BaseFooterView;
 import com.ybao.pullrefreshview.layout.BaseHeaderView;
-import com.ybao.pullrefreshview.layout.RGPullRefreshLayout;
-import com.ybao.simple.R;
+import com.ybao.pullrefreshview.simple.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +15,8 @@ import java.util.List;
 /**
  * Created by Ybao on 2015/11/3 0003.
  */
-public class RG2Activity extends AppCompatActivity implements BaseHeaderView.OnRefreshListener, BaseFooterView.OnLoadListener {
+public class RGActivity extends AppCompatActivity implements BaseHeaderView.OnRefreshListener, BaseFooterView.OnLoadListener {
 
-    RGPullRefreshLayout rgPullRefreshLayout;
     ListView listView;
     BaseHeaderView headerView;
     BaseFooterView footerView;
@@ -30,8 +28,7 @@ public class RG2Activity extends AppCompatActivity implements BaseHeaderView.OnR
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rg2);
-        rgPullRefreshLayout = (RGPullRefreshLayout) findViewById(R.id.root);
+        setContentView(R.layout.activity_rg);
         listView = (ListView) findViewById(R.id.list);
         headerView = (BaseHeaderView) findViewById(R.id.header);
         footerView = (BaseFooterView) findViewById(R.id.footer);
@@ -39,7 +36,6 @@ public class RG2Activity extends AppCompatActivity implements BaseHeaderView.OnR
         list = getData(15);
 
         adapter = new ArrayAdapter(this, R.layout.item, list);
-        rgPullRefreshLayout.setLayoutType(RGPullRefreshLayout.LAYOUT_SCROLLER_HEADER | RGPullRefreshLayout.LAYOUT_NORMAL);
 
         listView.setAdapter(adapter);
 

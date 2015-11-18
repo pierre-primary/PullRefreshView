@@ -1,4 +1,4 @@
-package com.ybao.demo;
+package com.ybao.pullrefreshview;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
