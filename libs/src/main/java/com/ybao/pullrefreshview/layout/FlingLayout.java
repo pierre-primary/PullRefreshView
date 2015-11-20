@@ -21,7 +21,9 @@
  */
 package com.ybao.pullrefreshview.layout;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -51,6 +53,7 @@ public class FlingLayout extends FrameLayout {
     private boolean canPullDown = true;
     protected OnScrollListener mOnScrollListener;
     protected int maxDistance = 0;
+    protected int version;
 
     public FlingLayout(Context context) {
         this(context, null);
@@ -66,6 +69,7 @@ public class FlingLayout extends FrameLayout {
     }
 
     public void init(Context context) {
+        version = android.os.Build.VERSION.SDK_INT;
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         mScroller = new Scroller(context, new DecelerateInterpolator());
     }
@@ -82,6 +86,7 @@ public class FlingLayout extends FrameLayout {
         super.computeScroll();
     }
 
+    @TargetApi(11)
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         float x = ev.getX();
@@ -100,10 +105,9 @@ public class FlingLayout extends FrameLayout {
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
-                float distY = y - downY;
-                float dy = Math.abs(distY);
+                float distY = Math.abs(y - downY);
                 //意图分析，避免误操作
-                if (isScrolling || (dy > mTouchSlop && dy > Math.abs(x - downX))) {
+                if (isScrolling || (distY > mTouchSlop && distY > Math.abs(x - downX))) {
                     isScrolling = true;
                     int dataY = (int) (y - tepmY);
                     tepmY = y;
@@ -111,7 +115,7 @@ public class FlingLayout extends FrameLayout {
                         //开始时 在0,0处
                         //判断是否可以滑动
                         if ((canPullDown() && dataY > 0) || (canPullUp() && dataY < 0)) {
-                            if (mPullView != null) {
+                            if (version >= Build.VERSION_CODES.GINGERBREAD && mPullView != null) {
                                 ((View) mPullView).setOverScrollMode(View.OVER_SCROLL_NEVER);//去除边缘效果
                             }
 
@@ -120,7 +124,7 @@ public class FlingLayout extends FrameLayout {
                             scrollBy(0, -dataY);
 
                             return true;
-                        } else if (mPullView != null) {
+                        } else if (version >= Build.VERSION_CODES.GINGERBREAD && mPullView != null) {
                             ((View) mPullView).setOverScrollMode(View.OVER_SCROLL_IF_CONTENT_SCROLLS);
                         }
                     } else {
