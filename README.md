@@ -2,9 +2,9 @@ PullRefreshView
 ===================================
 简介：
 -----------------------------------
-非NestedScrolling实现： master ![](https://github.com/Y-bao/PullRefreshView) 
+非NestedScrolling实现： [master](https://github.com/Y-bao/PullRefreshView) 
 -----------------------------------
-NestedScrolling实现： 分支WithNestedScrolling ![](https://github.com/Y-bao/PullRefreshView/tree/WithNestedScrolling) 
+NestedScrolling实现： [分支WithNestedScrolling](https://github.com/Y-bao/PullRefreshView/tree/WithNestedScrolling) 
 -----------------------------------
 1.0.1
 ----------------------------------- 
