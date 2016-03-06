@@ -93,9 +93,7 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
             @Override
             public void run() {
                 setState(NONE);
-                if (refreshLayout != null) {
-                    refreshLayout.closeFooter();
-                }
+                hide();
                 isLockState = false;
             }
         }, 800);
@@ -111,6 +109,19 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
 
     public int getType() {
         return stateType;
+    }
+
+
+    public void show() {
+        if (this.refreshLayout != null) {
+            this.refreshLayout.openFooter();
+        }
+    }
+
+    public void hide() {
+        if (this.refreshLayout != null) {
+            refreshLayout.closeFooter();
+        }
     }
 
     protected abstract void onStateChange(int state);

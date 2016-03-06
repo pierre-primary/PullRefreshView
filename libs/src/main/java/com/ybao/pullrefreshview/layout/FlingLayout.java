@@ -1,22 +1,22 @@
 /**
  * Copyright 2015 Pengyuan-Jiang
- * <p/>
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p/>
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * <p/>
+ * <p>
  * Author：Ybao on 2015/11/5  ‏‎17:49
- * <p/>
+ * <p>
  * QQ: 392579823
- * <p/>
+ * <p>
  * Email：392579823@qq.com
  */
 package com.ybao.pullrefreshview.layout;
@@ -54,6 +54,7 @@ public class FlingLayout extends FrameLayout {
     protected OnScrollListener mOnScrollListener;
     protected int maxDistance = 0;
     protected int version;
+    int mPointerId;
 
     public FlingLayout(Context context) {
         this(context, null);
@@ -86,14 +87,15 @@ public class FlingLayout extends FrameLayout {
         super.computeScroll();
     }
 
-    @TargetApi(11)
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        float x = ev.getX();
-        float y = ev.getY();
         int offsetTop = getOffsetTop();
-        switch (ev.getAction()) {
+        int pointerCount = ev.getPointerCount();
+        switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
+                mPointerId = ev.getPointerId(0);
+                float x = ev.getX();
+                float y = ev.getY();
                 tepmY = downY = y;
                 downX = x;
                 if (!mScroller.isFinished()) {
@@ -105,27 +107,32 @@ public class FlingLayout extends FrameLayout {
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
-                float distY = Math.abs(y - downY);
+                int pointerIndex = ev.findPointerIndex(mPointerId);
+                float mx;
+                float my;
+                if (pointerCount > pointerIndex && pointerIndex > 0) {
+                    mx = ev.getX(pointerIndex);
+                    my = ev.getY(pointerIndex);
+                } else {
+                    mx = ev.getX();
+                    my = ev.getY();
+                }
+                float distY = Math.abs(my - downY);
                 //意图分析，避免误操作
-                if (isScrolling || (distY > mTouchSlop && distY > Math.abs(x - downX))) {
+                if (isScrolling || (distY > mTouchSlop && distY > Math.abs(mx - downX))) {
                     isScrolling = true;
-                    int dataY = (int) (y - tepmY);
-                    tepmY = y;
+                    int dataY = (int) (my - tepmY);
+                    tepmY = my;
                     if (offsetTop == 0) {
                         //开始时 在0,0处
                         //判断是否可以滑动
                         if ((canPullDown() && dataY > 0) || (canPullUp() && dataY < 0)) {
-                            if (version >= Build.VERSION_CODES.GINGERBREAD && mPullView != null) {
-                                ((View) mPullView).setOverScrollMode(View.OVER_SCROLL_NEVER);//去除边缘效果
-                            }
 
                             setState(SCROLLING, 0);//
 
                             scrollBy(0, -dataY);
 
                             return true;
-                        } else if (version >= Build.VERSION_CODES.GINGERBREAD && mPullView != null) {
-                            ((View) mPullView).setOverScrollMode(View.OVER_SCROLL_IF_CONTENT_SCROLLS);
                         }
                     } else {
                         //当不在0,0处
@@ -157,6 +164,17 @@ public class FlingLayout extends FrameLayout {
                 fling(offsetTop);
                 isScrolling = false;
                 break;
+            case MotionEvent.ACTION_POINTER_UP:
+                // 获取离开屏幕的手指的索引
+                int pointerIndexLeave = ev.getActionIndex();
+                int pointerIdLeave = ev.getPointerId(pointerIndexLeave);
+                if (mPointerId == pointerIdLeave) {
+                    // 离开屏幕的正是目前的有效手指，此处需要重新调整，并且需要重置VelocityTracker
+                    int reIndex = pointerIndexLeave == 0 ? 1 : 0;
+                    mPointerId = ev.getPointerId(reIndex);
+                    // 调整触摸位置，防止出现跳动
+                    tepmY = ev.getY(reIndex);
+                }
         }
         return super.dispatchTouchEvent(ev) || isScrolling;
 
@@ -251,10 +269,10 @@ public class FlingLayout extends FrameLayout {
         stateType = state;
     }
 
-    public static interface OnScrollListener {
-        public void onScroll(FlingLayout flingLayout, int y);
+    public interface OnScrollListener {
+        void onScroll(FlingLayout flingLayout, int y);
 
-        public void onScrollChange(FlingLayout flingLayout, int state, int y);
+        void onScrollChange(FlingLayout flingLayout, int state, int y);
 
     }
 

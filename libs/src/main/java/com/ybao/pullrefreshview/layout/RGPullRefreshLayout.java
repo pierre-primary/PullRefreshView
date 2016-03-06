@@ -123,14 +123,14 @@ public class RGPullRefreshLayout extends PullRefreshLayout {
         int height = getHeight();
         if (mHeader != null && headerLayoutType == LAYOUT_SCROLLER) {
             View mHeaderView = (View) mHeader;
-            headerSpanHeight = mHeader.getSpanHeight();
-            headerHeight = mHeaderView.getHeight();
+            headerSpanHeight = hasHeader ? mHeader.getSpanHeight() : 0;
+            headerHeight = hasHeader ? mHeaderView.getHeight() : 0;
             mHeaderView.layout(mHeaderView.getLeft(), 0, mHeaderView.getRight(), headerHeight);
         }
         if (mFooter != null && footerLayoutType == LAYOUT_SCROLLER) {
             View mFooterView = (View) mFooter;
-            footerSpanHeight = mFooter.getSpanHeight();
-            footerHeight = mFooterView.getHeight();
+            footerSpanHeight = hasFooter ? mFooter.getSpanHeight() : 0;
+            footerHeight = hasFooter ? mFooterView.getHeight() : 0;
             mFooterView.layout(mFooterView.getLeft(), height - footerHeight, mFooterView.getRight(), height);
         }
 

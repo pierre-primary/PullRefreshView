@@ -95,9 +95,7 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
             public void run() {
                 isLockState = false;
                 setState(NONE);
-                if (refreshLayout != null) {
-                    refreshLayout.closeHeader();
-                }
+                hide();
             }
         }, 800);
     }
@@ -112,6 +110,19 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
 
     public int getType() {
         return stateType;
+    }
+
+
+    public void show() {
+        if (this.refreshLayout != null) {
+            this.refreshLayout.openHeader();
+        }
+    }
+
+    public void hide() {
+        if (this.refreshLayout != null) {
+            refreshLayout.closeHeader();
+        }
     }
 
     protected abstract void onStateChange(int state);
