@@ -58,6 +58,7 @@ public class FlingLayout extends FrameLayout {
     protected int maxDistance = 0;
     protected int version;
     int mPointerId;
+    protected int MAXDISTANCE = 0;
 
     public FlingLayout(Context context) {
         this(context, null);
@@ -78,6 +79,12 @@ public class FlingLayout extends FrameLayout {
         mScroller = new Scroller(context, new DecelerateInterpolator());
     }
 
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        MAXDISTANCE = getMeasuredHeight() * 3 / 5;
+    }
 
     @Override
     public void computeScroll() {
@@ -148,7 +155,14 @@ public class FlingLayout extends FrameLayout {
                         } else if ((offsetTop > 0 && dataY < 0) || (offsetTop < 0 && dataY > 0)) {
                             //是否超过最大距离
                             if (maxDistance == 0 || Math.abs(offsetTop) < maxDistance) {
-                                scrollBy(0, -dataY / 2);
+                                int ps = 0;
+                                int hDataY = dataY / 2;
+                                if (maxDistance == 0) {
+                                    ps = hDataY + (int) (hDataY * Math.abs(offsetTop) / (float) MAXDISTANCE);
+                                } else {
+                                    ps = hDataY + (int) (hDataY * Math.abs(offsetTop) / (float) maxDistance);
+                                }
+                                scrollBy(0, ps - dataY);
                             } else if (offsetTop > maxDistance) {
                                 scrollTo(0, maxDistance);
                             } else if (offsetTop < -maxDistance) {
