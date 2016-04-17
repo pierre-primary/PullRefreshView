@@ -8,10 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:cacheColorHint="@null"
-        android:clipToPadding="false"
         android:divider="#ccc"
-        android:dividerHeight="1px"
-        android:paddingBottom="100dp"
-        android:paddingTop="100dp" />
+        android:dividerHeight="1px" />
 
 </com.ybao.pullrefreshview.layout.PullRefreshLayout>
