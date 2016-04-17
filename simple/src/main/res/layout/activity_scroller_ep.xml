@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.ybao.pullrefreshview.layout.RGPullRefreshLayout
+<com.ybao.pullrefreshview.layout.RGPullRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.ybao.pullrefreshview.simple.view.LockHeaderView
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
 
     <com.ybao.pullrefreshview.simple.view.LockFooterView
         android:id="@+id/footer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
 
-    <com.ybao.pullrefreshview.view.PullableListView
+    <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:cacheColorHint="@null"
         android:divider="#ccc"
-        android:dividerHeight="1px"/>
+        android:dividerHeight="1px" />
 
 </com.ybao.pullrefreshview.layout.RGPullRefreshLayout>

@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.ybao.pullrefreshview.layout.PullRefreshLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.ybao.pullrefreshview.layout.PullRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.ybao.pullrefreshview.view.PullableListView
+    <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:cacheColorHint="@null"
+        android:clipToPadding="false"
         android:divider="#ccc"
-        android:dividerHeight="1px"/>
+        android:dividerHeight="1px"
+        android:paddingBottom="100dp"
+        android:paddingTop="100dp" />
 
 </com.ybao.pullrefreshview.layout.PullRefreshLayout>

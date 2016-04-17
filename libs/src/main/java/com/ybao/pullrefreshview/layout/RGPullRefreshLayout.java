@@ -28,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.ybao.pullrefreshview.utils.CanPullUtil;
 import com.ybao.pullrefreshview.utils.FooterLayoutType;
 import com.ybao.pullrefreshview.utils.HeaderLayoutType;
 import com.ybao.pullrefreshview.utils.Loadable;
@@ -98,8 +99,8 @@ public class RGPullRefreshLayout extends PullRefreshLayout {
                 addViewInFrameLayout(child, index, params);
                 return;
             }
-        } else if (child instanceof Pullable && mPullView == null) {
-            mPullView = (Pullable) child;
+        } else if (mPullView == null && (pullable = CanPullUtil.getPullAble(child)) != null) {
+            mPullView = child;
             if (headerLayoutType == LAYOUT_SCROLLER || footerLayoutType == LAYOUT_SCROLLER) {
                 addScrollInFrameLayout(child, index, params);
                 return;

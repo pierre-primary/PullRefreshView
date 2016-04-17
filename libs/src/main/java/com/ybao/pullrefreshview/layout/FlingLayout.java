@@ -1,22 +1,22 @@
 /**
  * Copyright 2015 Pengyuan-Jiang
- * <p>
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
+ * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * <p>
+ * <p/>
  * Author：Ybao on 2015/11/5  ‏‎17:49
- * <p>
+ * <p/>
  * QQ: 392579823
- * <p>
+ * <p/>
  * Email：392579823@qq.com
  */
 package com.ybao.pullrefreshview.layout;
@@ -24,6 +24,7 @@ package com.ybao.pullrefreshview.layout;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,6 +34,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
 
+import com.ybao.pullrefreshview.utils.CanPullUtil;
 import com.ybao.pullrefreshview.utils.Pullable;
 
 public class FlingLayout extends FrameLayout {
@@ -42,7 +44,8 @@ public class FlingLayout extends FrameLayout {
     public final static int FLING = 2;
     private int stateType = NONE;
 
-    protected Pullable mPullView;
+    protected Pullable pullable;
+    protected View mPullView;
     private int mTouchSlop;
     private Scroller mScroller;
     protected float downY, downX;
@@ -81,7 +84,7 @@ public class FlingLayout extends FrameLayout {
         if (!mScroller.isFinished()) {
             if (mScroller.computeScrollOffset()) {
                 scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
-                postInvalidate();
+                ViewCompat.postInvalidateOnAnimation(this);
             }
         }
         super.computeScroll();
@@ -191,14 +194,14 @@ public class FlingLayout extends FrameLayout {
 
     protected boolean canPullUp() {
         if (mPullView != null) {
-            return canPullUp && mPullView.isGetBottom();
+            return canPullUp && pullable.isGetBottom();
         }
         return canPullUp;
     }
 
     protected boolean canPullDown() {
         if (mPullView != null) {
-            return canPullDown && mPullView.isGetTop();
+            return canPullDown && pullable.isGetTop();
         }
         return canPullDown;
     }
@@ -232,8 +235,8 @@ public class FlingLayout extends FrameLayout {
 
     @Override
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
-        if (child instanceof Pullable && mPullView == null) {
-            mPullView = (Pullable) child;
+        if (mPullView == null && (pullable = CanPullUtil.getPullAble(child)) != null) {
+            mPullView = child;
         }
         super.addView(child, index, params);
     }
