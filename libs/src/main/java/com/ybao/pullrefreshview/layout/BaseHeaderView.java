@@ -80,7 +80,7 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
         if (state != FlingLayout.FLING) {
             return;
         }
-        if (-y == getSpanHeight() && !isLockState) {
+        if (y != 0 && -y == getSpanHeight() && !isLockState) {
             isLockState = true;
             setState(REFRESHING);
         } else if (y == 0 && isLockState) {

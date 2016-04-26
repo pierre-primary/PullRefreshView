@@ -80,7 +80,7 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
         if (state != FlingLayout.FLING) {
             return;
         }
-        if (y == getSpanHeight() && !isLockState) {
+        if (y != 0 && y == getSpanHeight() && !isLockState) {
             isLockState = true;
             setState(LOADING);
         } else if (y == 0 && isLockState) {
