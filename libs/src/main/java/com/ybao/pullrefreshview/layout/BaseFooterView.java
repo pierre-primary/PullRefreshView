@@ -96,7 +96,7 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
                 hide();
                 isLockState = false;
             }
-        }, 800);
+        }, 400);
     }
 
     private void setState(int state) {

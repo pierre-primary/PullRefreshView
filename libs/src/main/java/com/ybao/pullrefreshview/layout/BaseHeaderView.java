@@ -97,7 +97,7 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
                 setState(NONE);
                 hide();
             }
-        }, 800);
+        }, 400);
     }
 
     private void setState(int state) {
