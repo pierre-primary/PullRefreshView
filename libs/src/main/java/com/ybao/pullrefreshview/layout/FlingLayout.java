@@ -21,9 +21,7 @@
  */
 package com.ybao.pullrefreshview.layout;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -34,8 +32,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
 
-import com.ybao.pullrefreshview.utils.CanPullUtil;
-import com.ybao.pullrefreshview.utils.Pullable;
+import com.ybao.pullrefreshview.support.utils.CanPullUtil;
+import com.ybao.pullrefreshview.support.impl.Pullable;
 
 public class FlingLayout extends FrameLayout {
 

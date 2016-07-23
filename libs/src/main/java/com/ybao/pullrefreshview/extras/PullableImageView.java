@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import com.ybao.pullrefreshview.utils.Pullable;
+import com.ybao.pullrefreshview.support.impl.Pullable;
 
 
 public class PullableImageView extends ImageView implements Pullable {

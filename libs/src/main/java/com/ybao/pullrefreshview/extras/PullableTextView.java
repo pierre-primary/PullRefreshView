@@ -6,7 +6,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.ybao.pullrefreshview.utils.Pullable;
+import com.ybao.pullrefreshview.support.impl.Pullable;
 
 public class PullableTextView extends TextView implements Pullable {
 

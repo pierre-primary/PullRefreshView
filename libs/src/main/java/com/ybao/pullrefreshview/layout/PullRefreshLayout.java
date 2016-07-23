@@ -26,8 +26,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.ybao.pullrefreshview.utils.Loadable;
-import com.ybao.pullrefreshview.utils.Refreshable;
+import com.ybao.pullrefreshview.support.impl.Loadable;
+import com.ybao.pullrefreshview.support.impl.Refreshable;
 
 
 /**

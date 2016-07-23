@@ -15,7 +15,7 @@ import com.ybao.pullrefreshview.layout.FlingLayout;
 import com.ybao.pullrefreshview.layout.RGPullRefreshLayout;
 import com.ybao.pullrefreshview.simple.R;
 import com.ybao.pullrefreshview.simple.utils.AnimUtil;
-import com.ybao.pullrefreshview.utils.FooterLayoutType;
+import com.ybao.pullrefreshview.support.type.FooterLayoutType;
 
 /**
  * Created by Ybao on 2015/11/3 0003.

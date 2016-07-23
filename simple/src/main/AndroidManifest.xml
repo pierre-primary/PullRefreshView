@@ -44,10 +44,13 @@
             android:label="其他控件"></activity>
         <activity
             android:name=".activities.ScrollViewActivity"
-            android:label="PullableScrollView"></activity>
+            android:label="ScrollView"></activity>
         <activity
             android:name=".activities.TextViewActivity"
             android:label="PullableTextView"></activity>
+        <activity
+            android:name=".activities.RecyclerViewActivity"
+            android:label="RecyclerView"></activity>
     </application>
 
 </manifest>

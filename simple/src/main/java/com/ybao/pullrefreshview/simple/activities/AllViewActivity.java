@@ -29,5 +29,11 @@ public class AllViewActivity extends AppCompatActivity {
                 startActivity(new Intent(AllViewActivity.this, TextViewActivity.class));
             }
         });
+        findViewById(R.id.button3).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AllViewActivity.this, RecyclerViewActivity.class));
+            }
+        });
     }
 }

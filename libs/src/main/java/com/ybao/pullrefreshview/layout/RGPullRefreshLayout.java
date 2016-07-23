@@ -28,12 +28,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.ybao.pullrefreshview.utils.CanPullUtil;
-import com.ybao.pullrefreshview.utils.FooterLayoutType;
-import com.ybao.pullrefreshview.utils.HeaderLayoutType;
-import com.ybao.pullrefreshview.utils.Loadable;
-import com.ybao.pullrefreshview.utils.Pullable;
-import com.ybao.pullrefreshview.utils.Refreshable;
+import com.ybao.pullrefreshview.support.utils.CanPullUtil;
+import com.ybao.pullrefreshview.support.type.FooterLayoutType;
+import com.ybao.pullrefreshview.support.type.HeaderLayoutType;
+import com.ybao.pullrefreshview.support.impl.Loadable;
+import com.ybao.pullrefreshview.support.impl.Refreshable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
