@@ -9,9 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.ybao.pullrefreshview.simple.R;
-import com.ybao.pullrefreshview.simple.fragment.Fragment1;
+import com.ybao.pullrefreshview.simple.fragment.Fragment0;
 import com.ybao.pullrefreshview.simple.fragment.Fragment2;
 import com.ybao.pullrefreshview.simple.fragment.Fragment3;
+import com.ybao.pullrefreshview.simple.fragment.Fragment1;
 
 import java.util.ArrayList;
 
@@ -28,6 +29,7 @@ public class NestedScrollingActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ArrayList<Fragment> fragments = new ArrayList<>();
+        fragments.add(new Fragment0());
         fragments.add(new Fragment1());
         fragments.add(new Fragment2());
         fragments.add(new Fragment3());
@@ -46,8 +48,9 @@ public class NestedScrollingActivity extends AppCompatActivity {
             this.list = list;
             strings = new ArrayList<>();
             strings.add("ListView");
-            strings.add("NestedScrollView");
             strings.add("RecyclerView");
+            strings.add("ScrollView");
+            strings.add("NestedScrollView");
         }
 
 
