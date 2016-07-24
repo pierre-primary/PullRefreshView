@@ -20,37 +20,40 @@
             android:label="弹性拖动"></activity>
         <activity
             android:name=".activities.NormalRefreshActivity"
-            android:theme="@style/AppTheme.NoActionBar"
             android:label="经典下拉刷新"></activity>
+        <activity
+            android:name=".activities.NestedScrollingActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="NestedScrolling"></activity>
         <activity
             android:name=".activities.ExpandActivity"
             android:label="其他拓展下拉刷新"></activity>
         <activity
-            android:name=".activities.NormolEpActivity"
+            android:name=".activities.ep.NormolEpActivity"
             android:label="拓展控件（经典模式）"></activity>
         <activity
-            android:name=".activities.RGActivity"
+            android:name=".activities.ep.RGActivity"
             android:label="拓展控件（混合模式1）"></activity>
         <activity
-            android:name=".activities.RG2Activity"
+            android:name=".activities.ep.RG2Activity"
             android:label="拓展控件（混合模式2）"></activity>
         <activity
-            android:name=".activities.DrawerEpActivity"
+            android:name=".activities.ep.DrawerEpActivity"
             android:label="拓展控件（抽屉模式）"></activity>
         <activity
-            android:name=".activities.ScrollerEpActivity"
+            android:name=".activities.ep.ScrollerEpActivity"
             android:label="拓展控件（滑块模式）"></activity>
         <activity
             android:name=".activities.AllViewActivity"
             android:label="其他控件"></activity>
         <activity
-            android:name=".activities.ScrollViewActivity"
+            android:name=".activities.ex.ScrollViewActivity"
             android:label="ScrollView"></activity>
         <activity
-            android:name=".activities.TextViewActivity"
+            android:name=".activities.ex.TextViewActivity"
             android:label="PullableTextView"></activity>
         <activity
-            android:name=".activities.RecyclerViewActivity"
+            android:name=".activities.ex.RecyclerViewActivity"
             android:label="RecyclerView"></activity>
     </application>
 

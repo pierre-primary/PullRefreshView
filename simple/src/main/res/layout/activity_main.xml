@@ -31,4 +31,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="其他控件"/>
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="NestedScrolling"/>
 </LinearLayout>

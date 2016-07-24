@@ -6,6 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.ybao.pullrefreshview.simple.R;
+import com.ybao.pullrefreshview.simple.activities.ep.DrawerEpActivity;
+import com.ybao.pullrefreshview.simple.activities.ep.NormolEpActivity;
+import com.ybao.pullrefreshview.simple.activities.ep.RG2Activity;
+import com.ybao.pullrefreshview.simple.activities.ep.RGActivity;
+import com.ybao.pullrefreshview.simple.activities.ep.ScrollerEpActivity;
 
 
 /**

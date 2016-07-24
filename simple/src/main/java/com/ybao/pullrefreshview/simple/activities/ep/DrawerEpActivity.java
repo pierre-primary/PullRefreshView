@@ -1,12 +1,7 @@
-package com.ybao.pullrefreshview.simple.activities;
+package com.ybao.pullrefreshview.simple.activities.ep;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.util.SparseArray;
-import android.view.View;
-import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -20,7 +15,7 @@ import java.util.List;
 /**
  * Created by Ybao on 2015/11/3 0003.
  */
-public class NormalRefreshActivity extends AppCompatActivity implements BaseHeaderView.OnRefreshListener, BaseFooterView.OnLoadListener {
+public class DrawerEpActivity extends AppCompatActivity implements BaseHeaderView.OnRefreshListener, BaseFooterView.OnLoadListener {
 
     ListView listView;
     BaseHeaderView headerView;
@@ -28,12 +23,12 @@ public class NormalRefreshActivity extends AppCompatActivity implements BaseHead
 
     ArrayAdapter adapter;
 
-    List<String> list = new ArrayList<String>();
+    List<String> list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_normal_refresh);
+        setContentView(R.layout.activity_drawer_ep);
 
         listView = (ListView) findViewById(R.id.list);
         headerView = (BaseHeaderView) findViewById(R.id.header);
@@ -42,6 +37,7 @@ public class NormalRefreshActivity extends AppCompatActivity implements BaseHead
         list = getData(15);
 
         adapter = new ArrayAdapter(this, R.layout.item, list);
+
 
         listView.setAdapter(adapter);
 
@@ -89,4 +85,3 @@ public class NormalRefreshActivity extends AppCompatActivity implements BaseHead
         return datas;
     }
 }
-

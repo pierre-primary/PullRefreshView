@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.ybao.pullrefreshview.layout.PullRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.ybao.pullrefreshview.layout.RGPullRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimary">
+    android:layout_height="match_parent">
 
-    <com.ybao.pullrefreshview.simple.view.NormalHeaderView
+    <com.ybao.pullrefreshview.simple.view.LockHeaderView
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
 
-    <com.ybao.pullrefreshview.simple.view.NormalFooterView
+    <com.ybao.pullrefreshview.simple.view.ExpandFooterView
         android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -21,9 +20,9 @@
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
         android:cacheColorHint="@null"
+        android:nestedScrollingEnabled="true"
         android:divider="#ccc"
         android:dividerHeight="1px" />
 
-</com.ybao.pullrefreshview.layout.PullRefreshLayout>
+</com.ybao.pullrefreshview.layout.RGPullRefreshLayout>

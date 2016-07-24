@@ -1,16 +1,15 @@
-package com.ybao.pullrefreshview.simple.activities;
+package com.ybao.pullrefreshview.simple.fragment;
+
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import com.ybao.adapter.recyclerview.StandardAdapter;
 import com.ybao.pullrefreshview.layout.BaseFooterView;
 import com.ybao.pullrefreshview.layout.BaseHeaderView;
 import com.ybao.pullrefreshview.simple.R;
@@ -19,37 +18,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Ybao on 2015/11/3 0003.
+ * Created by Ybao on 16/7/25.
  */
-public class RecyclerViewActivity extends AppCompatActivity implements BaseHeaderView.OnRefreshListener, BaseFooterView.OnLoadListener {
+public class Fragment3 extends Fragment implements BaseHeaderView.OnRefreshListener, BaseFooterView.OnLoadListener {
+    View view;
 
-    RecyclerView recyclerView;
+    ListView listView;
     BaseHeaderView headerView;
     BaseFooterView footerView;
 
-    RecyclerViewAdapter adapter;
+    ArrayAdapter adapter;
 
     List<String> list = new ArrayList<String>();
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recyclerview);
-
-        recyclerView = (RecyclerView) findViewById(R.id.list);
-        headerView = (BaseHeaderView) findViewById(R.id.header);
-        footerView = (BaseFooterView) findViewById(R.id.footer);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment3, container, false);
+        listView = findViewById(R.id.list);
+        headerView = findViewById(R.id.header);
+        footerView = findViewById(R.id.footer);
 
         list = getData(15);
 
-        adapter = new RecyclerViewAdapter();
-        adapter.setData(list);
+        adapter = new ArrayAdapter(getContext(), R.layout.item, list);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
+        listView.setAdapter(adapter);
 
         headerView.setOnRefreshListener(this);
         footerView.setOnLoadListener(this);
+        return view;
     }
 
     @Override
@@ -61,7 +59,7 @@ public class RecyclerViewActivity extends AppCompatActivity implements BaseHeade
                 List<String> datas = getData(5);
                 list.clear();
                 list.addAll(datas);
-                adapter.setData(list);
+                adapter.notifyDataSetChanged();
                 headerView.stopRefresh();
             }
         }, 3000);
@@ -92,21 +90,8 @@ public class RecyclerViewActivity extends AppCompatActivity implements BaseHeade
         return datas;
     }
 
-    class RecyclerViewAdapter extends StandardAdapter {
-        @Override
-        public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false));
-        }
+    public <T> T findViewById(int id) {
+        return (T) view.findViewById(id);
 
-        @Override
-        public void onBindViewHolder(ItemViewHolder holder, int position) {
-            super.onBindViewHolder(holder, position);
-
-            ((TextView) holder.itemView).setText(getItem(position).toString());
-
-        }
     }
-
-
 }
-

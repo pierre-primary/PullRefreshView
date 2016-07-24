@@ -1,7 +1,12 @@
-package com.ybao.pullrefreshview.simple.activities;
+package com.ybao.pullrefreshview.simple.fragment;
+
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -13,9 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Ybao on 2015/11/3 0003.
+ * Created by Ybao on 16/7/25.
  */
-public class RG2Activity extends AppCompatActivity implements BaseHeaderView.OnRefreshListener, BaseFooterView.OnLoadListener {
+public class Fragment1 extends Fragment implements BaseHeaderView.OnRefreshListener, BaseFooterView.OnLoadListener {
+    View view;
 
     ListView listView;
     BaseHeaderView headerView;
@@ -25,24 +31,24 @@ public class RG2Activity extends AppCompatActivity implements BaseHeaderView.OnR
 
     List<String> list = new ArrayList<String>();
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rg2);
-        listView = (ListView) findViewById(R.id.list);
-        headerView = (BaseHeaderView) findViewById(R.id.header);
-        footerView = (BaseFooterView) findViewById(R.id.footer);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment1, container, false);
+        listView = findViewById(R.id.list);
+        headerView = findViewById(R.id.header);
+        footerView = findViewById(R.id.footer);
 
         list = getData(15);
 
-        adapter = new ArrayAdapter(this, R.layout.item, list);
+        adapter = new ArrayAdapter(getContext(), R.layout.item, list);
 
         listView.setAdapter(adapter);
 
         headerView.setOnRefreshListener(this);
         footerView.setOnLoadListener(this);
+        return view;
     }
-
 
     @Override
     public void onRefresh(BaseHeaderView baseHeaderView) {
@@ -82,5 +88,10 @@ public class RG2Activity extends AppCompatActivity implements BaseHeaderView.OnR
             datas.add("第" + page + "页,第" + i + "条");
         }
         return datas;
+    }
+
+    public <T> T findViewById(int id) {
+        return (T) view.findViewById(id);
+
     }
 }

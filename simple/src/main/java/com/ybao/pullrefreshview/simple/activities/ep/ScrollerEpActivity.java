@@ -1,4 +1,4 @@
-package com.ybao.pullrefreshview.simple.activities;
+package com.ybao.pullrefreshview.simple.activities.ep;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

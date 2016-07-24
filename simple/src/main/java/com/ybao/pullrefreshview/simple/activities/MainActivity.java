@@ -2,6 +2,7 @@ package com.ybao.pullrefreshview.simple.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.NestedScrollingParent;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -39,6 +40,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, AllViewActivity.class));
+            }
+        });
+        findViewById(R.id.button5).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, NestedScrollingActivity.class));
             }
         });
     }

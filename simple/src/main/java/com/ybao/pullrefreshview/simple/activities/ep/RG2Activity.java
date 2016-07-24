@@ -1,4 +1,4 @@
-package com.ybao.pullrefreshview.simple.activities;
+package com.ybao.pullrefreshview.simple.activities.ep;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by Ybao on 2015/11/3 0003.
  */
-public class NormolEpActivity extends AppCompatActivity implements BaseHeaderView.OnRefreshListener, BaseFooterView.OnLoadListener {
+public class RG2Activity extends AppCompatActivity implements BaseHeaderView.OnRefreshListener, BaseFooterView.OnLoadListener {
 
     ListView listView;
     BaseHeaderView headerView;
@@ -28,8 +28,7 @@ public class NormolEpActivity extends AppCompatActivity implements BaseHeaderVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_normol_ep);
-
+        setContentView(R.layout.activity_rg2);
         listView = (ListView) findViewById(R.id.list);
         headerView = (BaseHeaderView) findViewById(R.id.header);
         footerView = (BaseFooterView) findViewById(R.id.footer);
@@ -38,12 +37,12 @@ public class NormolEpActivity extends AppCompatActivity implements BaseHeaderVie
 
         adapter = new ArrayAdapter(this, R.layout.item, list);
 
-
         listView.setAdapter(adapter);
 
         headerView.setOnRefreshListener(this);
         footerView.setOnLoadListener(this);
     }
+
 
     @Override
     public void onRefresh(BaseHeaderView baseHeaderView) {
@@ -85,4 +84,3 @@ public class NormolEpActivity extends AppCompatActivity implements BaseHeaderVie
         return datas;
     }
 }
-

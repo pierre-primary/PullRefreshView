@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.ybao.pullrefreshview.simple.R;
+import com.ybao.pullrefreshview.simple.activities.ex.RecyclerViewActivity;
+import com.ybao.pullrefreshview.simple.activities.ex.ScrollViewActivity;
+import com.ybao.pullrefreshview.simple.activities.ex.TextViewActivity;
 
 
 /**
