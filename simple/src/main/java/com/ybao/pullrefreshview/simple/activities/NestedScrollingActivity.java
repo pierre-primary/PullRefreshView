@@ -46,7 +46,7 @@ public class NestedScrollingActivity extends AppCompatActivity {
             this.list = list;
             strings = new ArrayList<>();
             strings.add("ListView");
-            strings.add("ScrollView");
+            strings.add("NestedScrollView");
             strings.add("RecyclerView");
         }
 

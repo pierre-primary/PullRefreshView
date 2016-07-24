@@ -16,11 +16,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:nestedScrollingEnabled="true">
+        android:background="@android:color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -106,6 +105,6 @@
                 android:text="14" />
         </LinearLayout>
 
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
 </com.ybao.pullrefreshview.layout.PullRefreshLayout>

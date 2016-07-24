@@ -1,8 +1,11 @@
 package com.ybao.pullrefreshview.support.utils;
 
+import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.AbsListView;
 import android.widget.ScrollView;
@@ -22,11 +25,11 @@ public class CanPullUtil {
             return (Pullable) view;
         } else if (view instanceof AbsListView) {
             return new AbsListViewCanPull((AbsListView) view);
-        } else if (view instanceof ScrollView) {
-            return new ScrollViewCanPull((ScrollView) view);
+        } else if (view instanceof ScrollView || view instanceof NestedScrollView) {
+            return new ScrollViewCanPull((ViewGroup) view);
         } else if (view instanceof WebView) {
             return new WebViewCanPull((WebView) view);
-        } else if (Utils.isClassExists("android.support.v7.widget.RecyclerView") && view instanceof RecyclerView) {
+        } else if (view instanceof RecyclerView) {
             return new RecyclerViewCanPull((RecyclerView) view);
         }
         return null;
@@ -66,11 +69,11 @@ public class CanPullUtil {
     }
 
     private static class ScrollViewCanPull implements Pullable {
-        public ScrollViewCanPull(ScrollView scrollView) {
+        public ScrollViewCanPull(ViewGroup scrollView) {
             this.scrollView = scrollView;
         }
 
-        ScrollView scrollView;
+        ViewGroup scrollView;
 
         @Override
         public boolean isGetTop() {
