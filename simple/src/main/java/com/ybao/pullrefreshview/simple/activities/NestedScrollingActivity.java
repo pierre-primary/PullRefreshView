@@ -39,10 +39,15 @@ public class NestedScrollingActivity extends AppCompatActivity {
 
     public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
         ArrayList<Fragment> list;
+        ArrayList<String> strings;
 
         public MyFragmentPagerAdapter(FragmentManager fm, ArrayList<Fragment> list) {
             super(fm);
             this.list = list;
+            strings = new ArrayList<>();
+            strings.add("ListView");
+            strings.add("NestedScrollView");
+            strings.add("RecyclerView");
         }
 
 
@@ -58,7 +63,10 @@ public class NestedScrollingActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return "第" + position + "个";
+            if (position >= strings.size()) {
+                return "第" + position + "个";
+            }
+            return strings.get(position);
         }
     }
 }

@@ -10,7 +10,7 @@
         android:layout_height="wrap_content" />
 
 
-    <com.ybao.pullrefreshview.simple.view.LockFooterView
+    <com.ybao.pullrefreshview.simple.view.ExpandFooterView
         android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

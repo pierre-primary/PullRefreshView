@@ -103,7 +103,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         if (!mScroller.isFinished()) {
             if (mScroller.computeScrollOffset()) {
                 scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
-                postInvalidate();
+                ViewCompat.postInvalidateOnAnimation(this);
             }
         }
         super.computeScroll();

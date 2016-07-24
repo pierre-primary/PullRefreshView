@@ -1,28 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.ybao.pullrefreshview.layout.RGPullRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.ybao.pullrefreshview.layout.PullRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary">
 
-    <com.ybao.pullrefreshview.simple.view.LockHeaderView
+    <com.ybao.pullrefreshview.simple.view.NormalHeaderView
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
 
-    <com.ybao.pullrefreshview.simple.view.ExpandFooterView
+    <com.ybao.pullrefreshview.simple.view.NormalFooterView
         android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-
-    <ListView
-        android:id="@+id/list"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:cacheColorHint="@null"
-        android:nestedScrollingEnabled="true"
-        android:divider="#ccc"
-        android:dividerHeight="1px" />
+        android:background="@android:color/white"
+        android:nestedScrollingEnabled="true">
 
-</com.ybao.pullrefreshview.layout.RGPullRefreshLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="100.0dip"
+                android:text="1" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="100.0dip"
+                android:gravity="center"
+                android:text="2" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="100.0dip"
+                android:text="3" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="100.0dip"
+                android:gravity="center"
+                android:text="4" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="100.0dip"
+                android:text="5" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="100.0dip"
+                android:gravity="center"
+                android:text="6" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="100.0dip"
+                android:text="7" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="100.0dip"
+                android:gravity="center"
+                android:text="8" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="100.0dip"
+                android:text="9" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="100.0dip"
+                android:gravity="center"
+                android:text="10" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="100.0dip"
+                android:text="11" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="100.0dip"
+                android:gravity="center"
+                android:text="12" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="100.0dip"
+                android:text="13" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="100.0dip"
+                android:gravity="center"
+                android:text="14" />
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</com.ybao.pullrefreshview.layout.PullRefreshLayout>

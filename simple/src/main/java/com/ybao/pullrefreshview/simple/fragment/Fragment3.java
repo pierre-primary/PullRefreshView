@@ -7,9 +7,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.widget.TextView;
 
+import com.ybao.adapter.recyclerview.StandardAdapter;
 import com.ybao.pullrefreshview.layout.BaseFooterView;
 import com.ybao.pullrefreshview.layout.BaseHeaderView;
 import com.ybao.pullrefreshview.simple.R;
@@ -23,11 +25,12 @@ import java.util.List;
 public class Fragment3 extends Fragment implements BaseHeaderView.OnRefreshListener, BaseFooterView.OnLoadListener {
     View view;
 
-    ListView listView;
+
+    RecyclerView recyclerView;
     BaseHeaderView headerView;
     BaseFooterView footerView;
 
-    ArrayAdapter adapter;
+    RecyclerViewAdapter adapter;
 
     List<String> list = new ArrayList<String>();
 
@@ -35,21 +38,25 @@ public class Fragment3 extends Fragment implements BaseHeaderView.OnRefreshListe
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment3, container, false);
-        listView = findViewById(R.id.list);
-        headerView = findViewById(R.id.header);
+
+
+        recyclerView =  findViewById(R.id.list);
+        headerView =  findViewById(R.id.header);
         footerView = findViewById(R.id.footer);
 
         list = getData(15);
 
-        adapter = new ArrayAdapter(getContext(), R.layout.item, list);
+        adapter = new RecyclerViewAdapter();
+        adapter.setData(list);
 
-        listView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
 
         headerView.setOnRefreshListener(this);
         footerView.setOnLoadListener(this);
+
         return view;
     }
-
     @Override
     public void onRefresh(BaseHeaderView baseHeaderView) {
         baseHeaderView.postDelayed(new Runnable() {
@@ -59,7 +66,7 @@ public class Fragment3 extends Fragment implements BaseHeaderView.OnRefreshListe
                 List<String> datas = getData(5);
                 list.clear();
                 list.addAll(datas);
-                adapter.notifyDataSetChanged();
+                adapter.setData(list);
                 headerView.stopRefresh();
             }
         }, 3000);
@@ -90,8 +97,24 @@ public class Fragment3 extends Fragment implements BaseHeaderView.OnRefreshListe
         return datas;
     }
 
+    class RecyclerViewAdapter extends StandardAdapter {
+        @Override
+        public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new ItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(ItemViewHolder holder, int position) {
+            super.onBindViewHolder(holder, position);
+
+            ((TextView) holder.itemView).setText(getItem(position).toString());
+
+        }
+    }
+
     public <T> T findViewById(int id) {
         return (T) view.findViewById(id);
 
     }
+
 }
