@@ -20,6 +20,7 @@
             android:label="弹性拖动"></activity>
         <activity
             android:name=".activities.NormalRefreshActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:label="经典下拉刷新"></activity>
         <activity
             android:name=".activities.ExpandActivity"

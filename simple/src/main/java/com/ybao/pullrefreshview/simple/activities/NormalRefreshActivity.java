@@ -2,6 +2,7 @@ package com.ybao.pullrefreshview.simple.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
@@ -33,6 +34,8 @@ public class NormalRefreshActivity extends AppCompatActivity implements BaseHead
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_normal_refresh);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         listView = (ListView) findViewById(R.id.list);
         headerView = (BaseHeaderView) findViewById(R.id.header);
@@ -53,14 +56,14 @@ public class NormalRefreshActivity extends AppCompatActivity implements BaseHead
         baseHeaderView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                page = 1;
-                List<String> datas = getData(5);
-                list.clear();
-                list.addAll(datas);
-                adapter.notifyDataSetChanged();
+//                page = 1;
+//                List<String> datas = getData(5);
+//                list.clear();
+//                list.addAll(datas);
+//                adapter.notifyDataSetChanged();
                 headerView.stopRefresh();
             }
-        }, 3000);
+        }, 100);
     }
 
     @Override
@@ -68,13 +71,13 @@ public class NormalRefreshActivity extends AppCompatActivity implements BaseHead
         baseFooterView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                page++;
-                List<String> datas = getData(5);
-                list.addAll(datas);
-                adapter.notifyDataSetChanged();
+//                page++;
+//                List<String> datas = getData(5);
+//                list.addAll(datas);
+//                adapter.notifyDataSetChanged();
                 footerView.stopLoad();
             }
-        }, 3000);
+        }, 100);
     }
 
 
