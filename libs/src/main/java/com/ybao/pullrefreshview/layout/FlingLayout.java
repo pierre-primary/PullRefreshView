@@ -27,7 +27,6 @@ import android.support.v4.view.NestedScrollingChildHelper;
 import android.support.v4.view.NestedScrollingParent;
 import android.support.v4.view.NestedScrollingParentHelper;
 import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewParentCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
