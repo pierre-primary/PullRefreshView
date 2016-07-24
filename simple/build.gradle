@@ -25,8 +25,8 @@ android {
 dependencies {
     compile 'com.nineoldandroids:library:2.4.0'
     compile project(':libs')
-    compile 'com.android.support:support-v4:' + ANDROID_BUILD_SUPPORT_VERSION
-    compile 'com.android.support:appcompat-v7:' + ANDROID_BUILD_SUPPORT_VERSION
-    compile 'com.android.support:recyclerview-v7:' + ANDROID_BUILD_SUPPORT_VERSION
-    compile 'com.android.support:design:' + ANDROID_BUILD_SUPPORT_VERSION
+    compile 'com.android.support:support-v4:23.2.1'
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.android.support:design:23.2.1'
+    compile 'com.android.support:recyclerview-v7:23.2.1'
 }
