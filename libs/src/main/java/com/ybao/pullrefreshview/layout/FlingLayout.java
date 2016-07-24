@@ -22,7 +22,6 @@
 package com.ybao.pullrefreshview.layout;
 
 import android.content.Context;
-import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,10 +31,14 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
 
-import com.ybao.pullrefreshview.support.utils.CanPullUtil;
 import com.ybao.pullrefreshview.support.impl.Pullable;
+import com.ybao.pullrefreshview.support.utils.CanPullUtil;
 
-public class FlingLayout extends FrameLayout {
+public class FlingLayout extends FrameLayout
+//        implements NestedScrollingChild
+{
+
+//    NestedScrollingChildHelper mChildHelper;
 
     public final static int NONE = 0;
     public final static int SCROLLING = 1;
@@ -48,6 +51,7 @@ public class FlingLayout extends FrameLayout {
     private Scroller mScroller;
     protected float downY, downX;
     private boolean isScrolling = false;
+    protected float tepmX;
     protected float tepmY;
     private static final int MAX_DURATION = 300;
     private boolean canPullUp = true;
@@ -75,6 +79,8 @@ public class FlingLayout extends FrameLayout {
         version = android.os.Build.VERSION.SDK_INT;
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         mScroller = new Scroller(context, new DecelerateInterpolator());
+//        mChildHelper = new NestedScrollingChildHelper(this);
+//        setNestedScrollingEnabled(true);
     }
 
 
@@ -89,7 +95,7 @@ public class FlingLayout extends FrameLayout {
         if (!mScroller.isFinished()) {
             if (mScroller.computeScrollOffset()) {
                 scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
-                ViewCompat.postInvalidateOnAnimation(this);
+                postInvalidate();
             }
         }
         super.computeScroll();
@@ -99,13 +105,14 @@ public class FlingLayout extends FrameLayout {
     public boolean dispatchTouchEvent(MotionEvent ev) {
         int offsetTop = getOffsetTop();
         int pointerCount = ev.getPointerCount();
+        int pointerIndex = ev.getActionIndex();
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                mPointerId = ev.getPointerId(0);
-                float x = ev.getX();
-                float y = ev.getY();
+                mPointerId = ev.getPointerId(pointerIndex);
+                float x = ev.getX(pointerIndex);
+                float y = ev.getY(pointerIndex);
                 tepmY = downY = y;
-                downX = x;
+                tepmX = downX = x;
                 if (!mScroller.isFinished()) {
                     mScroller.abortAnimation();
                     if (offsetTop != 0) {
@@ -114,32 +121,35 @@ public class FlingLayout extends FrameLayout {
                     }
                 }
                 break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                mPointerId = ev.getPointerId(pointerIndex);
+                tepmX = ev.getX(pointerIndex);
+                tepmY = ev.getY(pointerIndex);
+                break;
             case MotionEvent.ACTION_MOVE:
-                int pointerIndex = ev.findPointerIndex(mPointerId);
+                pointerIndex = ev.findPointerIndex(mPointerId);
                 float mx;
                 float my;
-                if (pointerCount > pointerIndex && pointerIndex > 0) {
+                if (pointerCount > pointerIndex && pointerIndex >= 0) {
                     mx = ev.getX(pointerIndex);
                     my = ev.getY(pointerIndex);
                 } else {
                     mx = ev.getX();
                     my = ev.getY();
                 }
-                float distY = Math.abs(my - downY);
                 //意图分析，避免误操作
-                if (isScrolling || (distY > mTouchSlop && distY > Math.abs(mx - downX))) {
+                int dataX = (int) (mx - tepmX);
+                int dataY = (int) (my - tepmY);
+                tepmX = mx;
+                tepmY = my;
+                if (isScrolling || (Math.abs(dataY) > Math.abs(dataX))) {
                     isScrolling = true;
-                    int dataY = (int) (my - tepmY);
-                    tepmY = my;
                     if (offsetTop == 0) {
                         //开始时 在0,0处
                         //判断是否可以滑动
-                        if ((canPullDown() && dataY > 0) || (canPullUp() && dataY < 0)) {
-
-                            setState(SCROLLING, 0);//
-
+                        if ((dataY < 0 && canPullUp()) || (dataY > 0 && canPullDown())) {
+                            setState(SCROLLING, 0);
                             scrollBy(0, -dataY);
-
                             return true;
                         }
                     } else {
@@ -171,7 +181,7 @@ public class FlingLayout extends FrameLayout {
                         }
                     }
                 } else {
-                    ev.setLocation(ev.getX(), tepmY);
+                    ev.setLocation(mx, downY);
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
@@ -181,11 +191,10 @@ public class FlingLayout extends FrameLayout {
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 // 获取离开屏幕的手指的索引
-                int pointerIndexLeave = ev.getActionIndex();
-                int pointerIdLeave = ev.getPointerId(pointerIndexLeave);
+                int pointerIdLeave = ev.getPointerId(pointerIndex);
                 if (mPointerId == pointerIdLeave) {
                     // 离开屏幕的正是目前的有效手指，此处需要重新调整，并且需要重置VelocityTracker
-                    int reIndex = pointerIndexLeave == 0 ? 1 : 0;
+                    int reIndex = pointerIndex == 0 ? 1 : 0;
                     mPointerId = ev.getPointerId(reIndex);
                     // 调整触摸位置，防止出现跳动
                     tepmY = ev.getY(reIndex);
@@ -313,4 +322,47 @@ public class FlingLayout extends FrameLayout {
             scrollTo(getScrollX(), 0);
         }
     }
+
+
+//    public void setNestedScrollingEnabled(boolean enabled) {
+//        mChildHelper.setNestedScrollingEnabled(enabled);
+//    }
+//
+//    public boolean isNestedScrollingEnabled() {
+//        return mChildHelper.isNestedScrollingEnabled();
+//    }
+//
+//    public boolean startNestedScroll(int axes) {
+//        return mChildHelper.startNestedScroll(axes);
+//    }
+//
+//    public void stopNestedScroll() {
+//        mChildHelper.stopNestedScroll();
+//    }
+//
+//    public boolean hasNestedScrollingParent() {
+//        return mChildHelper.hasNestedScrollingParent();
+//    }
+//
+//    public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, int[] offsetInWindow) {
+//        return mChildHelper.dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, offsetInWindow);
+//    }
+//
+//    public boolean dispatchNestedPreScroll(int dx, int dy, int[] consumed, int[] offsetInWindow) {
+//        return mChildHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow);
+//    }
+//
+//    public boolean dispatchNestedFling(float velocityX, float velocityY, boolean consumed) {
+//        return mChildHelper.dispatchNestedFling(velocityX, velocityY, consumed);
+//    }
+//
+//    public boolean dispatchNestedPreFling(float velocityX, float velocityY) {
+//        return mChildHelper.dispatchNestedPreFling(velocityX, velocityY);
+//    }
+//
+//    @Override
+//    public void onDetachedFromWindow() {
+//        super.onDetachedFromWindow();
+//        mChildHelper.onDetachedFromWindow();
+//    }
 }

@@ -20,7 +20,6 @@ android {
 }
 
 dependencies {
-    provided 'com.android.support:support-v4:23.2.0'
     provided 'com.android.support:recyclerview-v7:23.2.0'
     compile project(':standardadapter')
 }
