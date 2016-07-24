@@ -1,13 +1,14 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    compileSdkVersion ANDROID_BUILD_SDK_VERSION as int
+    buildToolsVersion ANDROID_BUILD_TOOLS_VERSION
+
     defaultConfig {
-        minSdkVersion 8
-        targetSdkVersion 19
-        versionCode 1
-        versionName "1.0.1"
+        minSdkVersion ANDROID_BUILD_MIN_SDK_VERSION as int
+        targetSdkVersion ANDROID_BUILD_TARGET_SDK_VERSION as int
+        versionCode VERSION_CODE as int
+        versionName VERSION_NAME
     }
     buildTypes {
         release {
@@ -20,7 +21,7 @@ android {
 }
 
 dependencies {
-    provided 'com.android.support:recyclerview-v7:23.2.0'
+    provided 'com.android.support:recyclerview-v7:' + ANDROID_BUILD_SUPPORT_VERSION
     compile project(':standardadapter')
-    provided 'com.android.support:support-v4:23.2.0'
+    provided 'com.android.support:support-v4:' + ANDROID_BUILD_SUPPORT_VERSION
 }

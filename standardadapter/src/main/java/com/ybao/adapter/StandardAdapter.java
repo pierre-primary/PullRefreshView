@@ -7,6 +7,12 @@ import android.widget.BaseAdapter;
 
 import java.util.List;
 
+/**
+ * @author Ybao
+ * @ClassName: tandardAdapter
+ * @Description: TODO AbsListView 通用适配器
+ * @date 2015年6月8日 下午5:10:18
+ */
 public class StandardAdapter extends BaseAdapter {
     private List<?> mList;
 

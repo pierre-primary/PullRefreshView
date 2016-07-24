@@ -8,8 +8,12 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
- * Created by Ybao on 16/7/22.
+ * @author Ybao
+ * @ClassName: HeaderStandardAdapter
+ * @Description: TODO Recyclerview 轻松加头通用的适配器
+ * @date 2016年7月22日 下午5:10:18
  */
 public class HeaderStandardAdapter extends StandardAdapter {
     public static final int TYPE_HEADER = 0;
