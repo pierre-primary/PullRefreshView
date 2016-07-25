@@ -22,6 +22,7 @@
 package com.ybao.pullrefreshview.layout;
 
 import android.content.Context;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,6 +94,16 @@ public class PullRefreshLayout extends FlingLayout {
         }
     }
 
+    @Override
+    public void scrollTo(int x, int y) {
+        if (mHeader != null && hasHeader) {
+            ViewCompat.setTranslationY((View) mHeader, -y);
+        }
+        if (mFooter != null && hasFooter) {
+            ViewCompat.setTranslationY((View) mFooter, -y);
+        }
+        super.scrollTo(x, y);
+    }
 
     public void openHeader() {
         int offsetTop = this.getOffsetTop();

@@ -93,4 +93,9 @@ public class ExpandHeaderView extends BaseHeaderView {
     public int getSpanHeight() {
         return loadBox.getHeight();
     }
+
+    @Override
+    public int getLayoutType() {
+        return layoutType;
+    }
 }

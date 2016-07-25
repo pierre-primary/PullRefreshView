@@ -29,4 +29,6 @@ public interface Refreshable extends FlingLayout.OnScrollListener {
     void setPullRefreshLayout(PullRefreshLayout refreshLayout);
 
     int getSpanHeight();
+
+    int getLayoutType();
 }

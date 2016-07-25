@@ -30,4 +30,6 @@ public interface Loadable extends FlingLayout.OnScrollListener {
 
     int getSpanHeight();
 
+    int getLayoutType();
+
 }

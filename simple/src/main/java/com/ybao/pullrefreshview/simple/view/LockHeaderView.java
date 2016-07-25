@@ -129,5 +129,9 @@ public class LockHeaderView extends BaseHeaderView {
         return loadBox.getHeight();
     }
 
+    @Override
+    public int getLayoutType() {
+        return layoutType;
+    }
 
 }

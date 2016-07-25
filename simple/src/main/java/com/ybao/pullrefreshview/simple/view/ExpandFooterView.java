@@ -93,4 +93,9 @@ public class ExpandFooterView extends BaseFooterView {
     public int getSpanHeight() {
         return loadBox.getHeight();
     }
+
+    @Override
+    public int getLayoutType() {
+        return layoutType;
+    }
 }

@@ -27,6 +27,7 @@ import android.support.v4.view.NestedScrollingChildHelper;
 import android.support.v4.view.NestedScrollingParent;
 import android.support.v4.view.NestedScrollingParentHelper;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -127,7 +128,8 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
 
     @Override
     public void scrollTo(int x, int y) {
-        super.scrollTo(x, y);
+//        super.scrollTo(x, y);
+        ViewCompat.setTranslationY(mPullView, -y);
         onScroll(y);
 
         if (mOnScrollListener != null) {
@@ -142,7 +144,8 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
 
 
     public int getOffsetTop() {
-        return getScrollY();
+        return -(int) ViewCompat.getTranslationY(mPullView);
+//        return getScrollY();
     }
 
     public int startScrollBy(int startY, int dy) {
