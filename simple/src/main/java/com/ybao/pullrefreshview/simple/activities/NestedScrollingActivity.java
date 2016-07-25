@@ -13,6 +13,7 @@ import com.ybao.pullrefreshview.simple.fragment.Fragment0;
 import com.ybao.pullrefreshview.simple.fragment.Fragment2;
 import com.ybao.pullrefreshview.simple.fragment.Fragment3;
 import com.ybao.pullrefreshview.simple.fragment.Fragment1;
+import com.ybao.pullrefreshview.simple.fragment.Fragment4;
 
 import java.util.ArrayList;
 
@@ -33,6 +34,7 @@ public class NestedScrollingActivity extends AppCompatActivity {
         fragments.add(new Fragment1());
         fragments.add(new Fragment2());
         fragments.add(new Fragment3());
+        fragments.add(new Fragment4());
         MyFragmentPagerAdapter myFragmentPagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager(), fragments);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setOffscreenPageLimit(2);
@@ -51,6 +53,7 @@ public class NestedScrollingActivity extends AppCompatActivity {
             strings.add("RecyclerView");
             strings.add("ScrollView");
             strings.add("NestedScrollView");
+            strings.add("WebView");
         }
 
 
