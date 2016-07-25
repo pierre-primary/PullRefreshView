@@ -59,7 +59,7 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
     }
 
     @Override
-    public void onScroll(FlingLayout flingLayout, int y) {
+    public void onScroll(FlingLayout flingLayout, float y) {
         if (isLockState) {
             return;
         }
@@ -76,7 +76,7 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
     }
 
     @Override
-    public void onScrollChange(FlingLayout flingLayout, int state, int y) {
+    public void onScrollChange(FlingLayout flingLayout, int state, float y) {
         if (state != FlingLayout.FLING) {
             return;
         }

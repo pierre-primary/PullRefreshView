@@ -13,10 +13,9 @@ import com.nineoldandroids.view.ViewHelper;
 import com.ybao.pullrefreshview.layout.BaseHeaderView;
 import com.ybao.pullrefreshview.layout.FlingLayout;
 import com.ybao.pullrefreshview.layout.PullRefreshLayout;
-import com.ybao.pullrefreshview.layout.RGPullRefreshLayout;
 import com.ybao.pullrefreshview.simple.R;
 import com.ybao.pullrefreshview.simple.utils.AnimUtil;
-import com.ybao.pullrefreshview.support.type.HeaderLayoutType;
+import com.ybao.pullrefreshview.support.type.LayoutType;
 
 /**
  * Created by Ybao on 2015/11/3 0003.
@@ -31,8 +30,7 @@ public class LockHeaderView extends BaseHeaderView {
 
     int state = NONE;
 
-    @HeaderLayoutType
-    int layoutType = RGPullRefreshLayout.LAYOUT_SCROLLER;
+    int layoutType = LayoutType.LAYOUT_SCROLLER;
 
     public LockHeaderView(Context context) {
         this(context, null);
@@ -66,7 +64,7 @@ public class LockHeaderView extends BaseHeaderView {
     }
 
     @Override
-    public void onScroll(FlingLayout flingLayout, int y) {
+    public void onScroll(FlingLayout flingLayout, float y) {
         path.reset();// 重置path
         if (y == 0) {
             invalidate();
@@ -79,7 +77,7 @@ public class LockHeaderView extends BaseHeaderView {
         ViewHelper.setTranslationY(loadBox, -0.97f * y - loadBox.getHeight());
         super.onScroll(flingLayout, y);
         if (!isLockState) {
-            ViewHelper.setRotation(progress, ((float) y * y) * 48 / 31250);
+            ViewHelper.setRotation(progress,  y * y * 48 / 31250);
         }
     }
 

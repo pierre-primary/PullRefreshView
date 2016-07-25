@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 
 import com.ybao.pullrefreshview.support.impl.Loadable;
 import com.ybao.pullrefreshview.support.impl.Refreshable;
+import com.ybao.pullrefreshview.support.type.LayoutType;
 
 
 /**
@@ -63,19 +64,19 @@ public class PullRefreshLayout extends FlingLayout {
 
 
     @Override
-    protected void fling(int offsetTop) {
+    protected void fling(float offsetTop) {
         if (mHeader != null && offsetTop <= -headerSpanHeight) {
-            startScrollTo(offsetTop, -headerSpanHeight);
+            startMoveTo(offsetTop, -headerSpanHeight);
         } else if (mFooter != null && offsetTop >= footerSpanHeight) {
-            startScrollTo(offsetTop, footerSpanHeight);
+            startMoveTo(offsetTop, footerSpanHeight);
         } else {
-            startScrollTo(offsetTop, 0);
+            startMoveTo(offsetTop, 0);
         }
     }
 
 
     @Override
-    protected void onScroll(int y) {
+    protected void onScroll(float y) {
         if (mHeader != null && y <= 0 && hasHeader) {
             mHeader.onScroll(this, y);
         }
@@ -85,7 +86,7 @@ public class PullRefreshLayout extends FlingLayout {
     }
 
     @Override
-    protected void onScrollChange(int state, int y) {
+    protected void onScrollChange(int state, float y) {
         if (mHeader != null && hasHeader) {
             mHeader.onScrollChange(this, state, y);
         }
@@ -95,44 +96,91 @@ public class PullRefreshLayout extends FlingLayout {
     }
 
     @Override
-    public void scrollTo(int x, int y) {
-        if (mHeader != null && hasHeader) {
-            ViewCompat.setTranslationY((View) mHeader, -y);
+    public void moveTo(float y) {
+        if (y == 0) {
+            if (mHeader != null && hasHeader) {
+                setViewTranslationY((View) mHeader, -y);
+            }
+            if (mFooter != null && hasFooter) {
+                setViewTranslationY((View) mFooter, -y);
+            }
+            super.moveTo(y);
+            return;
+        } else if (y < 0) {
+            int headerLayoutType = getHeaderLayoutType();
+            if (headerLayoutType == LayoutType.LAYOUT_SCROLLER) {
+                ViewCompat.setTranslationY(mPullView, -y);
+                if (mHeader != null) {
+                    ViewCompat.setTranslationY((View) mHeader, headerHeight);
+                }
+            } else if (headerLayoutType == LayoutType.LAYOUT_DRAWER) {
+                ViewCompat.setTranslationY((View) mHeader, -y);
+            } else {
+                ViewCompat.setTranslationY((View) mHeader, -y);
+                ViewCompat.setTranslationY(mPullView, -y);
+            }
+
+        } else if (y > 0) {
+            int footerLayoutType = getFooterLayoutType();
+            if (footerLayoutType == LayoutType.LAYOUT_DRAWER) {
+                ViewCompat.setTranslationY((View) mFooter, -y);
+            } else if (footerLayoutType == LayoutType.LAYOUT_SCROLLER) {
+                ViewCompat.setTranslationY(mPullView, -y);
+                if (mFooter != null) {
+                    ViewCompat.setTranslationY((View) mFooter, -footerHeight);
+                }
+            } else {
+                ViewCompat.setTranslationY((View) mFooter, -y);
+                ViewCompat.setTranslationY(mPullView, -y);
+            }
+
         }
-        if (mFooter != null && hasFooter) {
-            ViewCompat.setTranslationY((View) mFooter, -y);
+        offsetTop = y;
+        onScroll(y);
+
+        if (mOnScrollListener != null) {
+            mOnScrollListener.onScroll(this, y);
         }
-        super.scrollTo(x, y);
+    }
+
+    public int getHeaderLayoutType() {
+        return mHeader != null ? mHeader.getLayoutType() : LayoutType.LAYOUT_SCROLLER;
+
+    }
+
+    public int getFooterLayoutType() {
+        return mFooter != null ? mFooter.getLayoutType() : LayoutType.LAYOUT_SCROLLER;
+
     }
 
     public void openHeader() {
-        int offsetTop = this.getOffsetTop();
+        float offsetTop = this.getOffsetTop();
         if (offsetTop == 0) {
-            this.startScrollTo(0, -this.headerSpanHeight);
+            this.startMoveTo(0, -this.headerSpanHeight);
         }
 
     }
 
     public void openFooter() {
-        int offsetTop = this.getOffsetTop();
+        float offsetTop = this.getOffsetTop();
         if (offsetTop == 0) {
-            this.startScrollTo(0, this.footerSpanHeight);
+            this.startMoveTo(0, this.footerSpanHeight);
         }
 
     }
 
     public void closeHeader() {
-        int offsetTop = getOffsetTop();
+        float offsetTop = getOffsetTop();
         if (offsetTop < 0) {
-            startScrollTo(offsetTop, 0);
+            startMoveTo(offsetTop, 0);
         }
 
     }
 
     public void closeFooter() {
-        int offsetTop = getOffsetTop();
+        float offsetTop = getOffsetTop();
         if (offsetTop > 0) {
-            startScrollTo(offsetTop, 0);
+            startMoveTo(offsetTop, 0);
         }
     }
 

@@ -11,10 +11,9 @@ import com.nineoldandroids.view.ViewHelper;
 import com.ybao.pullrefreshview.layout.BaseFooterView;
 import com.ybao.pullrefreshview.layout.FlingLayout;
 import com.ybao.pullrefreshview.layout.PullRefreshLayout;
-import com.ybao.pullrefreshview.layout.RGPullRefreshLayout;
 import com.ybao.pullrefreshview.simple.R;
 import com.ybao.pullrefreshview.simple.utils.AnimUtil;
-import com.ybao.pullrefreshview.support.type.FooterLayoutType;
+import com.ybao.pullrefreshview.support.type.LayoutType;
 
 /**
  * Created by Ybao on 2015/11/3 0003.
@@ -25,8 +24,8 @@ public class ExpandFooterView extends BaseFooterView {
     View loadBox;
 
     int state = NONE;
-    @FooterLayoutType
-    private int layoutType = RGPullRefreshLayout.LAYOUT_DRAWER;
+
+    private int layoutType = LayoutType.LAYOUT_DRAWER;
 
     public ExpandFooterView(Context context) {
         this(context, null);
@@ -56,7 +55,7 @@ public class ExpandFooterView extends BaseFooterView {
     }
 
     @Override
-    public void onScroll(FlingLayout flingLayout, int y) {
+    public void onScroll(FlingLayout flingLayout, float y) {
         super.onScroll(flingLayout, y);
         if (!isLockState) {
             ViewHelper.setRotation(progress, ((float) y * y) * 48 / 31250);

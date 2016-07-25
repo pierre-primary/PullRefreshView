@@ -12,10 +12,9 @@ import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
 import com.ybao.pullrefreshview.layout.BaseFooterView;
 import com.ybao.pullrefreshview.layout.FlingLayout;
-import com.ybao.pullrefreshview.layout.RGPullRefreshLayout;
 import com.ybao.pullrefreshview.simple.R;
 import com.ybao.pullrefreshview.simple.utils.AnimUtil;
-import com.ybao.pullrefreshview.support.type.FooterLayoutType;
+import com.ybao.pullrefreshview.support.type.LayoutType;
 
 /**
  * Created by Ybao on 2015/11/3 0003.
@@ -30,8 +29,7 @@ public class LockFooterView extends BaseFooterView {
 
     int state = NONE;
 
-    @FooterLayoutType
-    int layoutType = RGPullRefreshLayout.LAYOUT_SCROLLER;
+    int layoutType = LayoutType.LAYOUT_SCROLLER;
 
     public LockFooterView(Context context) {
         this(context, null);
@@ -60,7 +58,7 @@ public class LockFooterView extends BaseFooterView {
 
 
     @Override
-    public void onScroll(FlingLayout flingLayout, int y) {
+    public void onScroll(FlingLayout flingLayout, float y) {
         path.reset();// 重置path
         if (y == 0) {
             invalidate();
