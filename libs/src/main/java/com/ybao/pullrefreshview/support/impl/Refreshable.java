@@ -21,6 +21,8 @@
  */
 package com.ybao.pullrefreshview.support.impl;
 
+import android.view.View;
+
 import com.ybao.pullrefreshview.layout.FlingLayout;
 import com.ybao.pullrefreshview.layout.PullRefreshLayout;
 
@@ -31,4 +33,6 @@ public interface Refreshable extends FlingLayout.OnScrollListener {
     int getSpanHeight();
 
     int getLayoutType();
+
+    int moveTo(View terget, float y);
 }

@@ -97,43 +97,23 @@ public class PullRefreshLayout extends FlingLayout {
 
     @Override
     public void moveTo(float y) {
-        if (y == 0) {
-            if (mHeader != null && hasHeader) {
-                setViewTranslationY((View) mHeader, -y);
+        View terget = getPullView();
+        if (terget == null) {
+        } else if (y == 0) {
+            if (mHeader != null) {
+                mHeader.moveTo(terget, y);
             }
-            if (mFooter != null && hasFooter) {
-                setViewTranslationY((View) mFooter, -y);
+            if (mFooter != null) {
+                mHeader.moveTo(terget, y);
             }
-            super.moveTo(y);
-            return;
         } else if (y < 0) {
-            int headerLayoutType = getHeaderLayoutType();
-            if (headerLayoutType == LayoutType.LAYOUT_SCROLLER) {
-                ViewCompat.setTranslationY(mPullView, -y);
-                if (mHeader != null) {
-                    ViewCompat.setTranslationY((View) mHeader, headerHeight);
-                }
-            } else if (headerLayoutType == LayoutType.LAYOUT_DRAWER) {
-                ViewCompat.setTranslationY((View) mHeader, -y);
-            } else {
-                ViewCompat.setTranslationY((View) mHeader, -y);
-                ViewCompat.setTranslationY(mPullView, -y);
+            if (mHeader != null) {
+                mHeader.moveTo(terget, y);
             }
-
         } else if (y > 0) {
-            int footerLayoutType = getFooterLayoutType();
-            if (footerLayoutType == LayoutType.LAYOUT_DRAWER) {
-                ViewCompat.setTranslationY((View) mFooter, -y);
-            } else if (footerLayoutType == LayoutType.LAYOUT_SCROLLER) {
-                ViewCompat.setTranslationY(mPullView, -y);
-                if (mFooter != null) {
-                    ViewCompat.setTranslationY((View) mFooter, -footerHeight);
-                }
-            } else {
-                ViewCompat.setTranslationY((View) mFooter, -y);
-                ViewCompat.setTranslationY(mPullView, -y);
+            if (mFooter != null) {
+                mFooter.moveTo(terget, y);
             }
-
         }
         offsetTop = y;
         onScroll(y);

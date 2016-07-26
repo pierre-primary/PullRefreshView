@@ -22,10 +22,13 @@
 package com.ybao.pullrefreshview.layout;
 
 import android.content.Context;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.ybao.pullrefreshview.support.impl.Refreshable;
+import com.ybao.pullrefreshview.support.type.LayoutType;
 
 public abstract class BaseHeaderView extends RelativeLayout implements Refreshable {
 
@@ -135,5 +138,22 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
 
     public void setOnRefreshListener(OnRefreshListener onRefreshListener) {
         this.onRefreshListener = onRefreshListener;
+    }
+
+
+    @Override
+    public int moveTo(View terget, float y) {
+        int layoutType = getLayoutType();
+        if (layoutType == LayoutType.LAYOUT_SCROLLER) {
+            ViewCompat.setTranslationY(terget, -y);
+            ViewCompat.setTranslationY(this, getMeasuredHeight());
+        } else if (layoutType == LayoutType.LAYOUT_DRAWER) {
+            ViewCompat.setTranslationY(terget, 0);
+            ViewCompat.setTranslationY(this, -y);
+        } else {
+            ViewCompat.setTranslationY(this, -y);
+            ViewCompat.setTranslationY(terget, -y);
+        }
+        return 0;
     }
 }
