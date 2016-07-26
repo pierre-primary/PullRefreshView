@@ -27,7 +27,6 @@ import android.support.v4.view.NestedScrollingChildHelper;
 import android.support.v4.view.NestedScrollingParent;
 import android.support.v4.view.NestedScrollingParentHelper;
 import android.support.v4.view.ViewCompat;
-import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -49,6 +48,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     public final static int SCROLLING = 1;
     public final static int FLING = 2;
     private int stateType = NONE;
+    private int oldStateType = NONE;
 
     protected Pullable pullable;
     protected View mPullView;
@@ -107,7 +107,11 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
             if (mScroller.computeScrollOffset()) {
                 moveTo(mScroller.getCurrY());
                 ViewCompat.postInvalidateOnAnimation(this);
+            } else if (stateType == FLING) {
+                stateType = NONE;
             }
+        } else if (stateType == FLING) {
+            stateType = NONE;
         }
         super.computeScroll();
     }
@@ -153,7 +157,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     }
 
     public int startMoveBy(float startY, float dy) {
-        setState(FLING, startY + dy);
+        stateType = FLING;
         int duration = (int) Math.abs(dy);
         int time = duration > MAX_DURATION ? MAX_DURATION : duration;
         mScroller.startScroll(0, (int) startY, 0, (int) dy, time);
@@ -185,24 +189,16 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
 
     public void setCanPullDown(boolean canPullDown) {
         this.canPullDown = canPullDown;
-        if (!canPullDown && getMoveY() < 0) {
+        if (!canPullDown && getMoveY() > 0) {
             moveTo(0);
         }
     }
 
     public void setCanPullUp(boolean canPullUp) {
         this.canPullUp = canPullUp;
-        if (!canPullUp && getMoveY() > 0) {
+        if (!canPullUp && getMoveY() < 0) {
             moveTo(0);
         }
-    }
-
-
-    private void setState(int state, float toY) {
-        if (stateType != state || toY != getMoveY()) {
-            onScrollChange(state, toY);
-        }
-        stateType = state;
     }
 
     /******************************************************************/
@@ -213,19 +209,19 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
             float moveY = getMoveY();
             int pointerCount = ev.getPointerCount();
             int pointerIndex = ev.getActionIndex();
+            if (!mScroller.isFinished()) {
+                mScroller.abortAnimation();
+            }
             switch (ev.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
+                    stateType = SCROLLING;
                     mPointerId = ev.getPointerId(pointerIndex);
                     float x = ev.getX(pointerIndex);
                     float y = ev.getY(pointerIndex);
                     tepmY = downY = y;
                     tepmX = downX = x;
-                    if (!mScroller.isFinished()) {
-                        mScroller.abortAnimation();
-                        if (moveY != 0) {
-                            setState(SCROLLING, moveY);//
-                            return true;
-                        }
+                    if (moveY != 0) {
+                        return true;
                     }
                     break;
                 case MotionEvent.ACTION_POINTER_DOWN:
@@ -255,7 +251,6 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
                             //开始时 在0,0处
                             //判断是否可以滑动
                             if ((dataY < 0 && canPullUp()) || (dataY > 0 && canPullDown())) {
-                                setState(SCROLLING, 0);
                                 moveBy(dataY);
                                 return true;
                             }
@@ -473,14 +468,11 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
 
     protected void onScroll(float y) {
         if (mOnScrollListener != null) {
+            if (oldStateType != stateType) {
+                oldStateType = stateType;
+                mOnScrollListener.onScrollChange(this, stateType);
+            }
             mOnScrollListener.onScroll(this, y);
-        }
-
-    }
-
-    protected void onScrollChange(int state, float toY) {
-        if (mOnScrollListener != null) {
-            mOnScrollListener.onScrollChange(this, state, toY);
         }
 
     }
@@ -488,7 +480,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     public interface OnScrollListener {
         void onScroll(FlingLayout flingLayout, float y);
 
-        void onScrollChange(FlingLayout flingLayout, int state, float y);
+        void onScrollChange(FlingLayout flingLayout, int state);
 
     }
 
