@@ -56,25 +56,6 @@ public class LockFooterView extends BaseFooterView {
         paint.setStyle(Paint.Style.FILL);
     }
 
-
-    @Override
-    public void onScroll(FlingLayout flingLayout, float y) {
-        path.reset();// 重置path
-        if (y == 0) {
-            invalidate();
-        }
-        // 贝赛尔曲线的起始点
-        path.moveTo(0, 400);
-        // 设置贝赛尔曲线的操作点以及终止点
-        path.quadTo(width / 2, 400 - 1.94f * y, width, 400);
-        invalidate();
-        ViewHelper.setTranslationY(loadBox, 400 - 0.97f * y);
-        super.onScroll(flingLayout, y);
-        if (!isLockState) {
-            ViewHelper.setRotation(progress, ((float) y * y) * 48 / 31250);
-        }
-    }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, 400);
@@ -123,5 +104,25 @@ public class LockFooterView extends BaseFooterView {
     @Override
     public int getLayoutType() {
         return layoutType;
+    }
+
+    @Override
+    public void moveTo(View terget, float y) {
+        super.moveTo(terget, y);
+        path.reset();// 重置path
+        if (y == 0) {
+            invalidate();
+            return;
+        }
+        // 贝赛尔曲线的起始点
+        path.moveTo(0, 400);
+        // 设置贝赛尔曲线的操作点以及终止点
+        path.quadTo(width / 2, 400 + 1.94f * y, width, 400);
+        invalidate();
+        ViewHelper.setTranslationY(loadBox, 400 + 0.97f * y);
+
+        if (!isLockState) {
+            ViewHelper.setRotation(progress, y * y * 48 / 31250);
+        }
     }
 }

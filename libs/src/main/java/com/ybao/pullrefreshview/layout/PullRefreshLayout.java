@@ -1,22 +1,22 @@
 /**
  * Copyright 2015 Pengyuan-Jiang
- * <p/>
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p/>
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * <p/>
+ * <p>
  * Author：Ybao on 2015/11/5 ‏‎17:53
- * <p/>
+ * <p>
  * QQ: 392579823
- * <p/>
+ * <p>
  * Email：392579823@qq.com
  */
 package com.ybao.pullrefreshview.layout;
@@ -34,17 +34,13 @@ import com.ybao.pullrefreshview.support.type.LayoutType;
 
 /**
  * 经典下拉刷新，上拉加载的通用控件（可用于任意控件 如 ListView GridView WebView ScrollView）
- * <p/>
+ * <p>
  * 弹性下（上）拉，滑倒顶（低）部无需松开即可继续拉动
  *
  * @author Ybao
  */
 public class PullRefreshLayout extends FlingLayout {
 
-    protected int headerSpanHeight = 0;
-    protected int footerSpanHeight = 0;
-    protected int headerHeight = 0;
-    protected int footerHeight = 0;
     protected Loadable mFooter;
     protected Refreshable mHeader;
     protected boolean hasHeader = true;
@@ -64,103 +60,62 @@ public class PullRefreshLayout extends FlingLayout {
 
 
     @Override
-    protected void fling(float offsetTop) {
-        if (mHeader != null && offsetTop <= -headerSpanHeight) {
-            startMoveTo(offsetTop, -headerSpanHeight);
-        } else if (mFooter != null && offsetTop >= footerSpanHeight) {
-            startMoveTo(offsetTop, footerSpanHeight);
+    protected void fling(float nowY) {
+        if (mHeader != null && nowY > 0 && hasHeader) {
+            mHeader.fling(nowY);
+        } else if (mFooter != null && nowY < 0 && hasFooter) {
+            mFooter.fling(nowY);
         } else {
-            startMoveTo(offsetTop, 0);
-        }
-    }
-
-
-    @Override
-    protected void onScroll(float y) {
-        if (mHeader != null && y <= 0 && hasHeader) {
-            mHeader.onScroll(this, y);
-        }
-        if (mFooter != null && y >= 0 && hasFooter) {
-            mFooter.onScroll(this, y);
-        }
-    }
-
-    @Override
-    protected void onScrollChange(int state, float y) {
-        if (mHeader != null && hasHeader) {
-            mHeader.onScrollChange(this, state, y);
-        }
-        if (mFooter != null && hasFooter) {
-            mFooter.onScrollChange(this, state, y);
+            startMoveTo(nowY, 0);
         }
     }
 
     @Override
     public void moveTo(float y) {
+        onScroll(y);
+        setMoveY(y);
         View terget = getPullView();
         if (terget == null) {
-        } else if (y == 0) {
-            if (mHeader != null) {
-                mHeader.moveTo(terget, y);
-            }
-            if (mFooter != null) {
-                mHeader.moveTo(terget, y);
-            }
-        } else if (y < 0) {
-            if (mHeader != null) {
-                mHeader.moveTo(terget, y);
-            }
-        } else if (y > 0) {
-            if (mFooter != null) {
-                mFooter.moveTo(terget, y);
-            }
+            return;
         }
-        offsetTop = y;
-        onScroll(y);
-
-        if (mOnScrollListener != null) {
-            mOnScrollListener.onScroll(this, y);
+        if (y > 0 && mHeader != null && hasHeader) {
+            mHeader.moveTo(terget, y);
+            return;
+        } else if (y < 0 && mFooter != null && hasFooter) {
+            mFooter.moveTo(terget, y);
+            return;
         }
-    }
 
-    public int getHeaderLayoutType() {
-        return mHeader != null ? mHeader.getLayoutType() : LayoutType.LAYOUT_SCROLLER;
-
-    }
-
-    public int getFooterLayoutType() {
-        return mFooter != null ? mFooter.getLayoutType() : LayoutType.LAYOUT_SCROLLER;
-
+        setViewTranslationY(terget, y);
+        if (mHeader != null) {
+            setViewTranslationY((View) mHeader, y);
+        }
+        if (mFooter != null) {
+            setViewTranslationY((View) mFooter, y);
+        }
     }
 
     public void openHeader() {
-        float offsetTop = this.getOffsetTop();
-        if (offsetTop == 0) {
-            this.startMoveTo(0, -this.headerSpanHeight);
+        if (mHeader != null) {
+            mHeader.open();
         }
-
     }
 
     public void openFooter() {
-        float offsetTop = this.getOffsetTop();
-        if (offsetTop == 0) {
-            this.startMoveTo(0, this.footerSpanHeight);
+        if (mFooter != null) {
+            mFooter.open();
         }
-
     }
 
     public void closeHeader() {
-        float offsetTop = getOffsetTop();
-        if (offsetTop < 0) {
-            startMoveTo(offsetTop, 0);
+        if (mHeader != null) {
+            mHeader.close();
         }
-
     }
 
     public void closeFooter() {
-        float offsetTop = getOffsetTop();
-        if (offsetTop > 0) {
-            startMoveTo(offsetTop, 0);
+        if (mFooter != null) {
+            mFooter.close();
         }
     }
 
@@ -182,25 +137,19 @@ public class PullRefreshLayout extends FlingLayout {
         int height = getHeight();
         if (mHeader != null) {
             View mHeaderView = (View) mHeader;
-            headerSpanHeight = hasHeader ? mHeader.getSpanHeight() : 0;
-            headerHeight = hasHeader ? mHeaderView.getHeight() : 0;
-            mHeaderView.layout(mHeaderView.getLeft(), -headerHeight, mHeaderView.getRight(), 0);
+            mHeaderView.layout(mHeaderView.getLeft(), -mHeaderView.getMeasuredHeight(), mHeaderView.getRight(), 0);
         }
         if (mFooter != null) {
             View mFooterView = (View) mFooter;
-            footerSpanHeight = hasFooter ? mFooter.getSpanHeight() : 0;
-            footerHeight = hasFooter ? mFooterView.getHeight() : 0;
-            mFooterView.layout(mFooterView.getLeft(), height, mFooterView.getRight(), height + footerHeight);
+            mFooterView.layout(mFooterView.getLeft(), height, mFooterView.getRight(), height + mFooterView.getMeasuredHeight());
         }
     }
 
     public void setHasFooter(boolean hasFooter) {
         this.hasFooter = hasFooter;
-        requestLayout();
     }
 
     public void setHasHeader(boolean hasHeader) {
         this.hasHeader = hasHeader;
-        requestLayout();
     }
 }

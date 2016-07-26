@@ -1,22 +1,22 @@
 /**
  * Copyright 2015 Pengyuan-Jiang
- * <p/>
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p/>
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * <p/>
+ * <p>
  * Author：Ybao on 2015/11/5  ‏‎17:49
- * <p/>
+ * <p>
  * QQ: 392579823
- * <p/>
+ * <p>
  * Email：392579823@qq.com
  */
 package com.ybao.pullrefreshview.layout;
@@ -67,7 +67,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     int mPointerId;
     protected int MAXDISTANCE = 0;
 
-    float offsetTop = 0;
+    float moveY = 0;
 
     public View getPullView() {
         return mPullView;
@@ -128,16 +128,13 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     }
 
     public void moveTo(float y) {
-        setViewTranslationY(mPullView, -y);
-        offsetTop = y;
+        setMoveY(y);
         onScroll(y);
-        if (mOnScrollListener != null) {
-            mOnScrollListener.onScroll(this, y);
-        }
+        setViewTranslationY(mPullView, y);
     }
 
-    public void moveBy(float y) {
-        moveTo(getOffsetTop() + y);
+    public void moveBy(float dy) {
+        moveTo(getMoveY() + dy);
     }
 
     protected static void setViewTranslationY(View view, float value) {
@@ -147,9 +144,12 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         ViewCompat.setTranslationY(view, value);
     }
 
+    protected void setMoveY(float moveY) {
+        this.moveY = moveY;
+    }
 
-    public float getOffsetTop() {
-        return offsetTop;
+    public float getMoveY() {
+        return moveY;
     }
 
     public int startMoveBy(float startY, float dy) {
@@ -185,25 +185,22 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
 
     public void setCanPullDown(boolean canPullDown) {
         this.canPullDown = canPullDown;
-        if (!canPullDown && getOffsetTop() < 0) {
+        if (!canPullDown && getMoveY() < 0) {
             moveTo(0);
         }
     }
 
     public void setCanPullUp(boolean canPullUp) {
         this.canPullUp = canPullUp;
-        if (!canPullUp && getOffsetTop() > 0) {
+        if (!canPullUp && getMoveY() > 0) {
             moveTo(0);
         }
     }
 
 
-    private void setState(int state, float y) {
-        if (stateType != state || y != getOffsetTop()) {
-            onScrollChange(state, y);
-            if (mOnScrollListener != null) {
-                mOnScrollListener.onScrollChange(this, state, y);
-            }
+    private void setState(int state, float toY) {
+        if (stateType != state || toY != getMoveY()) {
+            onScrollChange(state, toY);
         }
         stateType = state;
     }
@@ -213,7 +210,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (!ViewCompat.isNestedScrollingEnabled(mPullView)) {
-            float offsetTop = getOffsetTop();
+            float moveY = getMoveY();
             int pointerCount = ev.getPointerCount();
             int pointerIndex = ev.getActionIndex();
             switch (ev.getActionMasked()) {
@@ -225,8 +222,8 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
                     tepmX = downX = x;
                     if (!mScroller.isFinished()) {
                         mScroller.abortAnimation();
-                        if (offsetTop != 0) {
-                            setState(SCROLLING, offsetTop);//
+                        if (moveY != 0) {
+                            setState(SCROLLING, moveY);//
                             return true;
                         }
                     }
@@ -254,40 +251,40 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
                     tepmY = my;
                     if (isScrolling || (Math.abs(dataY) > Math.abs(dataX))) {
                         isScrolling = true;
-                        if (offsetTop == 0) {
+                        if (moveY == 0) {
                             //开始时 在0,0处
                             //判断是否可以滑动
                             if ((dataY < 0 && canPullUp()) || (dataY > 0 && canPullDown())) {
                                 setState(SCROLLING, 0);
-                                moveBy(-dataY);
+                                moveBy(dataY);
                                 return true;
                             }
                         } else {
                             //当不在0,0处
                             ev.setAction(MotionEvent.ACTION_CANCEL);//屏蔽原事件
 
-                            if ((offsetTop < 0 && offsetTop - dataY >= 0) || (offsetTop > 0 && offsetTop - dataY <= 0)) {
+                            if ((moveY < 0 && moveY + dataY >= 0) || (moveY > 0 && moveY + dataY <= 0)) {
                                 //在0,0附近浮动
                                 ev.setAction(MotionEvent.ACTION_DOWN);
                                 moveTo(0);
-                            } else if ((offsetTop > 0 && dataY < 0) || (offsetTop < 0 && dataY > 0)) {
+                            } else if ((moveY > 0 && dataY > 0) || (moveY < 0 && dataY < 0)) {
                                 //是否超过最大距离
-                                if (maxDistance == 0 || Math.abs(offsetTop) < maxDistance) {
+                                if (maxDistance == 0 || Math.abs(moveY) < maxDistance) {
                                     int ps = 0;
                                     int hDataY = dataY / 2;
                                     if (maxDistance == 0) {
-                                        ps = hDataY + (int) (hDataY * Math.abs(offsetTop) / (float) MAXDISTANCE);
+                                        ps = (int) (-hDataY * Math.abs(moveY) / (float) MAXDISTANCE) - hDataY;
                                     } else {
-                                        ps = hDataY + (int) (hDataY * Math.abs(offsetTop) / (float) maxDistance);
+                                        ps = (int) (-hDataY * Math.abs(moveY) / (float) maxDistance) - hDataY;
                                     }
-                                    moveBy(ps - dataY);
-                                } else if (offsetTop > maxDistance) {
+                                    moveBy(ps + dataY);
+                                } else if (moveY > maxDistance) {
                                     moveTo(maxDistance);
-                                } else if (offsetTop < -maxDistance) {
+                                } else if (moveY < -maxDistance) {
                                     moveTo(-maxDistance);
                                 }
                             } else {
-                                moveBy(-dataY);
+                                moveBy(dataY);
                             }
                         }
                     } else {
@@ -296,7 +293,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
                     break;
                 case MotionEvent.ACTION_CANCEL:
                 case MotionEvent.ACTION_UP:
-                    fling(offsetTop);
+                    fling(moveY);
                     isScrolling = false;
                     break;
                 case MotionEvent.ACTION_POINTER_UP:
@@ -347,7 +344,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
 
     @Override
     public void onStopNestedScroll(View target) {
-        fling(getOffsetTop());
+        fling(getMoveY());
         stopNestedScroll();
     }
 
@@ -355,43 +352,46 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     public void onNestedScroll(View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
         int[] offsetInWindow = new int[2];
         dispatchNestedScroll(0, dyConsumed, 0, dyUnconsumed, offsetInWindow);
-        moveBy(dyUnconsumed + offsetInWindow[1]);
+        moveBy(-dyUnconsumed - offsetInWindow[1]);
     }
 
     @Override
     public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
-        float offsetTop = getOffsetTop();
-        if (offsetTop == 0) {
+        float moveY = getMoveY();
+        if (moveY == 0) {
             dispatchNestedPreScroll(0, dy, consumed, null);
         } else {
+            consumed[0] = 0;
             stopNestedScroll();
             int dataY = -dy;
-            if ((offsetTop < 0 && offsetTop - dataY >= 0) || (offsetTop > 0 && offsetTop - dataY <= 0)) {
+            if ((moveY < 0 && moveY + dataY >= 0) || (moveY > 0 && moveY + dataY <= 0)) {
                 moveTo(0);
                 startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL);
-                dataY = (int) offsetTop - 0;
-                dispatchNestedPreScroll(0, dy + dataY, consumed, null);
-            } else if ((offsetTop > 0 && dataY < 0) || (offsetTop < 0 && dataY > 0)) {
+                consumed[1] = (int) (moveY - 0);
+                int[] pconsumed = new int[2];
+                dispatchNestedPreScroll(0, dy - consumed[1], pconsumed, null);
+                consumed[1] += pconsumed[1];
+            } else if ((moveY > 0 && dataY > 0) || (moveY < 0 && dataY < 0)) {
                 //是否超过最大距离
-                if (maxDistance == 0 || Math.abs(offsetTop) < maxDistance) {
+                if (maxDistance == 0 || Math.abs(moveY) < maxDistance) {
                     int ps = 0;
-                    float hDataY = dataY / 2;
+                    int hDataY = dataY / 2;
                     if (maxDistance == 0) {
-                        ps = (int) (hDataY + (hDataY * Math.abs(offsetTop) / (float) MAXDISTANCE));
+                        ps = (int) (-hDataY * Math.abs(moveY) / (float) MAXDISTANCE) - hDataY;
                     } else {
-                        ps = (int) (hDataY + (hDataY * Math.abs(offsetTop) / (float) maxDistance));
+                        ps = (int) (-hDataY * Math.abs(moveY) / (float) maxDistance) - hDataY;
                     }
-                    moveBy(ps - dataY);
-                } else if (offsetTop > maxDistance) {
+                    moveBy(ps + dataY);
+                } else if (moveY > maxDistance) {
                     moveTo(maxDistance);
-                } else if (offsetTop < -maxDistance) {
+                } else if (moveY < -maxDistance) {
                     moveTo(-maxDistance);
                 }
+                consumed[1] = dy;
             } else {
-                moveBy(-dataY);
+                moveBy(dataY);
+                consumed[1] = dy;
             }
-            consumed[0] = 0;
-            consumed[1] -= dataY;
         }
     }
 
@@ -472,10 +472,16 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     /******************************************************************/
 
     protected void onScroll(float y) {
+        if (mOnScrollListener != null) {
+            mOnScrollListener.onScroll(this, y);
+        }
 
     }
 
-    protected void onScrollChange(int state, float y) {
+    protected void onScrollChange(int state, float toY) {
+        if (mOnScrollListener != null) {
+            mOnScrollListener.onScrollChange(this, state, toY);
+        }
 
     }
 

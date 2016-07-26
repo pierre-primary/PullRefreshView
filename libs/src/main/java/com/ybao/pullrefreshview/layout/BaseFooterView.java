@@ -1,22 +1,22 @@
 /**
  * Copyright 2015 Pengyuan-Jiang
- * <p/>
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p/>
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * <p/>
+ * <p>
  * Author：Ybao on 2015/11/7 ‏‎0:27
- * <p/>
+ * <p>
  * QQ: 392579823
- * <p/>
+ * <p>
  * Email：392579823@qq.com
  */
 package com.ybao.pullrefreshview.layout;
@@ -40,8 +40,11 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
     public final static int LOAD_CLONE = 4;
     private int stateType = NONE;
 
-    PullRefreshLayout refreshLayout;
+    PullRefreshLayout pullRefreshLayout;
+
     protected boolean isLockState = false;
+
+    OnLoadListener onLoadListener;
 
     public BaseFooterView(Context context) {
         this(context, null);
@@ -61,33 +64,28 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
         setFocusableInTouchMode(false);
     }
 
-    @Override
-    public void onScroll(FlingLayout flingLayout, float y) {
-        if (isLockState) {
-            return;
-        }
-        if (y < getSpanHeight() && stateType != PULLING) {
-            setState(PULLING);
-        } else if (y > getSpanHeight() && stateType != LOOSENT_O_LOAD) {
-            setState(LOOSENT_O_LOAD);
-        }
+
+    public int getLayoutType() {
+        return LayoutType.LAYOUT_NORMAL;
     }
 
-    @Override
-    public void setPullRefreshLayout(PullRefreshLayout refreshLayout) {
-        this.refreshLayout = refreshLayout;
-    }
-
-    @Override
-    public void onScrollChange(FlingLayout flingLayout, int state, float y) {
-        if (state != FlingLayout.FLING) {
+    private void setState(int state) {
+        if (isLockState || stateType == state) {
             return;
         }
-        if (y != 0 && y == getSpanHeight() && !isLockState) {
+        this.stateType = state;
+        if (state == LOADING) {
             isLockState = true;
-            setState(LOADING);
-        } else if (y == 0 && isLockState) {
+            if (onLoadListener != null) {
+                onLoadListener.onLoad(this);
+            }
         }
+        onStateChange(state);
+    }
+
+
+    public int getType() {
+        return stateType;
     }
 
     public void stopLoad() {
@@ -96,63 +94,81 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
             @Override
             public void run() {
                 setState(NONE);
-                hide();
+                close();
                 isLockState = false;
             }
         }, 400);
     }
 
-    private void setState(int state) {
-        stateType = state;
-        if (state == LOADING && onRefreshListener != null) {
-            onRefreshListener.onLoad(this);
-        }
-        onStateChange(state);
+    @Override
+    public void setPullRefreshLayout(PullRefreshLayout pullRefreshLayout) {
+        this.pullRefreshLayout = pullRefreshLayout;
     }
 
-    public int getType() {
-        return stateType;
-    }
-
-
-    public void show() {
-        if (this.refreshLayout != null) {
-            this.refreshLayout.openFooter();
+    @Override
+    public void open() {
+        if (this.pullRefreshLayout != null) {
+            float moveY = pullRefreshLayout.getMoveY();
+            if (moveY == 0) {
+                float footerSpanHeight = getSpanHeight();
+                pullRefreshLayout.startMoveTo(0, -footerSpanHeight);
+            }
         }
     }
 
-    public void hide() {
-        if (this.refreshLayout != null) {
-            refreshLayout.closeFooter();
+    @Override
+    public void close() {
+        if (this.pullRefreshLayout != null) {
+            float moveY = pullRefreshLayout.getMoveY();
+            if (moveY < 0) {
+                pullRefreshLayout.startMoveTo(moveY, 0);
+            }
         }
     }
+
+
+    @Override
+    public void moveTo(View terget, float y) {
+        int footerLayoutType = getLayoutType();
+        if (footerLayoutType == LayoutType.LAYOUT_DRAWER) {
+            ViewCompat.setTranslationY(terget, 0);
+            ViewCompat.setTranslationY(this, y);
+        } else if (footerLayoutType == LayoutType.LAYOUT_SCROLLER) {
+            ViewCompat.setTranslationY(terget, y);
+            ViewCompat.setTranslationY(this, -getMeasuredHeight());
+        } else {
+            ViewCompat.setTranslationY(this, y);
+            ViewCompat.setTranslationY(terget, y);
+        }
+        float footerSpanHeight = getSpanHeight();
+        if (y <= -footerSpanHeight) {
+            setState(LOOSENT_O_LOAD);
+        } else {
+            setState(PULLING);
+        }
+    }
+
+    @Override
+    public void fling(float nowY) {
+        float footerSpanHeight = getSpanHeight();
+        if (nowY <= -footerSpanHeight) {
+            pullRefreshLayout.startMoveTo(nowY, -footerSpanHeight);
+            setState(LOADING);
+        } else {
+            pullRefreshLayout.startMoveTo(nowY, 0);
+            setState(NONE);
+        }
+    }
+
 
     protected abstract void onStateChange(int state);
-
-    OnLoadListener onRefreshListener;
 
     public interface OnLoadListener {
         void onLoad(BaseFooterView baseFooterView);
     }
 
     public void setOnLoadListener(OnLoadListener onRefreshListener) {
-        this.onRefreshListener = onRefreshListener;
-    }
-
-    @Override
-    public int moveTo(View terget, float y) {
-        int footerLayoutType = getLayoutType();
-        if (footerLayoutType == LayoutType.LAYOUT_DRAWER) {
-            ViewCompat.setTranslationY(terget, 0);
-            ViewCompat.setTranslationY(this, -y);
-        } else if (footerLayoutType == LayoutType.LAYOUT_SCROLLER) {
-            ViewCompat.setTranslationY(terget, -y);
-            ViewCompat.setTranslationY(this, -getMeasuredHeight());
-        } else {
-            ViewCompat.setTranslationY(this, -y);
-            ViewCompat.setTranslationY(terget, -y);
-        }
-        return 0;
+        this.onLoadListener = onRefreshListener;
     }
 }
 

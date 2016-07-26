@@ -64,24 +64,6 @@ public class LockHeaderView extends BaseHeaderView {
     }
 
     @Override
-    public void onScroll(FlingLayout flingLayout, float y) {
-        path.reset();// 重置path
-        if (y == 0) {
-            invalidate();
-        }
-        // 贝赛尔曲线的起始点
-        path.moveTo(0, 0);
-        // 设置贝赛尔曲线的操作点以及终止点
-        path.quadTo(width / 2, -1.94f * y, width, 0);
-        invalidate();
-        ViewHelper.setTranslationY(loadBox, -0.97f * y - loadBox.getHeight());
-        super.onScroll(flingLayout, y);
-        if (!isLockState) {
-            ViewHelper.setRotation(progress,  y * y * 48 / 31250);
-        }
-    }
-
-    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, 400);
         setMeasuredDimension(widthMeasureSpec, MeasureSpec.makeMeasureSpec(400, MeasureSpec.EXACTLY));
@@ -132,4 +114,22 @@ public class LockHeaderView extends BaseHeaderView {
         return layoutType;
     }
 
+    @Override
+    public void moveTo(View terget, float y) {
+        super.moveTo(terget, y);
+        path.reset();// 重置path
+        if (y == 0) {
+            invalidate();
+            return;
+        }
+        // 贝赛尔曲线的起始点
+        path.moveTo(0, 0);
+        // 设置贝赛尔曲线的操作点以及终止点
+        path.quadTo(width / 2, 1.94f * y, width, 0);
+        invalidate();
+        ViewHelper.setTranslationY(loadBox, 0.97f * y - loadBox.getHeight());
+        if (!isLockState) {
+            ViewHelper.setRotation(progress, y * y * 48 / 31250);
+        }
+    }
 }

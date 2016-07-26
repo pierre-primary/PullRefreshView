@@ -55,14 +55,6 @@ public class ExpandFooterView extends BaseFooterView {
     }
 
     @Override
-    public void onScroll(FlingLayout flingLayout, float y) {
-        super.onScroll(flingLayout, y);
-        if (!isLockState) {
-            ViewHelper.setRotation(progress, ((float) y * y) * 48 / 31250);
-        }
-    }
-
-    @Override
     protected void onStateChange(int state) {
         this.state = state;
         ObjectAnimator.clearAllAnimations();
@@ -96,5 +88,13 @@ public class ExpandFooterView extends BaseFooterView {
     @Override
     public int getLayoutType() {
         return layoutType;
+    }
+
+    @Override
+    public void moveTo(View terget, float y) {
+        super.moveTo(terget, y);
+        if (!isLockState) {
+            ViewHelper.setRotation(progress, y * y * 48 / 31250);
+        }
     }
 }
