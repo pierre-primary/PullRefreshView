@@ -93,7 +93,6 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                setState(NONE);
                 close();
                 isLockState = false;
             }
@@ -112,6 +111,7 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
             if (moveY == 0) {
                 float footerSpanHeight = getSpanHeight();
                 pullRefreshLayout.startMoveTo(0, -footerSpanHeight);
+                setState(LOADING);
             }
         }
     }
@@ -122,6 +122,7 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
             float moveY = pullRefreshLayout.getMoveY();
             if (moveY < 0) {
                 pullRefreshLayout.startMoveTo(moveY, 0);
+                setState(NONE);
             }
         }
     }

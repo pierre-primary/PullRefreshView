@@ -93,7 +93,6 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
             @Override
             public void run() {
                 isLockState = false;
-                setState(NONE);
                 close();
             }
         }, 400);
@@ -111,6 +110,7 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
             if (moveY == 0) {
                 float headerSpanHeight = getSpanHeight();
                 pullRefreshLayout.startMoveTo(0, headerSpanHeight);
+                setState(REFRESHING);
             }
         }
     }
@@ -121,6 +121,7 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
             float moveY = pullRefreshLayout.getMoveY();
             if (moveY > 0) {
                 pullRefreshLayout.startMoveTo(moveY, 0);
+                setState(NONE);
             }
         }
     }
