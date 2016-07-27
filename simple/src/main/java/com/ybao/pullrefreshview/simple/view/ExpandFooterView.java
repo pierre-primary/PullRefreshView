@@ -81,7 +81,7 @@ public class ExpandFooterView extends BaseFooterView {
     }
 
     @Override
-    public int getSpanHeight() {
+    public float getSpanHeight() {
         return loadBox.getHeight();
     }
 

@@ -88,7 +88,7 @@ public class NormalHeaderView extends BaseHeaderView {
     }
 
     @Override
-    public int getSpanHeight() {
+    public float getSpanHeight() {
         return getHeight();
     }
 

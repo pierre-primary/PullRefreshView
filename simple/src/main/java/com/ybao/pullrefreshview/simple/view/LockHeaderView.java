@@ -105,7 +105,7 @@ public class LockHeaderView extends BaseHeaderView {
     }
 
     @Override
-    public int getSpanHeight() {
+    public float getSpanHeight() {
         return loadBox.getHeight();
     }
 

@@ -97,7 +97,7 @@ public class LockFooterView extends BaseFooterView {
     }
 
     @Override
-    public int getSpanHeight() {
+    public float getSpanHeight() {
         return loadBox.getHeight();
     }
 
