@@ -61,9 +61,9 @@ public class PullRefreshLayout extends FlingLayout {
 
     @Override
     protected void fling(float nowY) {
-        if (mHeader != null && nowY > 0 && hasHeader) {
+        if (mHeader != null && nowY >= 0 && hasHeader) {
             mHeader.fling(nowY);
-        } else if (mFooter != null && nowY < 0 && hasFooter) {
+        } else if (mFooter != null && nowY <= 0 && hasFooter) {
             mFooter.fling(nowY);
         } else {
             startMoveTo(nowY, 0);
@@ -96,25 +96,25 @@ public class PullRefreshLayout extends FlingLayout {
     }
 
     public void openHeader() {
-        if (mHeader != null&& hasHeader) {
+        if (mHeader != null && hasHeader) {
             mHeader.open();
         }
     }
 
     public void openFooter() {
-        if (mFooter != null&& hasFooter) {
+        if (mFooter != null && hasFooter) {
             mFooter.open();
         }
     }
 
     public void closeHeader() {
-        if (mHeader != null&& hasHeader) {
+        if (mHeader != null && hasHeader) {
             mHeader.close();
         }
     }
 
     public void closeFooter() {
-        if (mFooter != null&& hasFooter) {
+        if (mFooter != null && hasFooter) {
             mFooter.close();
         }
     }
