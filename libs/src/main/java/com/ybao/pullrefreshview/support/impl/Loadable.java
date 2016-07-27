@@ -27,15 +27,13 @@ public interface Loadable {
 
     void setPullRefreshLayout(PullRefreshLayout refreshLayout);
 
-    int getSpanHeight();
+    boolean onScroll(float y);
+
+    void onScrollChange(int state);
 
     boolean onStartFling(float offsetTop);
 
     void startLoad();
 
     void stopLoad();
-
-    boolean onScroll(float y);
-
-    void onScrollChange(int state);
 }

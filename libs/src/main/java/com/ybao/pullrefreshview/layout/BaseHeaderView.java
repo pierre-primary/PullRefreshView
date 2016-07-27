@@ -177,6 +177,8 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
         return false;
     }
 
+    public abstract float getSpanHeight();
+
     protected abstract void onStateChange(int state);
 
     public interface OnRefreshListener {

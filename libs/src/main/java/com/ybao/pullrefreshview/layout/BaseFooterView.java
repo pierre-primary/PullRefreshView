@@ -178,6 +178,8 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
         return false;
     }
 
+    public abstract float getSpanHeight();
+
     protected abstract void onStateChange(int state);
 
     public interface OnLoadListener {
@@ -187,5 +189,6 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
     public void setOnLoadListener(OnLoadListener onRefreshListener) {
         this.onLoadListener = onRefreshListener;
     }
+
 }
 

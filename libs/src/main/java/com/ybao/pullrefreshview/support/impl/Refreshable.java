@@ -27,15 +27,13 @@ public interface Refreshable {
 
     void setPullRefreshLayout(PullRefreshLayout refreshLayout);
 
-    int getSpanHeight();
+    boolean onScroll(float y);
+
+    void onScrollChange(int state);
 
     boolean onStartFling(float offsetTop);
 
     void startRefresh();
 
     void stopRefresh();
-
-    boolean onScroll(float y);
-
-    void onScrollChange(int state);
 }
