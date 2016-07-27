@@ -107,12 +107,12 @@ public class LockFooterView extends BaseFooterView {
     }
 
     @Override
-    public void moveTo(View terget, float y) {
-        super.moveTo(terget, y);
+    public boolean onScroll(float y) {
+        boolean intercept = super.onScroll(y);
         path.reset();// 重置path
         if (y == 0) {
             invalidate();
-            return;
+            return intercept;
         }
         // 贝赛尔曲线的起始点
         path.moveTo(0, 400);
@@ -124,5 +124,6 @@ public class LockFooterView extends BaseFooterView {
         if (!isLockState) {
             ViewHelper.setRotation(progress, y * y * 48 / 31250);
         }
+        return intercept;
     }
 }

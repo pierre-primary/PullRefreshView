@@ -91,10 +91,11 @@ public class ExpandFooterView extends BaseFooterView {
     }
 
     @Override
-    public void moveTo(View terget, float y) {
-        super.moveTo(terget, y);
+    public boolean onScroll(float y) {
+        boolean intercept = super.onScroll(y);
         if (!isLockState) {
             ViewHelper.setRotation(progress, y * y * 48 / 31250);
         }
+        return intercept;
     }
 }

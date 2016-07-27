@@ -115,12 +115,12 @@ public class LockHeaderView extends BaseHeaderView {
     }
 
     @Override
-    public void moveTo(View terget, float y) {
-        super.moveTo(terget, y);
+    public boolean onScroll(float y) {
+        boolean intercept = super.onScroll(y);
         path.reset();// 重置path
         if (y == 0) {
             invalidate();
-            return;
+            return intercept;
         }
         // 贝赛尔曲线的起始点
         path.moveTo(0, 0);
@@ -131,5 +131,6 @@ public class LockHeaderView extends BaseHeaderView {
         if (!isLockState) {
             ViewHelper.setRotation(progress, y * y * 48 / 31250);
         }
+        return intercept;
     }
 }

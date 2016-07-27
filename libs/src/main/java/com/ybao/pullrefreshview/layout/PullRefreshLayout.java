@@ -58,41 +58,42 @@ public class PullRefreshLayout extends FlingLayout {
         super(context, attrs, defStyle);
     }
 
-
     @Override
-    protected void fling(float nowY) {
-        if (mHeader != null && nowY >= 0 && hasHeader) {
-            mHeader.fling(nowY);
-        } else if (mFooter != null && nowY <= 0 && hasFooter) {
-            mFooter.fling(nowY);
-        } else {
-            startMoveTo(nowY, 0);
+    protected boolean onScroll(float y) {
+        if (mHeader != null && hasHeader && y >= 0) {
+            boolean intercept = mHeader.onScroll(y);
+            if (y != 0) {
+                return intercept;
+            }
         }
+        if (mFooter != null && hasFooter && y <= 0) {
+            boolean intercept = mFooter.onScroll(y);
+            if (y != 0) {
+                return intercept;
+            }
+        }
+        return false;
     }
 
     @Override
-    public void moveTo(float y) {
-        onScroll(y);
-        setMoveY(y);
-        View terget = getPullView();
-        if (terget == null) {
-            return;
+    protected void onScrollChange(int stateType) {
+        if (mHeader != null && hasHeader) {
+            mHeader.onScrollChange(stateType);
         }
-        if (y > 0 && mHeader != null && hasHeader) {
-            mHeader.moveTo(terget, y);
-            return;
-        } else if (y < 0 && mFooter != null && hasFooter) {
-            mFooter.moveTo(terget, y);
-            return;
+        if (mFooter != null && hasFooter) {
+            mFooter.onScrollChange(stateType);
         }
 
-        setViewTranslationY(terget, y);
-        if (mHeader != null) {
-            setViewTranslationY((View) mHeader, y);
+    }
+
+    @Override
+    protected boolean onStartFling(float nowY) {
+        if (mHeader != null && nowY > 0 && hasHeader) {
+            return mHeader.onStartFling(nowY);
+        } else if (mFooter != null && nowY < 0 && hasFooter) {
+            return mFooter.onStartFling(nowY);
         }
-        if (mFooter != null) {
-            setViewTranslationY((View) mFooter, y);
-        }
+        return false;
     }
 
     public void openHeader() {

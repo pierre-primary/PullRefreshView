@@ -24,6 +24,7 @@ package com.ybao.pullrefreshview.layout;
 import android.content.Context;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -73,6 +74,7 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
         if (isLockState || stateType == state) {
             return;
         }
+        Log.i("BaseHeaderView", "" + state);
         this.stateType = state;
         if (state == REFRESHING) {
             isLockState = true;
@@ -87,15 +89,15 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
         return stateType;
     }
 
-    public void stopRefresh() {
-        setState(REFRESH_CLONE);
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                isLockState = false;
-                close();
+
+    private void close() {
+        if (this.pullRefreshLayout != null) {
+            float moveY = pullRefreshLayout.getMoveY();
+            if (moveY > 0) {
+                pullRefreshLayout.startMoveTo(moveY, 0);
+                setState(NONE);
             }
-        }, 400);
+        }
     }
 
     @Override
@@ -104,7 +106,7 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
     }
 
     @Override
-    public void open() {
+    public void startRefresh() {
         if (pullRefreshLayout != null) {
             float moveY = pullRefreshLayout.getMoveY();
             if (moveY == 0) {
@@ -116,50 +118,60 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
     }
 
     @Override
-    public void close() {
-        if (this.pullRefreshLayout != null) {
-            float moveY = pullRefreshLayout.getMoveY();
-            if (moveY > 0) {
-                pullRefreshLayout.startMoveTo(moveY, 0);
-                setState(NONE);
+    public void stopRefresh() {
+        isLockState = false;
+        setState(REFRESH_CLONE);
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                close();
             }
-        }
+        }, 400);
     }
 
     @Override
-    public void moveTo(View terget, float y) {
+    public boolean onScroll(float y) {
+        boolean intercept = false;
         int layoutType = getLayoutType();
         if (layoutType == LayoutType.LAYOUT_SCROLLER) {
-            ViewCompat.setTranslationY(terget, y);
             ViewCompat.setTranslationY(this, getMeasuredHeight());
         } else if (layoutType == LayoutType.LAYOUT_DRAWER) {
-            ViewCompat.setTranslationY(terget, 0);
             ViewCompat.setTranslationY(this, y);
+            ViewCompat.setTranslationY(pullRefreshLayout.getPullView(), 0);
+            intercept = true;
         } else {
             ViewCompat.setTranslationY(this, y);
-            ViewCompat.setTranslationY(terget, y);
         }
         float headerSpanHeight = getSpanHeight();
-        if (y >= headerSpanHeight) {
-            setState(LOOSENT_O_REFRESH);
-        } else {
-            setState(PULLING);
+        if (scrollState == FlingLayout.SCROLL_STATE_TOUCH_SCROLL) {
+            if (y >= headerSpanHeight) {
+                setState(LOOSENT_O_REFRESH);
+            } else {
+                setState(PULLING);
+            }
         }
+        return intercept;
     }
 
+    protected int scrollState = FlingLayout.SCROLL_STATE_IDLE;
 
     @Override
-    public void fling(float nowY) {
+    public void onScrollChange(int state) {
+        scrollState = state;
+    }
+
+    @Override
+    public boolean onStartFling(float nowY) {
         float headerSpanHeight = getSpanHeight();
         if (nowY >= headerSpanHeight) {
             pullRefreshLayout.startMoveTo(nowY, headerSpanHeight);
             setState(REFRESHING);
-        } else {
-            pullRefreshLayout.startMoveTo(nowY, 0);
-            setState(NONE);
+            return true;
         }
+        pullRefreshLayout.startMoveTo(nowY, 0);
+        setState(NONE);
+        return false;
     }
-
 
     protected abstract void onStateChange(int state);
 

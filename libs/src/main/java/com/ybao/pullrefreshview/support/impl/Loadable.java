@@ -21,9 +21,6 @@
  */
 package com.ybao.pullrefreshview.support.impl;
 
-import android.view.View;
-
-import com.ybao.pullrefreshview.layout.FlingLayout;
 import com.ybao.pullrefreshview.layout.PullRefreshLayout;
 
 public interface Loadable {
@@ -32,11 +29,13 @@ public interface Loadable {
 
     int getSpanHeight();
 
-    void moveTo(View terget, float y);
+    boolean onStartFling(float offsetTop);
 
-    void fling(float offsetTop);
+    void startLoad();
 
-    void open();
+    void stopLoad();
 
-    void close();
+    boolean onScroll(float y);
+
+    void onScrollChange(int state);
 }

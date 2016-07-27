@@ -21,9 +21,6 @@
  */
 package com.ybao.pullrefreshview.support.impl;
 
-import android.view.View;
-
-import com.ybao.pullrefreshview.layout.FlingLayout;
 import com.ybao.pullrefreshview.layout.PullRefreshLayout;
 
 public interface Refreshable {
@@ -32,11 +29,13 @@ public interface Refreshable {
 
     int getSpanHeight();
 
-    void moveTo(View terget, float y);
+    boolean onStartFling(float offsetTop);
 
-    void fling(float offsetTop);
+    void startRefresh();
 
-    void open();
+    void stopRefresh();
 
-    void close();
+    boolean onScroll(float y);
+
+    void onScrollChange(int state);
 }
