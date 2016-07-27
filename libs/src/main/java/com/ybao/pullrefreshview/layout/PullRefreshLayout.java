@@ -96,27 +96,27 @@ public class PullRefreshLayout extends FlingLayout {
         return false;
     }
 
-    public void openHeader() {
+    public void startRefresh() {
         if (mHeader != null && hasHeader) {
-            mHeader.open();
+            mHeader.startRefresh();
         }
     }
 
-    public void openFooter() {
+    public void startLoad() {
         if (mFooter != null && hasFooter) {
-            mFooter.open();
+            mFooter.startLoad();
         }
     }
 
-    public void closeHeader() {
+    public void stopRefresh() {
         if (mHeader != null && hasHeader) {
-            mHeader.close();
+            mHeader.stopRefresh();
         }
     }
 
-    public void closeFooter() {
+    public void stopLoad() {
         if (mFooter != null && hasFooter) {
-            mFooter.close();
+            mFooter.stopLoad();
         }
     }
 

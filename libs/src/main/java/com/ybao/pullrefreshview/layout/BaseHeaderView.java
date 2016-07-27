@@ -40,11 +40,13 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
     public final static int REFRESH_CLONE = 4;
     private int stateType = NONE;
 
-    PullRefreshLayout pullRefreshLayout;
+    private PullRefreshLayout pullRefreshLayout;
 
-    protected boolean isLockState = false;
+    private boolean isLockState = false;
 
     OnRefreshListener onRefreshListener;
+
+    private int scrollState = FlingLayout.SCROLL_STATE_IDLE;
 
     public BaseHeaderView(Context context) {
         this(context, null);
@@ -63,6 +65,10 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
     private void init() {
         setFocusable(false);
         setFocusableInTouchMode(false);
+    }
+
+    protected boolean isLockState() {
+        return isLockState;
     }
 
     public int getLayoutType() {
@@ -152,8 +158,6 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
         }
         return intercept;
     }
-
-    protected int scrollState = FlingLayout.SCROLL_STATE_IDLE;
 
     @Override
     public void onScrollChange(int state) {

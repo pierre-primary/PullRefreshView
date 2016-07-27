@@ -93,7 +93,7 @@ public class ExpandHeaderView extends BaseHeaderView {
     @Override
     public boolean onScroll(float y) {
         boolean intercept = super.onScroll(y);
-        if (!isLockState) {
+        if (!isLockState()) {
             ViewHelper.setRotation(progress, y * y * 48 / 31250);
         }
         return intercept;

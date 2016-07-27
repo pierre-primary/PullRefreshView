@@ -117,6 +117,10 @@ public class LockHeaderView extends BaseHeaderView {
     @Override
     public boolean onScroll(float y) {
         boolean intercept = super.onScroll(y);
+        ViewHelper.setTranslationY(loadBox, 0.97f * y - loadBox.getHeight());
+        if (!isLockState()) {
+            ViewHelper.setRotation(progress, y * y * 48 / 31250);
+        }
         path.reset();// 重置path
         if (y == 0) {
             invalidate();
@@ -127,10 +131,6 @@ public class LockHeaderView extends BaseHeaderView {
         // 设置贝赛尔曲线的操作点以及终止点
         path.quadTo(width / 2, 1.94f * y, width, 0);
         invalidate();
-        ViewHelper.setTranslationY(loadBox, 0.97f * y - loadBox.getHeight());
-        if (!isLockState) {
-            ViewHelper.setRotation(progress, y * y * 48 / 31250);
-        }
         return intercept;
     }
 }

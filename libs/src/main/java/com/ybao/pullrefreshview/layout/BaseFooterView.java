@@ -41,11 +41,13 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
     public final static int LOAD_CLONE = 4;
     private int stateType = NONE;
 
-    PullRefreshLayout pullRefreshLayout;
+    private PullRefreshLayout pullRefreshLayout;
 
-    protected boolean isLockState = false;
+    private boolean isLockState = false;
 
-    OnLoadListener onLoadListener;
+    private OnLoadListener onLoadListener;
+
+    private int scrollState = FlingLayout.SCROLL_STATE_IDLE;
 
     public BaseFooterView(Context context) {
         this(context, null);
@@ -65,6 +67,9 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
         setFocusableInTouchMode(false);
     }
 
+    protected boolean isLockState() {
+        return isLockState;
+    }
 
     public int getLayoutType() {
         return LayoutType.LAYOUT_NORMAL;
@@ -154,8 +159,6 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
         }
         return intercept;
     }
-
-    protected int scrollState = FlingLayout.SCROLL_STATE_IDLE;
 
     @Override
     public void onScrollChange(int state) {

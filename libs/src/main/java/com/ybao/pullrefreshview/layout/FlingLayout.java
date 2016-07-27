@@ -220,7 +220,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (!ViewCompat.isNestedScrollingEnabled(mPullView)) {
+        if (mPullView != null && !ViewCompat.isNestedScrollingEnabled(mPullView)) {
             float moveY = getMoveY();
             int pointerCount = ev.getPointerCount();
             int pointerIndex = ev.getActionIndex();
@@ -326,7 +326,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (!ViewCompat.isNestedScrollingEnabled(mPullView)) {
+        if (mPullView != null && !ViewCompat.isNestedScrollingEnabled(mPullView)) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     return true;
@@ -368,7 +368,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     @Override
     public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
         float moveY = getMoveY();
-        if (moveY == 0) {
+        if (mPullView == null || moveY == 0) {
             dispatchNestedPreScroll(0, dy, consumed, null);
         } else {
             consumed[0] = 0;

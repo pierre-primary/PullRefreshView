@@ -109,6 +109,10 @@ public class LockFooterView extends BaseFooterView {
     @Override
     public boolean onScroll(float y) {
         boolean intercept = super.onScroll(y);
+        ViewHelper.setTranslationY(loadBox, 400 + 0.97f * y);
+        if (!isLockState()) {
+            ViewHelper.setRotation(progress, y * y * 48 / 31250);
+        }
         path.reset();// 重置path
         if (y == 0) {
             invalidate();
@@ -119,11 +123,6 @@ public class LockFooterView extends BaseFooterView {
         // 设置贝赛尔曲线的操作点以及终止点
         path.quadTo(width / 2, 400 + 1.94f * y, width, 400);
         invalidate();
-        ViewHelper.setTranslationY(loadBox, 400 + 0.97f * y);
-
-        if (!isLockState) {
-            ViewHelper.setRotation(progress, y * y * 48 / 31250);
-        }
         return intercept;
     }
 }
