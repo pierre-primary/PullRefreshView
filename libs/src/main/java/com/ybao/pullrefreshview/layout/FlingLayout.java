@@ -192,8 +192,12 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
 
     private void startFling() {
         float nowY = getMoveY();
-        if (!onStartFling(nowY)) {
-            startMoveTo(nowY, 0);
+        if (nowY != 0) {
+            if (!onStartFling(nowY)) {
+                startMoveTo(nowY, 0);
+            }
+        } else {
+            setScrollState(SCROLL_STATE_IDLE);
         }
     }
 
