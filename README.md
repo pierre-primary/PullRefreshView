@@ -38,7 +38,9 @@ PullRefreshView
 
 </com.ybao.pullrefreshview.layout.FlingLayout>
 ```
+效果图：
 
+![](https://raw.githubusercontent.com/Y-bao/PullRefreshView/master/GIF/1.gif)
 重定义阻尼效果：
 ----
 
@@ -93,6 +95,9 @@ public class MiFliingLayout extends FlingLayout {
 
 </com.ybao.pullrefreshview.simple.view.MiFliingLayout>
 ```
+效果图：
+
+![](https://raw.githubusercontent.com/Y-bao/PullRefreshView/master/GIF/7.gif)
 下拉刷新、上拉加载
 ----
 默认的header、footer的滑动方式都定义了，但不提供实际的header、footer的UI，需要先定义
@@ -207,6 +212,21 @@ BaseFooterView.OnLoadListener{
 }       
 footerView.setOnLoadListener(this);
 ```
+效果图：
+
+![](https://raw.githubusercontent.com/Y-bao/PullRefreshView/master/GIF/2.gif)
+
+其他效果：
+NestedScrolling：
+![](https://raw.githubusercontent.com/Y-bao/PullRefreshView/master/GIF/8.gif)
+
+弹性头：（也可以用NestedScrolling，这里只是提供多一种方式）
+![](https://raw.githubusercontent.com/Y-bao/PullRefreshView/master/GIF/9.gif)
+
+不同模式：
+![](https://raw.githubusercontent.com/Y-bao/PullRefreshView/master/GIF/3.gif)
+![](https://raw.githubusercontent.com/Y-bao/PullRefreshView/master/GIF/4.gif)
+![](https://raw.githubusercontent.com/Y-bao/PullRefreshView/master/GIF/5.gif) 
 
 
 
