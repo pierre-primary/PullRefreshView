@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.ybao.pullrefreshview.layout.PullRefreshLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary">
+
+        <com.ybao.pullrefreshview.simple.view.NormalFooterView
+            android:id="@+id/footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:cacheColorHint="@null"
+            android:clipToPadding="false"
+            android:divider="#ccc"
+            android:dividerHeight="1px"
+            android:paddingTop="200dp" />
+
+    </com.ybao.pullrefreshview.layout.PullRefreshLayout>
+
+    <ImageView
+        android:id="@+id/anim_header"
+        android:layout_width="match_parent"
+        android:layout_height="200dip"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/img_header" />
+</FrameLayout>

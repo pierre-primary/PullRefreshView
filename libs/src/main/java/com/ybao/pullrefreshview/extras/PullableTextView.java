@@ -6,9 +6,11 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import com.ybao.pullrefreshview.support.impl.OnScrollListener;
 import com.ybao.pullrefreshview.support.impl.Pullable;
 
 public class PullableTextView extends TextView implements Pullable {
+    private OnScrollListener onScrollListener = null;
 
     public PullableTextView(Context context) {
         super(context);
@@ -41,4 +43,15 @@ public class PullableTextView extends TextView implements Pullable {
             return false;
     }
 
+    public void setOnScrollListener(OnScrollListener onScrollListener) {
+        this.onScrollListener = onScrollListener;
+    }
+
+    @Override
+    protected void onScrollChanged(int x, int y, int oldx, int oldy) {
+        super.onScrollChanged(x, y, oldx, oldy);
+        if (onScrollListener != null) {
+            onScrollListener.onScrollChanged(this, x, y, oldx, oldy);
+        }
+    }
 }
