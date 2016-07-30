@@ -217,13 +217,17 @@ footerView.setOnLoadListener(this);
 ![](https://raw.githubusercontent.com/Y-bao/PullRefreshView/master/GIF/2.gif)
 
 其他效果：
+
 NestedScrolling：
+
 ![](https://raw.githubusercontent.com/Y-bao/PullRefreshView/master/GIF/8.gif)
 
 弹性头：（也可以用NestedScrolling，这里只是提供多一种方式）
+
 ![](https://raw.githubusercontent.com/Y-bao/PullRefreshView/master/GIF/9.gif)
 
 不同模式：
+
 ![](https://raw.githubusercontent.com/Y-bao/PullRefreshView/master/GIF/3.gif)
 ![](https://raw.githubusercontent.com/Y-bao/PullRefreshView/master/GIF/4.gif)
 ![](https://raw.githubusercontent.com/Y-bao/PullRefreshView/master/GIF/5.gif) 
