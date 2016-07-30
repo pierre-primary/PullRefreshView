@@ -12,10 +12,9 @@ import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
 import com.ybao.pullrefreshview.layout.BaseFooterView;
 import com.ybao.pullrefreshview.layout.FlingLayout;
-import com.ybao.pullrefreshview.layout.RGPullRefreshLayout;
 import com.ybao.pullrefreshview.simple.R;
 import com.ybao.pullrefreshview.simple.utils.AnimUtil;
-import com.ybao.pullrefreshview.support.type.FooterLayoutType;
+import com.ybao.pullrefreshview.support.type.LayoutType;
 
 /**
  * Created by Ybao on 2015/11/3 0003.
@@ -30,8 +29,7 @@ public class LockFooterView extends BaseFooterView {
 
     int state = NONE;
 
-    @FooterLayoutType
-    int layoutType = RGPullRefreshLayout.LAYOUT_SCROLLER;
+    int layoutType = LayoutType.LAYOUT_SCROLLER;
 
     public LockFooterView(Context context) {
         this(context, null);
@@ -56,25 +54,6 @@ public class LockFooterView extends BaseFooterView {
         paint.setColor(0x8888ff00);
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.FILL);
-    }
-
-
-    @Override
-    public void onScroll(FlingLayout flingLayout, int y) {
-        path.reset();// 重置path
-        if (y == 0) {
-            invalidate();
-        }
-        // 贝赛尔曲线的起始点
-        path.moveTo(0, 400);
-        // 设置贝赛尔曲线的操作点以及终止点
-        path.quadTo(width / 2, 400 - 1.94f * y, width, 400);
-        invalidate();
-        ViewHelper.setTranslationY(loadBox, 400 - 0.97f * y);
-        super.onScroll(flingLayout, y);
-        if (!isLockState) {
-            ViewHelper.setRotation(progress, ((float) y * y) * 48 / 31250);
-        }
     }
 
     @Override
@@ -118,7 +97,32 @@ public class LockFooterView extends BaseFooterView {
     }
 
     @Override
-    public int getSpanHeight() {
+    public float getSpanHeight() {
         return loadBox.getHeight();
+    }
+
+    @Override
+    public int getLayoutType() {
+        return layoutType;
+    }
+
+    @Override
+    public boolean onScroll(float y) {
+        boolean intercept = super.onScroll(y);
+        ViewHelper.setTranslationY(loadBox, 400 + 0.97f * y);
+        if (!isLockState()) {
+            ViewHelper.setRotation(progress, y * y * 48 / 31250);
+        }
+        path.reset();// 重置path
+        if (y == 0) {
+            invalidate();
+            return intercept;
+        }
+        // 贝赛尔曲线的起始点
+        path.moveTo(0, 400);
+        // 设置贝赛尔曲线的操作点以及终止点
+        path.quadTo(width / 2, 400 + 1.94f * y, width, 400);
+        invalidate();
+        return intercept;
     }
 }

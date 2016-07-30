@@ -11,6 +11,7 @@ import com.nineoldandroids.view.ViewHelper;
 import com.ybao.pullrefreshview.layout.BaseFooterView;
 import com.ybao.pullrefreshview.simple.R;
 import com.ybao.pullrefreshview.simple.utils.AnimUtil;
+import com.ybao.pullrefreshview.support.type.LayoutType;
 
 /**
  * Created by Ybao on 2015/11/3 0003.
@@ -84,7 +85,12 @@ public class NormalFooterView extends BaseFooterView {
     }
 
     @Override
-    public int getSpanHeight() {
+    public float getSpanHeight() {
         return getHeight();
+    }
+
+    @Override
+    public int getLayoutType() {
+        return LayoutType.LAYOUT_NORMAL;
     }
 }

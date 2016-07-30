@@ -11,10 +11,9 @@ import com.nineoldandroids.view.ViewHelper;
 import com.ybao.pullrefreshview.layout.BaseHeaderView;
 import com.ybao.pullrefreshview.layout.FlingLayout;
 import com.ybao.pullrefreshview.layout.PullRefreshLayout;
-import com.ybao.pullrefreshview.layout.RGPullRefreshLayout;
 import com.ybao.pullrefreshview.simple.R;
 import com.ybao.pullrefreshview.simple.utils.AnimUtil;
-import com.ybao.pullrefreshview.support.type.HeaderLayoutType;
+import com.ybao.pullrefreshview.support.type.LayoutType;
 
 /**
  * Created by Ybao on 2015/11/3 0003.
@@ -25,8 +24,8 @@ public class ExpandHeaderView extends BaseHeaderView {
     View loadBox;
 
     int state = NONE;
-    @HeaderLayoutType
-    private final static int layoutType = RGPullRefreshLayout.LAYOUT_DRAWER;
+
+    private final static int layoutType = LayoutType.LAYOUT_DRAWER;
 
     public ExpandHeaderView(Context context) {
         this(context, null);
@@ -56,14 +55,6 @@ public class ExpandHeaderView extends BaseHeaderView {
     }
 
     @Override
-    public void onScroll(FlingLayout flingLayout, int y) {
-        super.onScroll(flingLayout, y);
-        if (!isLockState) {
-            ViewHelper.setRotation(progress, ((float) y * y) * 48 / 31250);
-        }
-    }
-
-    @Override
     protected void onStateChange(int state) {
         this.state = state;
         ObjectAnimator.clearAllAnimations();
@@ -90,7 +81,21 @@ public class ExpandHeaderView extends BaseHeaderView {
     }
 
     @Override
-    public int getSpanHeight() {
+    public float getSpanHeight() {
         return loadBox.getHeight();
+    }
+
+    @Override
+    public int getLayoutType() {
+        return layoutType;
+    }
+
+    @Override
+    public boolean onScroll(float y) {
+        boolean intercept = super.onScroll(y);
+        if (!isLockState()) {
+            ViewHelper.setRotation(progress, y * y * 48 / 31250);
+        }
+        return intercept;
     }
 }

@@ -1,31 +1,35 @@
 /**
  * Copyright 2015 Pengyuan-Jiang
- * <p/>
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p/>
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * <p/>
+ * <p>
  * Author：Ybao on 2015/11/7 ‏‎0:27
- * <p/>
+ * <p>
  * QQ: 392579823
- * <p/>
+ * <p>
  * Email：392579823@qq.com
  */
 package com.ybao.pullrefreshview.layout;
 
 import android.content.Context;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.ybao.pullrefreshview.support.impl.Refreshable;
+import com.ybao.pullrefreshview.support.type.LayoutType;
 
 public abstract class BaseHeaderView extends RelativeLayout implements Refreshable {
 
@@ -36,8 +40,13 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
     public final static int REFRESH_CLONE = 4;
     private int stateType = NONE;
 
-    PullRefreshLayout refreshLayout;
-    protected boolean isLockState = false;
+    private PullRefreshLayout pullRefreshLayout;
+
+    private boolean isLockState = false;
+
+    OnRefreshListener onRefreshListener;
+
+    private int scrollState = FlingLayout.SCROLL_STATE_IDLE;
 
     public BaseHeaderView(Context context) {
         this(context, null);
@@ -58,52 +67,26 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
         setFocusableInTouchMode(false);
     }
 
-    @Override
-    public void onScroll(FlingLayout flingLayout, int y) {
-        if (isLockState) {
-            return;
-        }
-        if (-y < getSpanHeight() && stateType != PULLING) {
-            setState(PULLING);
-        } else if (-y > getSpanHeight() && stateType != LOOSENT_O_REFRESH) {
-            setState(LOOSENT_O_REFRESH);
-        }
+    protected boolean isLockState() {
+        return isLockState;
     }
 
-    @Override
-    public void setPullRefreshLayout(PullRefreshLayout refreshLayout) {
-        this.refreshLayout = refreshLayout;
+    public int getLayoutType() {
+        return LayoutType.LAYOUT_NORMAL;
     }
 
-    @Override
-    public void onScrollChange(FlingLayout flingLayout, int state, int y) {
-        if (state != FlingLayout.FLING) {
-            return;
-        }
-        if (y != 0 && -y == getSpanHeight() && !isLockState) {
-            isLockState = true;
-            setState(REFRESHING);
-        } else if (y == 0 && isLockState) {
-        }
-
-    }
-
-    public void stopRefresh() {
-        setState(REFRESH_CLONE);
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                isLockState = false;
-                setState(NONE);
-                hide();
-            }
-        }, 400);
-    }
 
     private void setState(int state) {
+        if (isLockState || stateType == state) {
+            return;
+        }
+        Log.i("BaseHeaderView", "" + state);
         this.stateType = state;
-        if (state == REFRESHING && onRefreshListener != null) {
-            onRefreshListener.onRefresh(this);
+        if (state == REFRESHING) {
+            isLockState = true;
+            if (onRefreshListener != null) {
+                onRefreshListener.onRefresh(this);
+            }
         }
         onStateChange(state);
     }
@@ -113,21 +96,90 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
     }
 
 
-    public void show() {
-        if (this.refreshLayout != null) {
-            this.refreshLayout.openHeader();
+    private void close() {
+        if (this.pullRefreshLayout != null) {
+            float moveY = pullRefreshLayout.getMoveY();
+            if (moveY > 0) {
+                pullRefreshLayout.startMoveTo(moveY, 0);
+                setState(NONE);
+            }
         }
     }
 
-    public void hide() {
-        if (this.refreshLayout != null) {
-            refreshLayout.closeHeader();
+    @Override
+    public void setPullRefreshLayout(PullRefreshLayout pullRefreshLayout) {
+        this.pullRefreshLayout = pullRefreshLayout;
+    }
+
+    @Override
+    public void startRefresh() {
+        if (pullRefreshLayout != null) {
+            float moveY = pullRefreshLayout.getMoveY();
+            if (moveY == 0) {
+                float headerSpanHeight = getSpanHeight();
+                pullRefreshLayout.startMoveTo(0, headerSpanHeight);
+                setState(REFRESHING);
+            }
         }
     }
+
+    @Override
+    public void stopRefresh() {
+        isLockState = false;
+        setState(REFRESH_CLONE);
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                close();
+            }
+        }, 400);
+    }
+
+    @Override
+    public boolean onScroll(float y) {
+        boolean intercept = false;
+        int layoutType = getLayoutType();
+        if (layoutType == LayoutType.LAYOUT_SCROLLER) {
+            ViewCompat.setTranslationY(this, getMeasuredHeight());
+        } else if (layoutType == LayoutType.LAYOUT_DRAWER) {
+            ViewCompat.setTranslationY(this, y);
+            ViewCompat.setTranslationY(pullRefreshLayout.getPullView(), 0);
+            intercept = true;
+        } else {
+            ViewCompat.setTranslationY(this, y);
+        }
+        float headerSpanHeight = getSpanHeight();
+        if (scrollState == FlingLayout.SCROLL_STATE_TOUCH_SCROLL) {
+            if (y >= headerSpanHeight) {
+                setState(LOOSENT_O_REFRESH);
+            } else {
+                setState(PULLING);
+            }
+        }
+        return intercept;
+    }
+
+    @Override
+    public void onScrollChange(int state) {
+        scrollState = state;
+    }
+
+    @Override
+    public boolean onStartFling(float nowY) {
+        float headerSpanHeight = getSpanHeight();
+        if (nowY >= headerSpanHeight) {
+            pullRefreshLayout.startMoveTo(nowY, headerSpanHeight);
+            setState(REFRESHING);
+            return true;
+        }
+        pullRefreshLayout.startMoveTo(nowY, 0);
+        setState(NONE);
+        return false;
+    }
+
+    public abstract float getSpanHeight();
 
     protected abstract void onStateChange(int state);
-
-    OnRefreshListener onRefreshListener;
 
     public interface OnRefreshListener {
         void onRefresh(BaseHeaderView baseHeaderView);
@@ -136,4 +188,5 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
     public void setOnRefreshListener(OnRefreshListener onRefreshListener) {
         this.onRefreshListener = onRefreshListener;
     }
+
 }
