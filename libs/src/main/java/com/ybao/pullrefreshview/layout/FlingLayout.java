@@ -37,6 +37,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
 
+import com.nineoldandroids.view.ViewHelper;
 import com.ybao.pullrefreshview.support.impl.Pullable;
 import com.ybao.pullrefreshview.support.utils.CanPullUtil;
 
@@ -165,7 +166,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         if (view == null) {
             return;
         }
-        ViewCompat.setTranslationY(view, value);
+        ViewHelper.setTranslationY(view, value);
     }
 
     private void setMoveY(float moveY) {
