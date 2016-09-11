@@ -33,6 +33,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
@@ -60,7 +61,8 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     private boolean isScrolling = false;
     protected float tepmX;
     protected float tepmY;
-    private static final int MAX_DURATION = 300;
+    private static final int MAX_DURATION = 600;
+    private static final int MIN_DURATION = 300;
     private boolean canPullUp = true;
     private boolean canPullDown = true;
     protected OnScrollListener mOnScrollListener;
@@ -91,7 +93,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     public void init(Context context) {
         version = android.os.Build.VERSION.SDK_INT;
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-        mScroller = new Scroller(context, new DecelerateInterpolator());
+        mScroller = new Scroller(context, new AccelerateDecelerateInterpolator());
         mParentHelper = new NestedScrollingParentHelper(this);
         mChildHelper = new NestedScrollingChildHelper(this);
     }
@@ -180,7 +182,8 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     public int startMoveBy(float startY, float dy) {
         setScrollState(SCROLL_STATE_FLING);
         int duration = (int) Math.abs(dy);
-        int time = duration > MAX_DURATION ? MAX_DURATION : duration;
+        int time = Math.min(MAX_DURATION,duration);
+        time = Math.max(MIN_DURATION,time);
         mScroller.startScroll(0, (int) startY, 0, (int) dy, time);
         invalidate();
         return time;
