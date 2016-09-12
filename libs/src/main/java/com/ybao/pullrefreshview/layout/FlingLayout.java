@@ -182,8 +182,8 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     public int startMoveBy(float startY, float dy) {
         setScrollState(SCROLL_STATE_FLING);
         int duration = (int) Math.abs(dy);
-        int time = Math.min(MAX_DURATION,duration);
-        time = Math.max(MIN_DURATION,time);
+        int time = Math.min(MAX_DURATION, duration);
+        time = Math.max(MIN_DURATION, time);
         mScroller.startScroll(0, (int) startY, 0, (int) dy, time);
         invalidate();
         return time;
@@ -276,7 +276,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
                     int dataY = (int) (my - tepmY);
                     tepmX = mx;
                     tepmY = my;
-                    if (isScrolling || (Math.abs(dataY) > Math.abs(dataX))) {
+                    if (isScrolling || (Math.abs(dataY) > Math.abs(dataX) && Math.abs(my - downY) > Math.abs(mx - downX))) {
                         isScrolling = true;
                         if (moveY == 0) {
                             //开始时 在0,0处
