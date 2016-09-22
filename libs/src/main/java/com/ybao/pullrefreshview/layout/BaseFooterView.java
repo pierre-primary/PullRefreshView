@@ -111,6 +111,22 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
         this.pullRefreshLayout = pullRefreshLayout;
     }
 
+    public void startLoad(int d) {
+        if (d > 0) {
+            removeCallbacks(openRnnable);
+            postDelayed(openRnnable, d);
+        } else {
+            startLoad();
+        }
+    }
+
+    Runnable openRnnable = new Runnable() {
+        @Override
+        public void run() {
+            startLoad();
+        }
+    };
+
     @Override
     public void startLoad() {
         if (this.pullRefreshLayout != null) {

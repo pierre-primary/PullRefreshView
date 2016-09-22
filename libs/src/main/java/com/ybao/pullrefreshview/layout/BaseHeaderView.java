@@ -111,6 +111,23 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
         this.pullRefreshLayout = pullRefreshLayout;
     }
 
+
+    public void startRefresh(int d) {
+        if (d > 0) {
+            removeCallbacks(openRnnable);
+            postDelayed(openRnnable, d);
+        } else {
+            startRefresh();
+        }
+    }
+
+    Runnable openRnnable = new Runnable() {
+        @Override
+        public void run() {
+            startRefresh();
+        }
+    };
+
     @Override
     public void startRefresh() {
         if (pullRefreshLayout != null) {
