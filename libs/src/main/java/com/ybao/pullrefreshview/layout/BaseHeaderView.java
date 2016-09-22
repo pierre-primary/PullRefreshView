@@ -22,12 +22,16 @@
 package com.ybao.pullrefreshview.layout;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewGroupCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
+import com.ybao.pullrefreshview.BuildConfig;
 import com.ybao.pullrefreshview.support.impl.Refreshable;
 import com.ybao.pullrefreshview.support.type.LayoutType;
 
@@ -130,6 +134,25 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
 
     @Override
     public void startRefresh() {
+        int h = getMeasuredHeight();
+        if (h > 0) {
+            toShowAndRefresh();
+        } else {
+            getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    toShowAndRefresh();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    } else {
+                        getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                }
+            });
+        }
+    }
+
+    private void toShowAndRefresh() {
         if (pullRefreshLayout != null) {
             float moveY = pullRefreshLayout.getMoveY();
             if (moveY == 0) {

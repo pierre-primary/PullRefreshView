@@ -22,10 +22,12 @@
 package com.ybao.pullrefreshview.layout;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
 import com.ybao.pullrefreshview.support.impl.Loadable;
@@ -129,6 +131,25 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
 
     @Override
     public void startLoad() {
+        int h = getMeasuredHeight();
+        if (h > 0) {
+            toShowAndLoad();
+        } else {
+            getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    toShowAndLoad();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    } else {
+                        getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                }
+            });
+        }
+    }
+
+    private void toShowAndLoad() {
         if (this.pullRefreshLayout != null) {
             float moveY = pullRefreshLayout.getMoveY();
             if (moveY == 0) {
