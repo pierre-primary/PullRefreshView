@@ -133,11 +133,19 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
             float moveY = pullRefreshLayout.getMoveY();
             if (moveY == 0) {
                 float footerSpanHeight = getSpanHeight();
-                pullRefreshLayout.startMoveTo(0, -footerSpanHeight);
-                setState(LOADING);
+                int time = pullRefreshLayout.startMoveTo(0, -footerSpanHeight);
+                removeCallbacks(loadRnnable);
+                postDelayed(loadRnnable, time);
             }
         }
     }
+
+    Runnable loadRnnable = new Runnable() {
+        @Override
+        public void run() {
+            setState(LOADING);
+        }
+    };
 
     @Override
     public void stopLoad() {
