@@ -150,6 +150,8 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
 
     @Override
     public void stopRefresh() {
+        removeCallbacks(openRnnable);
+        removeCallbacks(refreshRnnable);
         isLockState = false;
         setState(REFRESH_CLONE);
         removeCallbacks(closeRnnable);

@@ -149,6 +149,8 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
 
     @Override
     public void stopLoad() {
+        removeCallbacks(openRnnable);
+        removeCallbacks(loadRnnable);
         isLockState = false;
         setState(LOAD_CLONE);
         removeCallbacks(closeRnnable);
