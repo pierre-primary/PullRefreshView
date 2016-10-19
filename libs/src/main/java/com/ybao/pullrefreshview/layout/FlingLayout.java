@@ -239,21 +239,16 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         if (!mScroller.isFinished()) {
             mScroller.abortAnimation();
         }
-        if (mPullView != null && !ViewCompat.isNestedScrollingEnabled(mPullView)) {
+        if (mPullView != null && (isScrolling || mPullView.getVisibility() == GONE || !ViewCompat.isNestedScrollingEnabled(mPullView))) {
             float moveY = getMoveY();
             int pointerCount = ev.getPointerCount();
             int pointerIndex = ev.getActionIndex();
             switch (ev.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
                     mPointerId = ev.getPointerId(pointerIndex);
-                    float x = ev.getX(pointerIndex);
-                    float y = ev.getY(pointerIndex);
-                    tepmY = downY = y;
-                    tepmX = downX = x;
+                    tepmY = downY = ev.getY(pointerIndex);
+                    tepmX = downX = ev.getX(pointerIndex);
                     tempStateType = SCROLL_STATE_TOUCH_SCROLL;
-                    if (moveY != 0) {
-                        return true;
-                    }
                     break;
                 case MotionEvent.ACTION_POINTER_DOWN:
                     mPointerId = ev.getPointerId(pointerIndex);
@@ -276,23 +271,21 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
                     int dataY = (int) (my - tepmY);
                     tepmX = mx;
                     tepmY = my;
-                    if (isScrolling || (Math.abs(dataY) > Math.abs(dataX) && Math.abs(my - downY) > Math.abs(mx - downX))) {
+                    if (isScrolling || moveY != 0 || (Math.abs(dataY) > Math.abs(dataX) && Math.abs(my - downY) > Math.abs(mx - downX))) {
                         isScrolling = true;
                         if (moveY == 0) {
                             //开始时 在0,0处
                             //判断是否可以滑动
                             if ((dataY < 0 && canPullUp()) || (dataY > 0 && canPullDown())) {
                                 moveBy(dataY);
-                                return true;
+                                //当不在0,0处
+                                ev.setAction(MotionEvent.ACTION_CANCEL);//屏蔽原事件
                             }
                         } else {
-                            //当不在0,0处
-                            ev.setAction(MotionEvent.ACTION_CANCEL);//屏蔽原事件
-
                             if ((moveY < 0 && moveY + dataY >= 0) || (moveY > 0 && moveY + dataY <= 0)) {
                                 //在0,0附近浮动
-                                ev.setAction(MotionEvent.ACTION_DOWN);
                                 moveTo(0);
+                                ev.setAction(MotionEvent.ACTION_DOWN);
                             } else if ((moveY > 0 && dataY > 0) || (moveY < 0 && dataY < 0)) {
                                 //是否超过最大距离
                                 if (maxDistance == 0 || Math.abs(moveY) < maxDistance) {
@@ -337,12 +330,11 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         } else {
             return super.dispatchTouchEvent(ev);
         }
-
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mPullView != null && !ViewCompat.isNestedScrollingEnabled(mPullView)) {
+        if (mPullView != null && (isScrolling || mPullView.getVisibility() == GONE || !ViewCompat.isNestedScrollingEnabled(mPullView))) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     return true;
@@ -429,19 +421,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
 
     @Override
     public boolean onNestedPreFling(View target, float velocityX, float velocityY) {
-        boolean consumed = dispatchNestedPreFling(velocityX, velocityY);
-        if (consumed) {
-            return true;
-        }
-        Pullable pullable = CanPullUtil.getPullAble(target);
-        if (pullable != null) {
-            if (pullable.isGetBottom() && velocityY < 0) {
-                return true;
-            } else if (pullable.isGetTop() && velocityY > 0) {
-                return true;
-            }
-        }
-        return false;
+        return dispatchNestedPreFling(velocityX, velocityY);
     }
 
     @Override

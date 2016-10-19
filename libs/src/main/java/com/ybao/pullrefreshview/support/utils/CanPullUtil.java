@@ -46,8 +46,10 @@ public class CanPullUtil {
         public boolean isGetTop() {
             if (absListView.getCount() == 0) {
                 return true;
-            } else if (absListView.getFirstVisiblePosition() == 0 && absListView.getChildAt(0).getTop() >= absListView.getPaddingTop()) {
-                return true;
+            } else if (absListView.getFirstVisiblePosition() == 0) {
+                if (absListView.getChildCount() <= 0 || (absListView.getChildAt(0).getTop() >= absListView.getPaddingTop())) {
+                    return true;
+                }
             }
             return false;
         }
@@ -61,7 +63,7 @@ public class CanPullUtil {
                 return true;
             } else if (lastVisiblePosition == (count - 1)) {
                 View view = absListView.getChildAt(lastVisiblePosition - firstVisiblePosition);
-                if (view != null && view.getBottom() <= absListView.getMeasuredHeight() - absListView.getPaddingBottom())
+                if (view == null || (view.getBottom() <= absListView.getMeasuredHeight() - absListView.getPaddingBottom()))
                     return true;
             }
             return false;
@@ -77,21 +79,22 @@ public class CanPullUtil {
 
         @Override
         public boolean isGetTop() {
-            if (scrollView.getScrollY() <= 0)
+            if (scrollView.getVisibility() == View.GONE) {
                 return true;
-            else
-                return false;
+            } else if (scrollView.getScrollY() <= 0) {
+                return true;
+            }
+            return false;
         }
 
         @Override
         public boolean isGetBottom() {
-            if (scrollView.getChildCount() == 0) {
+            if (scrollView.getVisibility() == View.GONE) {
+                return true;
+            } else if (scrollView.getChildCount() <= 0 || scrollView.getScrollY() >= (scrollView.getChildAt(0).getHeight() - scrollView.getMeasuredHeight())) {
                 return true;
             }
-            if (scrollView.getScrollY() >= (scrollView.getChildAt(0).getHeight() - scrollView.getMeasuredHeight()))
-                return true;
-            else
-                return false;
+            return false;
         }
     }
 
@@ -117,10 +120,14 @@ public class CanPullUtil {
         public boolean isGetTop() {
             initLayoutManager();
             if (layoutManager != null) {
-                if (layoutManager.getItemCount() == 0) {
+                if (recyclerView.getVisibility() == View.GONE) {
                     return true;
-                } else if (layoutManager.findFirstVisibleItemPosition() == 0 && recyclerView.getChildAt(0).getTop() >= recyclerView.getPaddingTop()) {
+                } else if (layoutManager.getItemCount() == 0) {
                     return true;
+                } else if (layoutManager.findFirstVisibleItemPosition() == 0) {
+                    if (recyclerView.getChildCount() <= 0 || (recyclerView.getChildAt(0).getTop() >= recyclerView.getPaddingTop())) {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -132,11 +139,14 @@ public class CanPullUtil {
             initLayoutManager();
             if (layoutManager != null) {
                 int count = layoutManager.getItemCount();
-                if (count == 0) {
+                if (recyclerView.getVisibility() == View.GONE) {
+                    return true;
+                } else if (count == 0) {
                     return true;
                 } else if (layoutManager.findLastCompletelyVisibleItemPosition() == count - 1) {
                     return true;
                 }
+
             }
             return false;
         }
@@ -151,18 +161,22 @@ public class CanPullUtil {
 
         @Override
         public boolean isGetBottom() {
-            if (webView.getScrollY() >= webView.getContentHeight() * webView.getScale() - webView.getMeasuredHeight())
+            if (webView.getVisibility() == View.GONE) {
                 return true;
-            else
-                return false;
+            } else if (webView.getScrollY() >= webView.getContentHeight() * webView.getScale() - webView.getMeasuredHeight()) {
+                return true;
+            }
+            return false;
         }
 
         @Override
         public boolean isGetTop() {
-            if (webView.getScrollY() <= 0)
+            if (webView.getVisibility() == View.GONE) {
                 return true;
-            else
-                return false;
+            } else if (webView.getScrollY() <= 0) {
+                return true;
+            }
+            return false;
         }
     }
 
