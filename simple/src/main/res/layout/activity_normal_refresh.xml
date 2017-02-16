@@ -16,14 +16,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-
-    <ListView
-        android:id="@+id/list"
+    <com.ybao.pullrefreshview.layout.SliderBox
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:cacheColorHint="@null"
-        android:divider="#ccc"
-        android:dividerHeight="1px" />
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:cacheColorHint="@null"
+            android:divider="#ccc"
+            android:dividerHeight="1px" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@mipmap/ic_launcher" />
+
+    </com.ybao.pullrefreshview.layout.SliderBox>
 
 </com.ybao.pullrefreshview.layout.PullRefreshLayout>

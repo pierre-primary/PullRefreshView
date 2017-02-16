@@ -135,7 +135,7 @@ public class PullRefreshLayout extends FlingLayout {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        int height = getMeasuredHeight();
+        int height = getHeight();
         if (mHeader != null) {
             View mHeaderView = (View) mHeader;
             mHeaderView.layout(mHeaderView.getLeft(), -mHeaderView.getMeasuredHeight(), mHeaderView.getRight(), 0);
