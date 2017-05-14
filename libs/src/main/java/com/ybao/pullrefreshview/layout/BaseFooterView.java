@@ -121,14 +121,15 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
 
                     @Override
                     public void onAnimEnd() {
-
+                        setState(NONE);
                     }
 
                     @Override
                     public void onAnimCencel() {
-
+                        setState(NONE);
                     }
                 }, moveY, 0);
+            } else {
                 setState(NONE);
             }
         }
@@ -206,6 +207,8 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
                 ViewCompat.setTranslationY(pullable.getView(), 0);
             }
             intercept = true;
+        } else if (footerLayoutType == LayoutType.LAYOUT_NOT_MOVE) {
+            ViewCompat.setTranslationY(this, 0);
         } else {
             ViewCompat.setTranslationY(this, y);
         }
