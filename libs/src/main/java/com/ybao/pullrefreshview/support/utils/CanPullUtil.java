@@ -1,6 +1,5 @@
 package com.ybao.pullrefreshview.support.utils;
 
-import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +20,7 @@ public class CanPullUtil {
         if (view == null) {
             return null;
         }
+        view.setOverScrollMode(View.OVER_SCROLL_NEVER);
         if (view instanceof Pullable) {
             return (Pullable) view;
         } else if (view instanceof AbsListView) {
@@ -43,7 +43,7 @@ public class CanPullUtil {
         AbsListView absListView;
 
         @Override
-        public boolean isGetTop() {
+        public boolean canOverStart() {
             if (absListView.getCount() == 0) {
                 return true;
             } else if (absListView.getFirstVisiblePosition() == 0 && absListView.getChildAt(0).getTop() >= absListView.getPaddingTop()) {
@@ -53,7 +53,7 @@ public class CanPullUtil {
         }
 
         @Override
-        public boolean isGetBottom() {
+        public boolean canOverEnd() {
             int firstVisiblePosition = absListView.getFirstVisiblePosition();
             int lastVisiblePosition = absListView.getLastVisiblePosition();
             int count = absListView.getCount();
@@ -66,6 +66,16 @@ public class CanPullUtil {
             }
             return false;
         }
+
+        @Override
+        public View getView() {
+            return absListView;
+        }
+
+        @Override
+        public void scrollAViewBy(int dp) {
+            absListView.smoothScrollBy(dp, 0);
+        }
     }
 
     private static class ScrollViewCanPull implements Pullable {
@@ -76,7 +86,7 @@ public class CanPullUtil {
         ViewGroup scrollView;
 
         @Override
-        public boolean isGetTop() {
+        public boolean canOverStart() {
             if (scrollView.getScrollY() <= 0)
                 return true;
             else
@@ -84,7 +94,7 @@ public class CanPullUtil {
         }
 
         @Override
-        public boolean isGetBottom() {
+        public boolean canOverEnd() {
             if (scrollView.getChildCount() == 0) {
                 return true;
             }
@@ -92,6 +102,23 @@ public class CanPullUtil {
                 return true;
             else
                 return false;
+        }
+
+        @Override
+        public View getView() {
+            return scrollView;
+        }
+
+        @Override
+        public void scrollAViewBy(int dp) {
+            if (scrollView.getChildCount() != 0) {
+                float maxScrollY = scrollView.getChildAt(0).getHeight() - scrollView.getMeasuredHeight();
+                if (scrollView.getScrollY() + dp >= maxScrollY) {
+                    scrollView.scrollTo(0, (int) maxScrollY);
+                } else {
+                    scrollView.scrollBy(0, dp);
+                }
+            }
         }
     }
 
@@ -114,7 +141,7 @@ public class CanPullUtil {
         }
 
         @Override
-        public boolean isGetTop() {
+        public boolean canOverStart() {
             initLayoutManager();
             if (layoutManager != null) {
                 if (layoutManager.getItemCount() == 0) {
@@ -128,7 +155,7 @@ public class CanPullUtil {
 
 
         @Override
-        public boolean isGetBottom() {
+        public boolean canOverEnd() {
             initLayoutManager();
             if (layoutManager != null) {
                 int count = layoutManager.getItemCount();
@@ -140,6 +167,16 @@ public class CanPullUtil {
             }
             return false;
         }
+
+        @Override
+        public View getView() {
+            return recyclerView;
+        }
+
+        @Override
+        public void scrollAViewBy(int dp) {
+            recyclerView.scrollBy(0, dp);
+        }
     }
 
     private static class WebViewCanPull implements Pullable {
@@ -150,7 +187,15 @@ public class CanPullUtil {
         WebView webView;
 
         @Override
-        public boolean isGetBottom() {
+        public boolean canOverStart() {
+            if (webView.getScrollY() <= 0)
+                return true;
+            else
+                return false;
+        }
+
+        @Override
+        public boolean canOverEnd() {
             if (webView.getScrollY() >= webView.getContentHeight() * webView.getScale() - webView.getMeasuredHeight())
                 return true;
             else
@@ -158,11 +203,19 @@ public class CanPullUtil {
         }
 
         @Override
-        public boolean isGetTop() {
-            if (webView.getScrollY() <= 0)
-                return true;
-            else
-                return false;
+        public View getView() {
+            return webView;
+        }
+
+        @Override
+        public void scrollAViewBy(int dp) {
+
+            float maxScrollY = webView.getContentHeight() * webView.getScale() - webView.getMeasuredHeight();
+            if (webView.getScrollY() + dp >= maxScrollY) {
+                webView.scrollTo(0, (int) maxScrollY);
+            } else {
+                webView.scrollBy(0, dp);
+            }
         }
     }
 

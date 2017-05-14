@@ -26,7 +26,7 @@ public class MiFliingLayout extends FlingLayout {
 
     @Override
     protected boolean onScroll(float y) {
-        View view = getPullView();
+        View view = getPullable().getView();
         int heigth = view.getMeasuredHeight();
         if (y >= 0) {
             ViewCompat.setPivotY(view, 0);

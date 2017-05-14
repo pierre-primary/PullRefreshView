@@ -2,6 +2,7 @@ package com.ybao.pullrefreshview.extras;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.ybao.pullrefreshview.support.impl.Pullable;
@@ -23,13 +24,21 @@ public class PullableImageView extends ImageView implements Pullable {
     }
 
     @Override
-    public boolean isGetTop() {
+    public boolean canOverStart() {
         return true;
     }
 
     @Override
-    public boolean isGetBottom() {
+    public boolean canOverEnd() {
         return true;
     }
 
+    @Override
+    public View getView() {
+        return this;
+    }
+
+    @Override
+    public void scrollAViewBy(int dp) {
+    }
 }

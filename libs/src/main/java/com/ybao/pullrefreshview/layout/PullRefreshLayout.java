@@ -45,6 +45,8 @@ public class PullRefreshLayout extends FlingLayout {
     protected Refreshable mHeader;
     protected boolean hasHeader = true;
     protected boolean hasFooter = true;
+    protected boolean isRefreshing = false;
+    protected boolean isLoading = false;
 
     public PullRefreshLayout(Context context) {
         this(context, null);
@@ -60,13 +62,13 @@ public class PullRefreshLayout extends FlingLayout {
 
     @Override
     protected boolean onScroll(float y) {
-        if (mHeader != null && hasHeader && y >= 0) {
+        if (mHeader != null && isShowRefreshView() && y >= 0) {
             boolean intercept = mHeader.onScroll(y);
             if (y != 0) {
                 return intercept;
             }
         }
-        if (mFooter != null && hasFooter && y <= 0) {
+        if (mFooter != null && isShowLoadView() && y <= 0) {
             boolean intercept = mFooter.onScroll(y);
             if (y != 0) {
                 return intercept;
@@ -77,57 +79,71 @@ public class PullRefreshLayout extends FlingLayout {
 
     @Override
     protected void onScrollChange(int stateType) {
-        if (mHeader != null && hasHeader) {
+        if (mHeader != null && isShowRefreshView()) {
             mHeader.onScrollChange(stateType);
         }
-        if (mFooter != null && hasFooter) {
+        if (mFooter != null && isShowLoadView()) {
             mFooter.onScrollChange(stateType);
         }
 
     }
 
     @Override
-    protected boolean onStartFling(float nowY) {
-        if (mHeader != null && nowY > 0 && hasHeader) {
-            return mHeader.onStartFling(nowY);
-        } else if (mFooter != null && nowY < 0 && hasFooter) {
-            return mFooter.onStartFling(nowY);
+    protected boolean onStartrRelease(float nowY) {
+        if (mHeader != null && nowY > 0 && isShowRefreshView()) {
+            return mHeader.onStartrRelease(nowY);
+        } else if (mFooter != null && nowY < 0 && isShowLoadView()) {
+            return mFooter.onStartrRelease(nowY);
         }
         return false;
     }
 
     public void startRefresh() {
-        if (mHeader != null && hasHeader) {
+        if (mHeader != null && isShowRefreshView()) {
             mHeader.startRefresh();
         }
     }
 
     public void startLoad() {
-        if (mFooter != null && hasFooter) {
+        if (mFooter != null && isShowLoadView()) {
             mFooter.startLoad();
         }
     }
 
     public void stopRefresh() {
-        if (mHeader != null && hasHeader) {
+        if (mHeader != null && isShowRefreshView()) {
             mHeader.stopRefresh();
         }
     }
 
     public void stopLoad() {
-        if (mFooter != null && hasFooter) {
+        if (mFooter != null && isShowLoadView()) {
             mFooter.stopLoad();
         }
     }
 
+    public void setHeader(Refreshable header) {
+        if (mHeader != null && isMyChild((View) mHeader)) {
+            removeView((View) mHeader);
+        }
+        this.mHeader = header;
+        mHeader.setPullRefreshLayout(this);
+    }
+
+    public void setFooter(Loadable footer) {
+        if (mFooter != null && isMyChild((View) mFooter)) {
+            removeView((View) mFooter);
+        }
+        this.mFooter = footer;
+        mFooter.setPullRefreshLayout(this);
+    }
+
     @Override
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
-        if (child instanceof Refreshable && mHeader == null) {
-            mHeader = (Refreshable) child;
-            mHeader.setPullRefreshLayout(this);
-        } else if (child instanceof Loadable && mFooter == null) {
-            mFooter = (Loadable) child;
-            mFooter.setPullRefreshLayout(this);
+        if (child instanceof Refreshable) {
+            setHeader((Refreshable) child);
+        } else if (child instanceof Loadable) {
+            setFooter((Loadable) child);
         }
         super.addView(child, index, params);
     }
@@ -136,21 +152,53 @@ public class PullRefreshLayout extends FlingLayout {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         int height = getHeight();
-        if (mHeader != null) {
+        if (mHeader != null && isMyChild((View) mHeader)) {
             View mHeaderView = (View) mHeader;
             mHeaderView.layout(mHeaderView.getLeft(), -mHeaderView.getMeasuredHeight(), mHeaderView.getRight(), 0);
         }
-        if (mFooter != null) {
+        if (mFooter != null && isMyChild((View) mFooter)) {
             View mFooterView = (View) mFooter;
             mFooterView.layout(mFooterView.getLeft(), height, mFooterView.getRight(), height + mFooterView.getMeasuredHeight());
         }
+    }
+
+    private boolean isShowRefreshView() {
+        return hasHeader && !isLoading && stateType != SCROLL_STATE_OVER_SCROLL;
+    }
+
+    private boolean isShowLoadView() {
+        return hasFooter && !isRefreshing && stateType != SCROLL_STATE_OVER_SCROLL;
+    }
+
+    void setRefreshing(boolean refresh) {
+        isRefreshing = refresh;
+    }
+
+    public boolean isRefreshing() {
+        return isRefreshing;
+    }
+
+    void setLoading(boolean loading) {
+        isLoading = loading;
+    }
+
+    public boolean isLoading() {
+        return isLoading;
+    }
+
+    public void setHasHeader(boolean hasHeader) {
+        this.hasHeader = hasHeader;
+    }
+
+    public boolean isHasHeader() {
+        return hasHeader;
     }
 
     public void setHasFooter(boolean hasFooter) {
         this.hasFooter = hasFooter;
     }
 
-    public void setHasHeader(boolean hasHeader) {
-        this.hasHeader = hasHeader;
+    public boolean isHasFooter() {
+        return hasFooter;
     }
 }

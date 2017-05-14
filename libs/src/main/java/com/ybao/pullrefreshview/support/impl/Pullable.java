@@ -21,10 +21,15 @@
  */
 package com.ybao.pullrefreshview.support.impl;
 
+import android.view.View;
+
 public interface Pullable {
 
-    boolean isGetBottom();
+    boolean canOverStart();
 
+    boolean canOverEnd();
 
-    boolean isGetTop();
+    View getView();
+
+    void scrollAViewBy(int dp);
 }

@@ -63,19 +63,31 @@ public class SliderBox extends FrameLayout implements Pullable, NestedScrollingC
     }
 
     @Override
-    public boolean isGetBottom() {
+    public boolean canOverEnd() {
         if (mPullable != null) {
-            return mPullable.isGetBottom();
+            return mPullable.canOverEnd();
         }
         return false;
     }
 
     @Override
-    public boolean isGetTop() {
+    public boolean canOverStart() {
         if (mPullable != null) {
-            return mPullable.isGetTop();
+            return mPullable.canOverStart();
         }
         return false;
+    }
+
+    @Override
+    public View getView() {
+        return this;
+    }
+
+    @Override
+    public void scrollAViewBy(int dp) {
+        if (mPullable != null) {
+            mPullable.scrollAViewBy(dp);
+        }
     }
 
     /*****************************************************************************************/
