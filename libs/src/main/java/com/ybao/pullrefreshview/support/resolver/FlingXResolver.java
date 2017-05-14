@@ -91,8 +91,6 @@ public class FlingXResolver extends EventResolver {
                         if ((dataX > 0 && c.canOverStart()) || (dataX < 0 && c.canOverEnd())) {
                             c.moveBy(dataX);
                             return true;
-                        } else {
-                            c.superDispatchTouchEvent(ev);
                         }
                     } else {
                         //当不在0,0处
@@ -140,15 +138,20 @@ public class FlingXResolver extends EventResolver {
                     tepmY = ev.getY(reIndex);
                 }
         }
-        return isScrolling || c.superDispatchTouchEvent(ev);
+        return c.superDispatchTouchEvent(ev) || isScrolling;
     }
 
     @Override
     protected void createVelocity() {
         mVelocityTracker.computeCurrentVelocity(1000);
-        velocity = mVelocityTracker.getXVelocity();
+        float yvelocity = mVelocityTracker.getYVelocity();
+        float xvelocity = mVelocityTracker.getXVelocity();
+        if (yvelocity > xvelocity) {
+            velocity = 0;
+        } else {
+            velocity = xvelocity;
+        }
     }
-
 
     @Override
     public void onNestedScroll(View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {

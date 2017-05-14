@@ -49,7 +49,13 @@ public class FlingYResolver extends EventResolver {
     @Override
     protected void createVelocity() {
         mVelocityTracker.computeCurrentVelocity(1000);
-        velocity = mVelocityTracker.getYVelocity();
+        float yvelocity = mVelocityTracker.getYVelocity();
+        float xvelocity = mVelocityTracker.getXVelocity();
+        if (xvelocity > yvelocity) {
+            velocity = 0;
+        } else {
+            velocity = yvelocity;
+        }
     }
 
     @Override
@@ -97,8 +103,6 @@ public class FlingYResolver extends EventResolver {
                         if ((dataY > 0 && c.canOverStart()) || (dataY < 0 && c.canOverEnd())) {
                             c.moveBy(dataY);
                             return true;
-                        } else {
-                            c.superDispatchTouchEvent(ev);
                         }
                     } else {
                         //当不在0,0处
@@ -146,7 +150,7 @@ public class FlingYResolver extends EventResolver {
                     tepmY = ev.getY(reIndex);
                 }
         }
-        return isScrolling || c.superDispatchTouchEvent(ev);
+        return c.superDispatchTouchEvent(ev) || isScrolling;
     }
 
     @Override
