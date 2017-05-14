@@ -51,7 +51,7 @@ public class FlingYResolver extends EventResolver {
         mVelocityTracker.computeCurrentVelocity(1000);
         float yvelocity = mVelocityTracker.getYVelocity();
         float xvelocity = mVelocityTracker.getXVelocity();
-        if (xvelocity > yvelocity) {
+        if (Math.abs(xvelocity) > Math.abs(yvelocity)) {
             velocity = 0;
         } else {
             velocity = yvelocity;
@@ -151,6 +151,15 @@ public class FlingYResolver extends EventResolver {
                 }
         }
         return c.superDispatchTouchEvent(ev) || isScrolling;
+    }
+
+    @Override
+    public boolean touchEvent(MotionEvent ev) {
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                return true;
+        }
+        return isScrolling;
     }
 
     @Override

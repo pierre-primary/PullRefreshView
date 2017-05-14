@@ -66,15 +66,6 @@ public abstract class EventResolver implements IEventResolver {
         return c.superInterceptTouchEvent(ev);
     }
 
-    @Override
-    public boolean touchEvent(MotionEvent ev) {
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                return true;
-        }
-        return c.superTouchEvent(ev);
-    }
-
     /**********************************/
 
     @Override
