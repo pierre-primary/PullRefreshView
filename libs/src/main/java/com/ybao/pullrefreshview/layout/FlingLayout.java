@@ -22,6 +22,8 @@
 package com.ybao.pullrefreshview.layout;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.support.annotation.IntDef;
 import android.support.v4.view.NestedScrollingChild;
 import android.support.v4.view.NestedScrollingParent;
 import android.support.v4.view.ViewCompat;
@@ -36,15 +38,29 @@ import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 
 import com.nineoldandroids.animation.Animator;
+import com.ybao.pullrefreshview.R;
 import com.ybao.pullrefreshview.support.anim.AnimGetter;
 import com.ybao.pullrefreshview.support.anim.AnimListener;
+import com.ybao.pullrefreshview.support.impl.Pullable;
 import com.ybao.pullrefreshview.support.overscroll.OverScrollController;
+import com.ybao.pullrefreshview.support.resolver.FlingXResolver;
 import com.ybao.pullrefreshview.support.resolver.FlingYResolver;
 import com.ybao.pullrefreshview.support.resolver.IEventResolver;
-import com.ybao.pullrefreshview.support.impl.Pullable;
-import com.ybao.pullrefreshview.support.utils.CanPullUtil;
+import com.ybao.pullrefreshview.support.utils.Utils;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 public class FlingLayout extends FrameLayout implements NestedScrollingChild, NestedScrollingParent {
+
+    @IntDef({HORIZONTAL, VERTICAL})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface OrientationMode {
+    }
+
+    public static final int HORIZONTAL = 0;
+    public static final int VERTICAL = 1;
+    protected int orientation = VERTICAL;
 
     public final static int SCROLL_STATE_IDLE = 0;
     public final static int SCROLL_STATE_TOUCH_SCROLL = 1;
@@ -89,6 +105,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     public FlingLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context);
+        initAttrs(context, attrs);
     }
 
     public void init(Context context) {
@@ -96,16 +113,29 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         maxOverScrollDist = mTouchSlop * 3;
         version = android.os.Build.VERSION.SDK_INT;
         flingLayoutContext = new FlingLayoutContext();
-        eventResolver = new FlingYResolver(flingLayoutContext);
         animGetter = new AnimGetter();
         overScrollController = new OverScrollController(flingLayoutContext);
     }
 
+    private void initAttrs(Context context, AttributeSet attrs) {
+        int orientation = VERTICAL;
+        if (attrs != null) {
+            TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.FlingLayout);
+            orientation = ta.getInt(R.styleable.FlingLayout_orientation, VERTICAL);
+            ta.recycle();
+        }
+        setOrientation(orientation);
+    }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        MAXDISTANCE = getMeasuredHeight() * 3 / 5;
+    public void setOrientation(@OrientationMode int orientation) {
+        this.orientation = orientation;
+        if (orientation == HORIZONTAL) {
+            MAXDISTANCE = Utils.getScreenWidth(getContext()) * 3 / 5;
+            eventResolver = new FlingXResolver(flingLayoutContext);
+        } else if (orientation == VERTICAL) {
+            MAXDISTANCE = Utils.getScreenHeight(getContext()) * 3 / 5;
+            eventResolver = new FlingYResolver(flingLayoutContext);
+        }
     }
 
     private boolean canOverEnd() {
@@ -237,14 +267,14 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     }
 
     public void setPullView(Pullable pullable) {
-        this.pullable = pullable;
+        this.pullable = eventResolver.getPullAble(pullable);
     }
 
     @Override
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
-        Pullable newPullable = CanPullUtil.getPullAble(child);
+        Pullable newPullable = eventResolver.getPullAble(child);
         if (newPullable != null) {
-            setPullView(newPullable);
+            pullable = newPullable;
         }
         super.addView(child, index, params);
     }

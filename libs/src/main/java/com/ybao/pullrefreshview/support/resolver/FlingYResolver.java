@@ -6,6 +6,9 @@ import android.view.View;
 
 import com.nineoldandroids.view.ViewHelper;
 import com.ybao.pullrefreshview.layout.FlingLayout;
+import com.ybao.pullrefreshview.support.impl.Pullable;
+import com.ybao.pullrefreshview.support.impl.VPullable;
+import com.ybao.pullrefreshview.support.utils.VCanPullUtil;
 
 /**
  * Created by ybao on 2017/5/14.
@@ -20,6 +23,19 @@ public class FlingYResolver extends EventResolver {
 
     public FlingYResolver(FlingLayout.FlingLayoutContext flingLayoutContext) {
         super(flingLayoutContext);
+    }
+
+    @Override
+    public Pullable getPullAble(View view) {
+        return VCanPullUtil.getPullAble(view);
+    }
+
+    @Override
+    public Pullable getPullAble(Pullable pullable) {
+        if (pullable instanceof VPullable) {
+            return null;
+        }
+        return null;
     }
 
     @Override
@@ -73,7 +89,7 @@ public class FlingYResolver extends EventResolver {
                 int dataY = (int) (my - tepmY);
                 tepmX = mx;
                 tepmY = my;
-                if (isScrolling || (Math.abs(dataY) > Math.abs(dataX))) {
+                if (isScrolling || Math.abs(my - downY) > c.getTouchSlop() && (Math.abs(dataY) > Math.abs(dataX))) {
                     isScrolling = true;
                     if (moveY == 0) {
                         //开始时 在0,0处
@@ -81,6 +97,8 @@ public class FlingYResolver extends EventResolver {
                         if ((dataY > 0 && c.canOverStart()) || (dataY < 0 && c.canOverEnd())) {
                             c.moveBy(dataY);
                             return true;
+                        } else {
+                            c.superDispatchTouchEvent(ev);
                         }
                     } else {
                         //当不在0,0处
@@ -128,7 +146,7 @@ public class FlingYResolver extends EventResolver {
                     tepmY = ev.getY(reIndex);
                 }
         }
-        return c.superDispatchTouchEvent(ev) || isScrolling;
+        return isScrolling || c.superDispatchTouchEvent(ev);
     }
 
     @Override

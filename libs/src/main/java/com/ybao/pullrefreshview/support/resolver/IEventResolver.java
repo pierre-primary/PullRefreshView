@@ -5,11 +5,17 @@ import android.support.v4.view.NestedScrollingParent;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.ybao.pullrefreshview.support.impl.Pullable;
+
 /**
  * Created by ybao on 2017/5/14.
  */
 
 public interface IEventResolver extends NestedScrollingChild, NestedScrollingParent {
+
+    Pullable getPullAble(View view);
+
+    Pullable getPullAble(Pullable pullable);
 
     void setViewTranslationP(View view, float value);
 

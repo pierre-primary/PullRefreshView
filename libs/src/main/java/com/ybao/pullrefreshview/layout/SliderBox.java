@@ -13,8 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.ybao.pullrefreshview.support.impl.Pullable;
-import com.ybao.pullrefreshview.support.utils.CanPullUtil;
+import com.ybao.pullrefreshview.support.impl.VPullable;
+import com.ybao.pullrefreshview.support.utils.VCanPullUtil;
 
 /**
  * 其他附带控件的父控件
@@ -22,8 +22,8 @@ import com.ybao.pullrefreshview.support.utils.CanPullUtil;
  * Created by Ybao on 17/1/16.
  */
 
-public class SliderBox extends FrameLayout implements Pullable, NestedScrollingChild, NestedScrollingParent {
-    private Pullable mPullable;
+public class SliderBox extends FrameLayout implements VPullable, NestedScrollingChild, NestedScrollingParent {
+    private VPullable mPullable;
     private NestedScrollingParentHelper mParentHelper;
     private NestedScrollingChildHelper mChildHelper;
 
@@ -55,8 +55,8 @@ public class SliderBox extends FrameLayout implements Pullable, NestedScrollingC
 
     @Override
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
-        Pullable pullable;
-        if (mPullable == null && (pullable = CanPullUtil.getPullAble(child)) != null) {
+        VPullable pullable;
+        if (mPullable == null && (pullable = VCanPullUtil.getPullAble(child)) != null) {
             mPullable = pullable;
         }
         super.addView(child, index, params);

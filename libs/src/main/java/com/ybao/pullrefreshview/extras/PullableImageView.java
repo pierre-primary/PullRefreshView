@@ -5,10 +5,10 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.ybao.pullrefreshview.support.impl.Pullable;
+import com.ybao.pullrefreshview.support.impl.VPullable;
 
 
-public class PullableImageView extends ImageView implements Pullable {
+public class PullableImageView extends ImageView implements VPullable {
 
     public PullableImageView(Context context) {
         super(context);

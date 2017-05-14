@@ -8,9 +8,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.ybao.pullrefreshview.support.impl.OnScrollListener;
-import com.ybao.pullrefreshview.support.impl.Pullable;
+import com.ybao.pullrefreshview.support.impl.VPullable;
 
-public class PullableTextView extends TextView implements Pullable {
+public class PullableTextView extends TextView implements VPullable {
     private OnScrollListener onScrollListener = null;
 
     public PullableTextView(Context context) {

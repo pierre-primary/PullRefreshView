@@ -58,6 +58,7 @@ public class PullRefreshLayout extends FlingLayout {
 
     public PullRefreshLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        setOrientation(VERTICAL);
     }
 
     @Override

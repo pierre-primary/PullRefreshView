@@ -9,20 +9,20 @@ import android.webkit.WebView;
 import android.widget.AbsListView;
 import android.widget.ScrollView;
 
-import com.ybao.pullrefreshview.support.impl.Pullable;
+import com.ybao.pullrefreshview.support.impl.VPullable;
 
 /**
  * Created by ybao on 16/3/7.
  */
-public class CanPullUtil {
+public class VCanPullUtil {
 
-    public static Pullable getPullAble(View view) {
+    public static VPullable getPullAble(View view) {
         if (view == null) {
             return null;
         }
         view.setOverScrollMode(View.OVER_SCROLL_NEVER);
-        if (view instanceof Pullable) {
-            return (Pullable) view;
+        if (view instanceof VPullable) {
+            return (VPullable) view;
         } else if (view instanceof AbsListView) {
             return new AbsListViewCanPull((AbsListView) view);
         } else if (view instanceof ScrollView || view instanceof NestedScrollView) {
@@ -35,7 +35,7 @@ public class CanPullUtil {
         return null;
     }
 
-    private static class AbsListViewCanPull implements Pullable {
+    private static class AbsListViewCanPull implements VPullable {
         public AbsListViewCanPull(AbsListView absListView) {
             this.absListView = absListView;
         }
@@ -78,7 +78,7 @@ public class CanPullUtil {
         }
     }
 
-    private static class ScrollViewCanPull implements Pullable {
+    private static class ScrollViewCanPull implements VPullable {
         public ScrollViewCanPull(ViewGroup scrollView) {
             this.scrollView = scrollView;
         }
@@ -123,7 +123,7 @@ public class CanPullUtil {
     }
 
 
-    private static class RecyclerViewCanPull implements Pullable {
+    private static class RecyclerViewCanPull implements VPullable {
         public RecyclerViewCanPull(RecyclerView recyclerView) {
             this.recyclerView = recyclerView;
         }
@@ -179,7 +179,7 @@ public class CanPullUtil {
         }
     }
 
-    private static class WebViewCanPull implements Pullable {
+    private static class WebViewCanPull implements VPullable {
         public WebViewCanPull(WebView webView) {
             this.webView = webView;
         }
