@@ -4,12 +4,13 @@ package com.ybao.pullrefreshview.extras;
 import android.content.Context;
 import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.TextView;
 
 import com.ybao.pullrefreshview.support.impl.OnScrollListener;
-import com.ybao.pullrefreshview.support.impl.Pullable;
+import com.ybao.pullrefreshview.support.impl.VPullable;
 
-public class PullableTextView extends TextView implements Pullable {
+public class PullableTextView extends TextView implements VPullable {
     private OnScrollListener onScrollListener = null;
 
     public PullableTextView(Context context) {
@@ -28,7 +29,7 @@ public class PullableTextView extends TextView implements Pullable {
     }
 
     @Override
-    public boolean isGetTop() {
+    public boolean canOverStart() {
         if (getScrollY() == 0)
             return true;
         else
@@ -36,7 +37,7 @@ public class PullableTextView extends TextView implements Pullable {
     }
 
     @Override
-    public boolean isGetBottom() {
+    public boolean canOverEnd() {
         if (getScrollY() >= (getLayout().getHeight() - getMeasuredHeight() + getCompoundPaddingBottom() + getCompoundPaddingTop()))
             return true;
         else
@@ -52,6 +53,21 @@ public class PullableTextView extends TextView implements Pullable {
         super.onScrollChanged(x, y, oldx, oldy);
         if (onScrollListener != null) {
             onScrollListener.onScrollChanged(this, x, y, oldx, oldy);
+        }
+    }
+
+    @Override
+    public View getView() {
+        return this;
+    }
+
+    @Override
+    public void scrollAViewBy(int dp) {
+        int maxScrollY = (getLayout().getHeight() - getMeasuredHeight() + getCompoundPaddingBottom() + getCompoundPaddingTop());
+        if (getScrollY() + dp >= maxScrollY) {
+            scrollTo(0, maxScrollY);
+        } else {
+            scrollBy(0, dp);
         }
     }
 }

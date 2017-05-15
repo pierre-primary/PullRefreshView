@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
 import com.ybao.pullrefreshview.layout.BaseHeaderView;
@@ -16,6 +17,9 @@ import com.ybao.pullrefreshview.layout.PullRefreshLayout;
 import com.ybao.pullrefreshview.simple.R;
 import com.ybao.pullrefreshview.simple.utils.AnimUtil;
 import com.ybao.pullrefreshview.support.type.LayoutType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Ybao on 2015/11/3 0003.
@@ -77,10 +81,15 @@ public class LockHeaderView extends BaseHeaderView {
         super.dispatchDraw(canvas);
     }
 
+    List<Animator> animators = new ArrayList<>();
+
     @Override
     protected void onStateChange(int state) {
         this.state = state;
-        ObjectAnimator.clearAllAnimations();
+        for (Animator animator : animators) {
+            animator.cancel();
+        }
+        animators.clear();
         stateImg.setVisibility(View.INVISIBLE);
         progress.setVisibility(View.INVISIBLE);
         ViewHelper.setAlpha(progress, 1f);
@@ -92,12 +101,12 @@ public class LockHeaderView extends BaseHeaderView {
             case LOOSENT_O_REFRESH:
                 break;
             case REFRESHING:
-                AnimUtil.startShow(progress, 0.1f, 200, 0);
-                AnimUtil.startRotation(progress, ViewHelper.getRotation(progress) + 359.99f, 500, 0, -1);
+                animators.add(AnimUtil.startShow(progress, 0.1f, 200, 0));
+                animators.add(AnimUtil.startRotation(progress, ViewHelper.getRotation(progress) + 359.99f, 500, 0, -1));
                 break;
             case REFRESH_CLONE:
-                AnimUtil.startShow(stateImg, 0.1f, 400, 200);
-                AnimUtil.startHide(progress);
+                animators.add(AnimUtil.startShow(stateImg, 0.1f, 400, 200));
+                animators.add(AnimUtil.startHide(progress));
                 break;
 
         }

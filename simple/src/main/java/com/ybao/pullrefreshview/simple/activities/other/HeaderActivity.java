@@ -101,7 +101,7 @@ public class HeaderActivity extends AppCompatActivity implements BaseFooterView.
 
 
     private void onMove() {
-        int oy = (int) flingLayout.getMoveY() - scrollGeter.getScrollY();
+        int oy = (int) flingLayout.getMoveP() - scrollGeter.getScrollY();
         if (oy > 0) {
             int imgHeaderHeigth = animHeader.getMeasuredHeight();
             float ph = 1 + (float) oy / (float) imgHeaderHeigth;

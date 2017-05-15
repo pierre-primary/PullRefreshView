@@ -21,15 +21,5 @@
  */
 package com.ybao.pullrefreshview.support.impl;
 
-import android.view.View;
-
-public interface Pullable {
-
-    boolean canOverStart();
-
-    boolean canOverEnd();
-
-    View getView();
-
-    void scrollAViewBy(int dp);
+public interface HPullable extends Pullable {
 }

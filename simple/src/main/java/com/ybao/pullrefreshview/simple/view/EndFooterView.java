@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Created by Ybao on 2015/11/3 0003.
  */
-public class NormalFooterView extends BaseFooterView {
+public class EndFooterView extends BaseFooterView {
 
     TextView textView;
     View tagImg;
@@ -28,29 +28,29 @@ public class NormalFooterView extends BaseFooterView {
     View stateImg;
 
 
-    public NormalFooterView(Context context) {
+    public EndFooterView(Context context) {
         this(context, null);
     }
 
-    public NormalFooterView(Context context, AttributeSet attrs) {
+    public EndFooterView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public NormalFooterView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public EndFooterView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
     private void init() {
-        LayoutInflater.from(getContext()).inflate(R.layout.view_footer_normal, this, true);
+        LayoutInflater.from(getContext()).inflate(R.layout.view_footer_end, this, true);
         textView = (TextView) findViewById(R.id.text);
         tagImg = findViewById(R.id.tag);
         progress = findViewById(R.id.progress);
         stateImg = findViewById(R.id.state);
     }
 
-
     List<Animator> animators = new ArrayList<>();
+
     @Override
     protected void onStateChange(int state) {
         for (Animator animator : animators) {
@@ -65,7 +65,6 @@ public class NormalFooterView extends BaseFooterView {
         ViewHelper.setAlpha(tagImg, 1);
         switch (state) {
             case NONE:
-                break;
             case PULLING:
                 textView.setText("上拉加载更多");
                 animators.add(AnimUtil.startRotation(tagImg, 0));
@@ -95,11 +94,11 @@ public class NormalFooterView extends BaseFooterView {
 
     @Override
     public float getSpanHeight() {
-        return getHeight();
+        return 0;
     }
 
     @Override
     public int getLayoutType() {
-        return LayoutType.LAYOUT_NORMAL;
+        return LayoutType.LAYOUT_NOT_MOVE;
     }
 }

@@ -22,12 +22,15 @@
 package com.ybao.pullrefreshview.layout;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
+import com.ybao.pullrefreshview.support.anim.AnimListener;
+import com.ybao.pullrefreshview.support.impl.Pullable;
 import com.ybao.pullrefreshview.support.impl.Refreshable;
 import com.ybao.pullrefreshview.support.type.LayoutType;
 
@@ -84,9 +87,12 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
         this.stateType = state;
         if (state == REFRESHING) {
             isLockState = true;
+            pullRefreshLayout.setRefreshing(true);
             if (onRefreshListener != null) {
                 onRefreshListener.onRefresh(this);
             }
+        } else {
+            pullRefreshLayout.setRefreshing(false);
         }
         onStateChange(state);
     }
@@ -96,11 +102,27 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
     }
 
 
-    private void close() {
+    private void close(int startDelay) {
         if (this.pullRefreshLayout != null) {
-            float moveY = pullRefreshLayout.getMoveY();
+            float moveY = pullRefreshLayout.getMoveP();
             if (moveY > 0) {
-                pullRefreshLayout.startMoveTo(moveY, 0);
+                pullRefreshLayout.startMoveTo(startDelay, new AnimListener() {
+                    @Override
+                    public void onUpdate(float value) {
+
+                    }
+
+                    @Override
+                    public void onAnimEnd() {
+                        setState(NONE);
+                    }
+
+                    @Override
+                    public void onAnimCencel() {
+                        setState(NONE);
+                    }
+                }, moveY, 0);
+            } else {
                 setState(NONE);
             }
         }
@@ -111,14 +133,52 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
         this.pullRefreshLayout = pullRefreshLayout;
     }
 
+    public void startRefresh(final int d) {
+        int h = getMeasuredHeight();
+        if (h > 0) {
+            toShowAndRefresh(d);
+        } else {
+            getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    toShowAndRefresh(d);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    } else {
+                        getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                }
+            });
+        }
+
+    }
+
     @Override
     public void startRefresh() {
+        startRefresh(0);
+    }
+
+    private void toShowAndRefresh(int d) {
         if (pullRefreshLayout != null) {
-            float moveY = pullRefreshLayout.getMoveY();
+            float moveY = pullRefreshLayout.getMoveP();
             if (moveY == 0) {
                 float headerSpanHeight = getSpanHeight();
-                pullRefreshLayout.startMoveTo(0, headerSpanHeight);
-                setState(REFRESHING);
+                pullRefreshLayout.startMoveTo(d, new AnimListener() {
+                    @Override
+                    public void onUpdate(float value) {
+
+                    }
+
+                    @Override
+                    public void onAnimEnd() {
+                        setState(REFRESHING);
+                    }
+
+                    @Override
+                    public void onAnimCencel() {
+
+                    }
+                }, 0, headerSpanHeight);
             }
         }
     }
@@ -127,12 +187,7 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
     public void stopRefresh() {
         isLockState = false;
         setState(REFRESH_CLONE);
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                close();
-            }
-        }, 400);
+        close(400);
     }
 
     @Override
@@ -143,8 +198,13 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
             ViewCompat.setTranslationY(this, getMeasuredHeight());
         } else if (layoutType == LayoutType.LAYOUT_DRAWER) {
             ViewCompat.setTranslationY(this, y);
-            ViewCompat.setTranslationY(pullRefreshLayout.getPullView(), 0);
+            Pullable pullable = pullRefreshLayout.getPullable();
+            if (pullable != null) {
+                ViewCompat.setTranslationY(pullable.getView(), 0);
+            }
             intercept = true;
+        } else if (layoutType == LayoutType.LAYOUT_NOT_MOVE) {
+            ViewCompat.setTranslationY(this, 0);
         } else {
             ViewCompat.setTranslationY(this, y);
         }
@@ -165,14 +225,14 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
     }
 
     @Override
-    public boolean onStartFling(float nowY) {
+    public boolean onStartrRelease(float nowY) {
         float headerSpanHeight = getSpanHeight();
         if (nowY >= headerSpanHeight) {
-            pullRefreshLayout.startMoveTo(nowY, headerSpanHeight);
+            pullRefreshLayout.startMoveTo(0, null, nowY, headerSpanHeight);
             setState(REFRESHING);
             return true;
         }
-        pullRefreshLayout.startMoveTo(nowY, 0);
+        pullRefreshLayout.startMoveTo(0, null, nowY, 0);
         setState(NONE);
         return false;
     }

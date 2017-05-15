@@ -12,7 +12,10 @@ import android.widget.ListView;
 
 import com.ybao.pullrefreshview.layout.BaseFooterView;
 import com.ybao.pullrefreshview.layout.BaseHeaderView;
+import com.ybao.pullrefreshview.layout.PullRefreshLayout;
 import com.ybao.pullrefreshview.simple.R;
+import com.ybao.pullrefreshview.simple.view.EndFooterView;
+import com.ybao.pullrefreshview.simple.view.NormalFooterView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,13 +40,17 @@ public class NormalRefreshActivity extends AppCompatActivity implements BaseHead
 
         listView = (ListView) findViewById(R.id.list);
         headerView = (BaseHeaderView) findViewById(R.id.header);
-        footerView = (BaseFooterView) findViewById(R.id.footer);
 
         list = getData(15);
 
         adapter = new ArrayAdapter(this, R.layout.item, list);
 
+        footerView = new EndFooterView(this);
+
         listView.setAdapter(adapter);
+        listView.addFooterView(footerView);
+
+        ((PullRefreshLayout) findViewById(R.id.root)).setFooter(footerView);
 
         headerView.setOnRefreshListener(this);
         footerView.setOnLoadListener(this);
