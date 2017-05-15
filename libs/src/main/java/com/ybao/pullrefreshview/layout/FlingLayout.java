@@ -500,6 +500,8 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         }
     }
 
+    /********************************/
+
     protected boolean isMyChild(View view) {
         return view.getParent() == this;
     }

@@ -30,6 +30,7 @@ import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
 import com.ybao.pullrefreshview.support.anim.AnimListener;
+import com.ybao.pullrefreshview.support.impl.OnEndListener;
 import com.ybao.pullrefreshview.support.impl.Pullable;
 import com.ybao.pullrefreshview.support.impl.Refreshable;
 import com.ybao.pullrefreshview.support.type.LayoutType;
@@ -101,36 +102,14 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
         return stateType;
     }
 
-
-    private void close(int startDelay) {
-        if (this.pullRefreshLayout != null) {
-            float moveY = pullRefreshLayout.getMoveP();
-            if (moveY > 0) {
-                pullRefreshLayout.startMoveTo(startDelay, new AnimListener() {
-                    @Override
-                    public void onUpdate(float value) {
-
-                    }
-
-                    @Override
-                    public void onAnimEnd() {
-                        setState(NONE);
-                    }
-
-                    @Override
-                    public void onAnimCencel() {
-                        setState(NONE);
-                    }
-                }, moveY, 0);
-            } else {
-                setState(NONE);
-            }
-        }
-    }
-
     @Override
     public void setPullRefreshLayout(PullRefreshLayout pullRefreshLayout) {
         this.pullRefreshLayout = pullRefreshLayout;
+    }
+
+    @Override
+    public void startRefresh() {
+        startRefresh(0);
     }
 
     public void startRefresh(final int d) {
@@ -151,11 +130,6 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
             });
         }
 
-    }
-
-    @Override
-    public void startRefresh() {
-        startRefresh(0);
     }
 
     private void toShowAndRefresh(int d) {
@@ -185,9 +159,42 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
 
     @Override
     public void stopRefresh() {
+        stopRefresh(null);
+    }
+
+    public void stopRefresh(OnEndListener onEndListener) {
         isLockState = false;
         setState(REFRESH_CLONE);
-        close(400);
+        close(400, onEndListener);
+    }
+
+    private void close(int startDelay, final OnEndListener onEndListener) {
+        if (this.pullRefreshLayout != null) {
+            float moveY = pullRefreshLayout.getMoveP();
+            if (moveY > 0) {
+                pullRefreshLayout.startMoveTo(startDelay, new AnimListener() {
+                    @Override
+                    public void onUpdate(float value) {
+
+                    }
+
+                    @Override
+                    public void onAnimEnd() {
+                        setState(NONE);
+                        if (onEndListener != null) {
+                            onEndListener.onEnd();
+                        }
+                    }
+
+                    @Override
+                    public void onAnimCencel() {
+                        setState(NONE);
+                    }
+                }, moveY, 0);
+            } else {
+                setState(NONE);
+            }
+        }
     }
 
     @Override

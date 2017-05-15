@@ -31,6 +31,7 @@ import android.widget.RelativeLayout;
 
 import com.ybao.pullrefreshview.support.anim.AnimListener;
 import com.ybao.pullrefreshview.support.impl.Loadable;
+import com.ybao.pullrefreshview.support.impl.OnEndListener;
 import com.ybao.pullrefreshview.support.impl.Pullable;
 import com.ybao.pullrefreshview.support.type.LayoutType;
 
@@ -102,39 +103,6 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
     }
 
 
-    private void close(int startDelay) {
-        if (this.pullRefreshLayout != null) {
-            final float moveY = pullRefreshLayout.getMoveP();
-            if (moveY < 0) {
-                pullRefreshLayout.startMoveTo(startDelay, new AnimListener() {
-                    float value = moveY;
-
-                    @Override
-                    public void onUpdate(float n) {
-                        float newValue = pullRefreshLayout.getMoveP();
-                        Pullable pullable = pullRefreshLayout.getPullable();
-                        if (pullable != null) {
-                            pullable.scrollAViewBy((int) (newValue - value));
-                        }
-                        value = newValue;
-                    }
-
-                    @Override
-                    public void onAnimEnd() {
-                        setState(NONE);
-                    }
-
-                    @Override
-                    public void onAnimCencel() {
-                        setState(NONE);
-                    }
-                }, moveY, 0);
-            } else {
-                setState(NONE);
-            }
-        }
-    }
-
     @Override
     public void setPullRefreshLayout(PullRefreshLayout pullRefreshLayout) {
         this.pullRefreshLayout = pullRefreshLayout;
@@ -188,11 +156,50 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
 
     @Override
     public void stopLoad() {
-        isLockState = false;
-        setState(LOAD_CLONE);
-        close(400);
+        stopLoad(null);
     }
 
+    public void stopLoad(OnEndListener onEndListener) {
+        isLockState = false;
+        setState(LOAD_CLONE);
+        close(400, onEndListener);
+    }
+
+    private void close(int startDelay, final OnEndListener onEndListener) {
+        if (this.pullRefreshLayout != null) {
+            final float moveY = pullRefreshLayout.getMoveP();
+            if (moveY < 0) {
+                pullRefreshLayout.startMoveTo(startDelay, new AnimListener() {
+                    float value = moveY;
+
+                    @Override
+                    public void onUpdate(float n) {
+                        float newValue = pullRefreshLayout.getMoveP();
+                        Pullable pullable = pullRefreshLayout.getPullable();
+                        if (pullable != null) {
+                            pullable.scrollAViewBy((int) (newValue - value));
+                        }
+                        value = newValue;
+                    }
+
+                    @Override
+                    public void onAnimEnd() {
+                        setState(NONE);
+                        if (onEndListener != null) {
+                            onEndListener.onEnd();
+                        }
+                    }
+
+                    @Override
+                    public void onAnimCencel() {
+                        setState(NONE);
+                    }
+                }, moveY, 0);
+            } else {
+                setState(NONE);
+            }
+        }
+    }
 
     @Override
     public boolean onScroll(float y) {
