@@ -81,6 +81,8 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     protected int version;
     protected int MAXDISTANCE = 0;
 
+    private boolean isDisallowIntercept = false;
+
     float moveP = 0;
     FlingLayoutContext flingLayoutContext;
     IEventResolver eventResolver;
@@ -108,7 +110,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         initAttrs(context, attrs);
     }
 
-    public void init(Context context) {
+    private void init(Context context) {
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         maxOverScrollDist = mTouchSlop * 3;
         version = android.os.Build.VERSION.SDK_INT;
@@ -259,7 +261,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
             if (!onStartrRelease(nowP)) {
                 startMoveTo(0, null, nowP, 0);
             }
-        } else if (canOverScroll && pullable != null) {
+        } else if (canOverScroll && pullable != null && !pullable.canOverStart() && !pullable.canOverEnd()) {
             overScrollController.addOverScrollListener();
         } else {
             setScrollState(SCROLL_STATE_IDLE);
@@ -298,36 +300,34 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         }
     }
 
+    @Override
+    public void requestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        isDisallowIntercept = disallowIntercept;
+        super.requestDisallowInterceptTouchEvent(disallowIntercept);
+    }
+
     /******************************************************************/
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        stopAnim();
-        setScrollState(SCROLL_STATE_TOUCH_SCROLL);
-        eventResolver.dispatchVelocity(ev);
-        if (pullable != null && !ViewCompat.isNestedScrollingEnabled(pullable.getView())) {
-            return eventResolver.dispatchTouchEvent(ev);
-        } else {
+        int action = ev.getAction();
+        if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
+            isDisallowIntercept = false;
+        } else if (isDisallowIntercept && !eventResolver.isScrolling()) {
             return super.dispatchTouchEvent(ev);
         }
+        stopAnim();
+        return eventResolver.dispatchTouchEvent(ev);
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (pullable != null && !ViewCompat.isNestedScrollingEnabled(pullable.getView())) {
-            return eventResolver.interceptTouchEvent(ev);
-        } else {
-            return super.onInterceptTouchEvent(ev);
-        }
+        return eventResolver.interceptTouchEvent(ev);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (pullable != null && !ViewCompat.isNestedScrollingEnabled(pullable.getView())) {
-            return eventResolver.touchEvent(ev);
-        } else {
-            return super.onTouchEvent(ev);
-        }
+        return eventResolver.touchEvent(ev);
     }
 
     /******************************************************************/

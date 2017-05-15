@@ -17,6 +17,8 @@ public interface IEventResolver extends NestedScrollingChild, NestedScrollingPar
 
     Pullable getPullAble(Pullable pullable);
 
+    boolean isScrolling();
+
     void setViewTranslationP(View view, float value);
 
     boolean dispatchTouchEvent(MotionEvent ev);
@@ -24,8 +26,6 @@ public interface IEventResolver extends NestedScrollingChild, NestedScrollingPar
     boolean interceptTouchEvent(MotionEvent ev);
 
     boolean touchEvent(MotionEvent ev);
-
-    void dispatchVelocity(MotionEvent ev);
 
     float getVelocity();
 
