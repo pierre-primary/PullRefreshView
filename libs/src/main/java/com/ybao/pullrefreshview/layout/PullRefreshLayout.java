@@ -26,7 +26,11 @@ import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 
+import com.nineoldandroids.animation.Animator;
+import com.ybao.pullrefreshview.support.anim.AnimListener;
 import com.ybao.pullrefreshview.support.impl.Loadable;
 import com.ybao.pullrefreshview.support.impl.Refreshable;
 import com.ybao.pullrefreshview.support.type.LayoutType;
@@ -187,16 +191,92 @@ public class PullRefreshLayout extends FlingLayout {
         return isLoading;
     }
 
+    Animator disHeaderAnim;
+
     public void setHasHeader(boolean hasHeader) {
         this.hasHeader = hasHeader;
+        float startP = getMoveP();
+        if (!hasHeader && startP < 0 && disHeaderAnim == null) {
+            mHeader.onScrollChange(SCROLL_STATE_FLING);
+            disHeaderAnim = disEnableByAnim(new AnimListener() {
+                @Override
+                public void onUpdate(float value) {
+                    if (mHeader != null) {
+                        mHeader.onScroll(value);
+                    }
+                }
+
+                @Override
+                public void onAnimEnd() {
+                    if (mHeader != null) {
+                        mHeader.onScrollChange(SCROLL_STATE_IDLE);
+                    }
+                    disHeaderAnim = null;
+                }
+
+                @Override
+                public void onAnimCencel() {
+                    if (mHeader != null) {
+                        mHeader.onScrollChange(SCROLL_STATE_IDLE);
+                    }
+                    disHeaderAnim = null;
+                }
+            }, startP, 0);
+            disHeaderAnim.start();
+        } else if (hasHeader && disHeaderAnim != null) {
+            disHeaderAnim.cancel();
+            disHeaderAnim = null;
+        }
+    }
+
+    private Animator disEnableByAnim(final AnimListener animListener, float startP, float endP) {
+        int duration = (int) Math.abs(endP - startP);
+        int time = Math.min(MAX_DURATION, duration);
+        time = Math.max(MIN_DURATION, time);
+        return animGetter.createMoveToAnim(0, time, new DecelerateInterpolator(), animListener, startP, endP);
     }
 
     public boolean isHasHeader() {
         return hasHeader;
     }
 
+
+    Animator disFooterAnim;
+
     public void setHasFooter(boolean hasFooter) {
         this.hasFooter = hasFooter;
+        float startP = getMoveP();
+        if (!hasFooter && startP < 0 && disFooterAnim == null) {
+            mFooter.onScrollChange(SCROLL_STATE_FLING);
+            disFooterAnim = disEnableByAnim(new AnimListener() {
+                @Override
+                public void onUpdate(float value) {
+                    if (mFooter != null) {
+                        mFooter.onScroll(value);
+                    }
+                }
+
+                @Override
+                public void onAnimEnd() {
+                    if (mFooter != null) {
+                        mHeader.onScrollChange(SCROLL_STATE_IDLE);
+                    }
+                    disFooterAnim = null;
+                }
+
+                @Override
+                public void onAnimCencel() {
+                    if (mFooter != null) {
+                        mHeader.onScrollChange(SCROLL_STATE_IDLE);
+                    }
+                    disFooterAnim = null;
+                }
+            }, startP, 0);
+            disFooterAnim.start();
+        } else if (hasFooter && disFooterAnim != null) {
+            disFooterAnim.cancel();
+            disFooterAnim = null;
+        }
     }
 
     public boolean isHasFooter() {

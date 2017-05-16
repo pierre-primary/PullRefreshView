@@ -70,8 +70,8 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
 
     protected Pullable pullable;
     private int mTouchSlop;
-    private static final int MAX_DURATION = 600;
-    private static final int MIN_DURATION = 300;
+    protected static final int MAX_DURATION = 600;
+    protected static final int MIN_DURATION = 300;
     private int maxOverScrollDist;
     private boolean canOverEnd = true;
     private boolean canOverStart = true;
