@@ -112,7 +112,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
 
     private void init(Context context) {
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-        maxOverScrollDist = mTouchSlop * 3;
+        maxOverScrollDist = mTouchSlop * 10;
         version = android.os.Build.VERSION.SDK_INT;
         flingLayoutContext = new FlingLayoutContext();
         animGetter = new AnimGetter();

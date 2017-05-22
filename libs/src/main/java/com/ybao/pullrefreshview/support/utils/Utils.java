@@ -4,13 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.WindowManager;
 
 /**
  * Created by Ybao on 16/7/24.
  */
 public class Utils {
     public static int getScreenWidth(Context context) {
-        Display mDisplay = ((Activity) context).getWindowManager().getDefaultDisplay();
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display mDisplay = windowManager.getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         mDisplay.getMetrics(metrics);
         return metrics.widthPixels;
@@ -20,7 +22,8 @@ public class Utils {
      * 屏幕分辨率高
      **/
     public static int getScreenHeight(Context context) {
-        Display mDisplay = ((Activity) context).getWindowManager().getDefaultDisplay();
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display mDisplay = windowManager.getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         mDisplay.getMetrics(metrics);
         return metrics.heightPixels;

@@ -259,7 +259,7 @@ public class PullRefreshLayout extends FlingLayout {
                 @Override
                 public void onAnimEnd() {
                     if (mFooter != null) {
-                        mHeader.onScrollChange(SCROLL_STATE_IDLE);
+                        mFooter.onScrollChange(SCROLL_STATE_IDLE);
                     }
                     disFooterAnim = null;
                 }
@@ -267,7 +267,7 @@ public class PullRefreshLayout extends FlingLayout {
                 @Override
                 public void onAnimCencel() {
                     if (mFooter != null) {
-                        mHeader.onScrollChange(SCROLL_STATE_IDLE);
+                        mFooter.onScrollChange(SCROLL_STATE_IDLE);
                     }
                     disFooterAnim = null;
                 }

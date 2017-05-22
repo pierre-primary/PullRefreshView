@@ -41,7 +41,7 @@ public class OverScrollController {
         public void run() {
             times++;
             if (c.canOverStart()) {
-                float oh = c.getVelocity() / times / 10;
+                float oh = (float) Math.sqrt(c.getVelocity() * 3 / times);
                 oh = Math.min(c.getMaxOverScrollDist(), oh);
                 if (oh > c.getTouchSlop()) {
                     float moveP = c.getMoveP();
@@ -51,7 +51,7 @@ public class OverScrollController {
                 }
                 return;
             } else if (c.canOverEnd()) {
-                float oh = c.getVelocity() / times / 10;
+                float oh = (float) -Math.sqrt(-c.getVelocity() * 3 / times);
                 oh = -Math.min(c.getMaxOverScrollDist(), -oh);
                 if (-oh > c.getTouchSlop()) {
                     float moveP = c.getMoveP();
@@ -72,7 +72,7 @@ public class OverScrollController {
 
     public int startBounce(float startP, float endP) {
         int duration = (int) Math.abs(endP - startP);
-        int time = Math.min(c.getMaxDuration(), duration);
+        int time = Math.min(c.getMaxDuration() * 2, duration);
         time = Math.max(c.getMinDuration(), time);
         c.startAnim(0, FlingLayout.SCROLL_STATE_OVER_SCROLL, time, new DecelerateAccelerateInterpolator(), null, startP, endP, startP);
         return time;
