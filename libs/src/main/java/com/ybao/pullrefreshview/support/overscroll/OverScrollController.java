@@ -5,6 +5,7 @@ import android.view.animation.DecelerateInterpolator;
 
 import com.ybao.pullrefreshview.layout.FlingLayout;
 import com.ybao.pullrefreshview.support.anim.interpolator.DecelerateAccelerateInterpolator;
+import com.ybao.pullrefreshview.support.utils.Utils;
 
 /**
  * Created by ybao on 2017/5/14.
@@ -70,11 +71,7 @@ public class OverScrollController {
         }
     }
 
-    public int startBounce(float startP, float endP) {
-        int duration = (int) Math.abs(endP - startP);
-        int time = Math.min(c.getMaxDuration() * 2, duration);
-        time = Math.max(c.getMinDuration(), time);
-        c.startAnim(0, FlingLayout.SCROLL_STATE_OVER_SCROLL, time, new DecelerateAccelerateInterpolator(), null, startP, endP, startP);
-        return time;
+    private void startBounce(float startP, float endP) {
+        c.startAnim(0, FlingLayout.SCROLL_STATE_OVER_SCROLL, Utils.MIN_DURATION, new DecelerateAccelerateInterpolator(), null, startP, endP, startP);
     }
 }

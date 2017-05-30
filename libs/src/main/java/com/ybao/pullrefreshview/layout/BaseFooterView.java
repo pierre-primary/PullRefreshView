@@ -43,7 +43,7 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
     public final static int LOOSENT_O_LOAD = 2;
     public final static int LOADING = 3;
     public final static int LOAD_CLONE = 4;
-    private int stateType = NONE;
+    private int footerState = NONE;
 
     private PullRefreshLayout pullRefreshLayout;
 
@@ -80,11 +80,11 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
     }
 
     private void setState(int state) {
-        if (isLockState || stateType == state) {
+        if (isLockState || footerState == state) {
             return;
         }
         Log.i("BaseFooterView", "" + state);
-        this.stateType = state;
+        this.footerState = state;
         if (state == LOADING) {
             isLockState = true;
             pullRefreshLayout.setLoading(true);
@@ -98,8 +98,8 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
     }
 
 
-    public int getType() {
-        return stateType;
+    public int getState() {
+        return footerState;
     }
 
 

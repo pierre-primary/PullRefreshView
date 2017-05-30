@@ -34,6 +34,7 @@ import com.ybao.pullrefreshview.support.anim.AnimListener;
 import com.ybao.pullrefreshview.support.impl.Loadable;
 import com.ybao.pullrefreshview.support.impl.Refreshable;
 import com.ybao.pullrefreshview.support.type.LayoutType;
+import com.ybao.pullrefreshview.support.utils.Utils;
 
 
 /**
@@ -83,12 +84,12 @@ public class PullRefreshLayout extends FlingLayout {
     }
 
     @Override
-    protected void onScrollChange(int stateType) {
+    protected void onScrollChange(int scrollState) {
         if (mHeader != null && isShowRefreshView()) {
-            mHeader.onScrollChange(stateType);
+            mHeader.onScrollChange(scrollState);
         }
         if (mFooter != null && isShowLoadView()) {
-            mFooter.onScrollChange(stateType);
+            mFooter.onScrollChange(scrollState);
         }
 
     }
@@ -168,11 +169,11 @@ public class PullRefreshLayout extends FlingLayout {
     }
 
     private boolean isShowRefreshView() {
-        return hasHeader && !isLoading && stateType != SCROLL_STATE_OVER_SCROLL;
+        return hasHeader && !isLoading && scrollState != SCROLL_STATE_OVER_SCROLL;
     }
 
     private boolean isShowLoadView() {
-        return hasFooter && !isRefreshing && stateType != SCROLL_STATE_OVER_SCROLL;
+        return hasFooter && !isRefreshing && scrollState != SCROLL_STATE_OVER_SCROLL;
     }
 
     void setRefreshing(boolean refresh) {
@@ -231,8 +232,8 @@ public class PullRefreshLayout extends FlingLayout {
 
     private Animator disEnableByAnim(final AnimListener animListener, float startP, float endP) {
         int duration = (int) Math.abs(endP - startP);
-        int time = Math.min(MAX_DURATION, duration);
-        time = Math.max(MIN_DURATION, time);
+        int time = Math.min(Utils.MAX_DURATION, duration);
+        time = Math.max(Utils.MIN_DURATION, time);
         return animGetter.createMoveToAnim(0, time, new DecelerateInterpolator(), animListener, startP, endP);
     }
 

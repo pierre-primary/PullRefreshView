@@ -62,33 +62,87 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     public static final int VERTICAL = 1;
     protected int orientation = VERTICAL;
 
-    public final static int SCROLL_STATE_IDLE = 0;
-    public final static int SCROLL_STATE_TOUCH_SCROLL = 1;
-    public final static int SCROLL_STATE_FLING = 2;
-    public final static int SCROLL_STATE_OVER_SCROLL = 3;
-    protected int stateType = SCROLL_STATE_IDLE;
+    public final static int SCROLL_STATE_SCROLL = 0x001;
+    public final static int SCROLL_STATE_TOUCH = 0x010;
+    public final static int SCROLL_STATE_OVER = 0x100;
+    /**
+     * 滑动状态--静止状态
+     */
+    public final static int SCROLL_STATE_IDLE = 0x000;
+    /**
+     * 滑动状态--滑动状态
+     */
+    public final static int SCROLL_STATE_TOUCH_SCROLL = SCROLL_STATE_TOUCH | SCROLL_STATE_SCROLL;
+    /**
+     * 滑动状态--自动滚动状态
+     */
+    public final static int SCROLL_STATE_FLING = SCROLL_STATE_SCROLL;
+    /**
+     * 滑动状态--越界滚动状态
+     */
+    public final static int SCROLL_STATE_OVER_SCROLL = SCROLL_STATE_OVER | SCROLL_STATE_SCROLL;
 
+    protected int scrollState = SCROLL_STATE_IDLE;
+    /**
+     * 滑动主体
+     */
     protected Pullable pullable;
+    /**
+     * 最小触发事件距离
+     */
     private int mTouchSlop;
-    protected static final int MAX_DURATION = 600;
-    protected static final int MIN_DURATION = 300;
     private int maxOverScrollDist;
+    /**
+     * 滑出结束点开关
+     */
     private boolean canOverEnd = true;
+    /**
+     * 滑出起始点开关
+     */
     private boolean canOverStart = true;
+    /**
+     * 越界滑动开关
+     */
     private boolean canOverScroll = true;
     protected OnScrollListener mOnScrollListener;
+    /**
+     * 外部设置最大滑动距离
+     */
     protected int maxDistance = 0;
-    protected int version;
+    /**
+     * 默认最大滑动距离
+     */
     protected int MAXDISTANCE = 0;
 
+    /**
+     * 是否被子控件阻止事件的标识
+     */
     private boolean isDisallowIntercept = false;
 
+    /**
+     * 当前位置
+     */
     float moveP = 0;
+    /**
+     * 控制辅助
+     */
     FlingLayoutContext flingLayoutContext;
+    /**
+     * 事件解析器
+     */
     IEventResolver eventResolver;
+    /**
+     * 动画生成器
+     */
     AnimGetter animGetter;
+    /**
+     * 越界滑动控制器
+     */
     OverScrollController overScrollController;
 
+    /**
+     * 主动画
+     */
     Animator animator;
 
 
@@ -113,7 +167,6 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     private void init(Context context) {
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         maxOverScrollDist = mTouchSlop * 10;
-        version = android.os.Build.VERSION.SDK_INT;
         flingLayoutContext = new FlingLayoutContext();
         animGetter = new AnimGetter();
         overScrollController = new OverScrollController(flingLayoutContext);
@@ -140,6 +193,9 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         }
     }
 
+    /**
+     * 判断是否可以滑出结束点
+     */
     private boolean canOverEnd() {
         if (pullable != null) {
             return canOverEnd && pullable.canOverEnd();
@@ -147,6 +203,9 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         return canOverEnd;
     }
 
+    /**
+     * 判断是否可以滑出开始点
+     */
     private boolean canOverStart() {
         if (pullable != null) {
             return canOverStart && pullable.canOverStart();
@@ -154,10 +213,27 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         return canOverStart;
     }
 
+    /**
+     * @return 最大滑动距离
+     */
     public int getMaxDistance() {
         return maxDistance > 0 ? maxDistance : MAXDISTANCE;
     }
 
+    /**
+     * 移到指定距离
+     *
+     * @param dp 距离
+     */
+    private void moveBy(float dp) {
+        moveTo(getMoveP() + dp);
+    }
+
+    /**
+     * 移到指定位置
+     *
+     * @param p 位置
+     */
     private void moveTo(float p) {
         setMoveP(p);
         Log.i("flingLayout", "moveP:" + p);
@@ -170,27 +246,6 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         }
     }
 
-    private void setScrollState(int stateType) {
-        if (this.stateType != stateType) {
-            if (this.stateType == SCROLL_STATE_OVER_SCROLL && getMoveP() != 0) {
-                return;
-            }
-            if (stateType != SCROLL_STATE_FLING) {
-                overScrollController.removeOverScrollListener();
-            }
-            this.stateType = stateType;
-            Log.i("flingLayout", "onScrollChange:" + stateType);
-            onScrollChange(stateType);
-            if (mOnScrollListener != null) {
-                mOnScrollListener.onScrollChange(this, stateType);
-            }
-        }
-    }
-
-    private void moveBy(float dp) {
-        moveTo(getMoveP() + dp);
-    }
-
     private void setMoveP(float moveP) {
         this.moveP = moveP;
     }
@@ -199,18 +254,76 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         return moveP;
     }
 
+    private void addScrollState(int state) {
+        setScrollState(scrollState | state);
+    }
+
+    private void removeScrollState(int state) {
+        setScrollState(scrollState & ~state);
+    }
+
+    /**
+     * 设置滑动状态
+     *
+     * @param scrollState 滑动状态
+     */
+    private void setScrollState(int scrollState) {
+        if (this.scrollState != scrollState) {
+            if (this.scrollState == SCROLL_STATE_OVER_SCROLL && getMoveP() != 0) {
+                return;
+            }
+            if (scrollState != SCROLL_STATE_FLING) {
+                overScrollController.removeOverScrollListener();
+            }
+            this.scrollState = scrollState;
+            Log.i("flingLayout", "onScrollChange:" + scrollState);
+            onScrollChange(scrollState);
+            if (mOnScrollListener != null) {
+                mOnScrollListener.onScrollChange(this, scrollState);
+            }
+        }
+    }
+
+    /**
+     * 松手fling 到指定距离
+     *
+     * @param startDelay   动画开始延时
+     * @param animListener 插值器
+     * @param startP       起始点
+     * @param dp           距离
+     * @return 动画执行时间
+     */
     public int startMoveBy(int startDelay, AnimListener animListener, float startP, float dp) {
         return startMoveTo(startDelay, animListener, startP, startP + dp);
     }
 
+    /**
+     * 松手fling 到指定点
+     *
+     * @param startDelay   动画开始延时
+     * @param animListener 插值器
+     * @param startP       起始点
+     * @param endP         结束点
+     * @return 动画执行时间
+     */
     public int startMoveTo(int startDelay, AnimListener animListener, float startP, float endP) {
         int duration = (int) Math.abs(endP - startP);
-        int time = Math.min(MAX_DURATION, duration);
-        time = Math.max(MIN_DURATION, time);
+        int time = Math.min(Utils.MAX_DURATION, duration);
+        time = Math.max(Utils.MIN_DURATION, time);
         startAnim(startDelay, SCROLL_STATE_FLING, time, new AccelerateDecelerateInterpolator(), animListener, startP, endP);
         return time;
     }
 
+    /**
+     * 主动画
+     *
+     * @param startDelay   动画开始延时
+     * @param state        动画启动时的SCROLL状态
+     * @param time         动画时间
+     * @param interpolator 插值器
+     * @param animListener 动画状态回调
+     * @param p            关键帧
+     */
     private void startAnim(int startDelay, final int state, int time, Interpolator interpolator, final AnimListener animListener, float... p) {
         stopAnim();
         setScrollState(state);
@@ -226,7 +339,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
 
             @Override
             public void onAnimEnd() {
-                if (stateType == state) {
+                if (scrollState == state) {
                     setScrollState(SCROLL_STATE_IDLE);
                 }
                 if (animListener != null) {
@@ -236,7 +349,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
 
             @Override
             public void onAnimCencel() {
-                if (stateType == state) {
+                if (scrollState == state) {
                     setScrollState(SCROLL_STATE_IDLE);
                 }
                 if (animListener != null) {
@@ -247,6 +360,9 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         animator.start();
     }
 
+    /**
+     * 停止主动画
+     */
     public void stopAnim() {
         if (animator != null) {
             animator.cancel();
@@ -306,14 +422,14 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         super.requestDisallowInterceptTouchEvent(disallowIntercept);
     }
 
-    /******************************************************************/
+    /********************************手势处理**********************************/
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         int action = ev.getAction();
-        if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
+        if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {//松手重置
             isDisallowIntercept = false;
-        } else if (isDisallowIntercept && !eventResolver.isScrolling()) {
+        } else if (isDisallowIntercept && !eventResolver.isScrolling()) {//避免拦截，避免子手势中断
             return super.dispatchTouchEvent(ev);
         }
         stopAnim();
@@ -330,7 +446,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         return eventResolver.touchEvent(ev);
     }
 
-    /******************************************************************/
+    /*********************************NestedScrolling*********************************/
 
     @Override
     public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
@@ -419,7 +535,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         eventResolver.onDetachedFromWindow();
     }
 
-    /******************************************************************/
+    /********************************提供外部事件调用**********************************/
 
     public class FlingLayoutContext {
 
@@ -459,16 +575,14 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
             return FlingLayout.this.canOverEnd();
         }
 
-        public void setScrollState(int stateType) {
-            FlingLayout.this.setScrollState(stateType);
+        public void setScrollState(int scrollState) {
+            FlingLayout.this.setScrollState(scrollState);
         }
-
-        public int getMaxDuration() {
-            return MAX_DURATION;
+        public void addScrollState(int scrollState) {
+            FlingLayout.this.addScrollState(scrollState);
         }
-
-        public int getMinDuration() {
-            return MIN_DURATION;
+        public void removeScrollState(int scrollState) {
+            FlingLayout.this.removeScrollState(scrollState);
         }
 
         public int getMaxDistance() {
@@ -514,7 +628,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         return false;
     }
 
-    protected void onScrollChange(int stateType) {
+    protected void onScrollChange(int scrollState) {
     }
 
     public interface OnScrollListener {

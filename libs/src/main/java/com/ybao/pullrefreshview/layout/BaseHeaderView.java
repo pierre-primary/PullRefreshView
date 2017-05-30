@@ -42,7 +42,7 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
     public final static int LOOSENT_O_REFRESH = 2;
     public final static int REFRESHING = 3;
     public final static int REFRESH_CLONE = 4;
-    private int stateType = NONE;
+    private int headerState = NONE;
 
     private PullRefreshLayout pullRefreshLayout;
 
@@ -81,11 +81,11 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
 
 
     private void setState(int state) {
-        if (isLockState || stateType == state) {
+        if (isLockState || headerState == state) {
             return;
         }
         Log.i("BaseHeaderView", "" + state);
-        this.stateType = state;
+        this.headerState = state;
         if (state == REFRESHING) {
             isLockState = true;
             pullRefreshLayout.setRefreshing(true);
@@ -98,8 +98,8 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
         onStateChange(state);
     }
 
-    public int getType() {
-        return stateType;
+    public int getState() {
+        return headerState;
     }
 
     @Override
