@@ -216,6 +216,11 @@ public abstract class EventResolver implements IEventResolver {
     }
 
     @Override
+    public boolean onNestedPreFling(View target, float velocityX, float velocityY) {
+        return dispatchNestedPreFling(velocityX, velocityY);
+    }
+
+    @Override
     public void onDetachedFromWindow() {
         mChildHelper.onDetachedFromWindow();
     }

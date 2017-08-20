@@ -81,6 +81,11 @@ public class LockHeaderView extends BaseHeaderView {
         super.dispatchDraw(canvas);
     }
 
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+    }
+
     List<Animator> animators = new ArrayList<>();
 
     @Override

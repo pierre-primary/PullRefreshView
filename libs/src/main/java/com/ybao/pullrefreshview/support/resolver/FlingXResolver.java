@@ -124,7 +124,7 @@ public class FlingXResolver extends EventResolver {
     @Override
     public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
         float moveX = c.getMoveP();
-        if (c.getPullable() == null || moveX == 0) {
+        if (moveX == 0) {
             dispatchNestedPreScroll(dx, dy, consumed, null);
         } else {
             c.getFlingLayout().getParent().requestDisallowInterceptTouchEvent(true);
@@ -160,17 +160,17 @@ public class FlingXResolver extends EventResolver {
         }
     }
 
-    @Override
-    public boolean onNestedPreFling(View target, float velocityX, float velocityY) {
-        boolean consumed = dispatchNestedPreFling(velocityX, velocityY);
-        if (consumed) {
-            return true;
-        }
-        if (c.canOverStart() && velocityX > 0) {
-            return true;
-        } else if (c.canOverEnd() && velocityX < 0) {
-            return true;
-        }
-        return false;
-    }
+//    @Override
+//    public boolean onNestedPreFling(View target, float velocityX, float velocityY) {
+//        boolean consumed = dispatchNestedPreFling(velocityX, velocityY);
+//        if (consumed) {
+//            return true;
+//        }
+//        if (c.canOverStart() && velocityX > 0) {
+//            return true;
+//        } else if (c.canOverEnd() && velocityX < 0) {
+//            return true;
+//        }
+//        return consumed;
+//    }
 }
