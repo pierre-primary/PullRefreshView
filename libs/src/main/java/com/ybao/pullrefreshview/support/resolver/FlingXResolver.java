@@ -137,8 +137,6 @@ public class FlingXResolver extends EventResolver {
                 consumed[0] = (int) (moveX - 0);
                 int[] pconsumed = new int[2];
                 dispatchNestedPreScroll(dx - consumed[0], dy - consumed[1], pconsumed, null);
-                consumed[0] += pconsumed[0];
-                consumed[1] += pconsumed[1];
             } else if ((moveX > 0 && dataX > 0) || (moveX < 0 && dataX < 0)) {
                 //是否超过最大距离
                 int maxDistance = c.getMaxDistance();
@@ -152,25 +150,23 @@ public class FlingXResolver extends EventResolver {
                 } else if (moveX < -maxDistance) {
                     c.moveTo(-maxDistance);
                 }
-                consumed[0] = dx;
             } else {
                 c.moveBy(dataX);
-                consumed[0] = dx;
             }
+            consumed[0] = dx;
         }
     }
 
-//    @Override
-//    public boolean onNestedPreFling(View target, float velocityX, float velocityY) {
-//        boolean consumed = dispatchNestedPreFling(velocityX, velocityY);
-//        if (consumed) {
-//            return true;
-//        }
-//        if (c.canOverStart() && velocityX > 0) {
-//            return true;
-//        } else if (c.canOverEnd() && velocityX < 0) {
-//            return true;
-//        }
-//        return consumed;
-//    }
+    @Override
+    public boolean onNestedPreFling(View target, float velocityX, float velocityY) {
+        boolean consumed = dispatchNestedPreFling(velocityX, velocityY);
+        if (consumed) {
+            return true;
+        }
+        float moveX = c.getMoveP();
+        if (moveX != 0) {
+            return true;
+        }
+        return false;
+    }
 }

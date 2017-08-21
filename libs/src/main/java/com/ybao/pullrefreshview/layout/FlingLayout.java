@@ -241,7 +241,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         if (mOnScrollListener != null) {
             mOnScrollListener.onScroll(this, p);
         }
-        if (!intercept) {
+        if (!intercept && pullable != null) {
             eventResolver.setViewTranslationP(pullable.getView(), p);
         }
     }
@@ -578,9 +578,11 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         public void setScrollState(int scrollState) {
             FlingLayout.this.setScrollState(scrollState);
         }
+
         public void addScrollState(int scrollState) {
             FlingLayout.this.addScrollState(scrollState);
         }
+
         public void removeScrollState(int scrollState) {
             FlingLayout.this.removeScrollState(scrollState);
         }

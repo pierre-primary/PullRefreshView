@@ -1,19 +1,28 @@
 package com.ybao.pullrefreshview.simple.activities;
 
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.ybao.adapter.recyclerview.StandardAdapter;
 import com.ybao.pullrefreshview.layout.BaseFooterView;
 import com.ybao.pullrefreshview.layout.BaseHeaderView;
+import com.ybao.pullrefreshview.layout.FlingLayout;
 import com.ybao.pullrefreshview.layout.PullRefreshLayout;
 import com.ybao.pullrefreshview.simple.R;
+import com.ybao.pullrefreshview.simple.fragment.Fragment1;
 import com.ybao.pullrefreshview.simple.view.EndFooterView;
 import com.ybao.pullrefreshview.simple.view.NormalFooterView;
 
@@ -25,35 +34,48 @@ import java.util.List;
  */
 public class NormalRefreshActivity extends AppCompatActivity implements BaseHeaderView.OnRefreshListener, BaseFooterView.OnLoadListener {
 
-    ListView listView;
+    RecyclerView recyclerView;
     BaseHeaderView headerView;
     BaseFooterView footerView;
 
-    ArrayAdapter adapter;
+    RecyclerViewAdapter adapter;
 
     List<String> list = new ArrayList<String>();
+    LinearLayoutManager linearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_normal_refresh);
 
-        listView = (ListView) findViewById(R.id.list);
+//        ((FlingLayout) findViewById(R.id.root)).setNestedScrollingEnabled(true);
+
+        recyclerView = (RecyclerView) findViewById(R.id.list);
         headerView = (BaseHeaderView) findViewById(R.id.header);
+        footerView = (BaseFooterView) findViewById(R.id.footer);
 
-        list = getData(15);
+        list = getData(50);
 
-        adapter = new ArrayAdapter(this, R.layout.item, list);
+        adapter = new RecyclerViewAdapter();
+        adapter.setData(list);
+        linearLayoutManager = new LinearLayoutManager(NormalRefreshActivity.this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    int firstVisiblePosition = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
+                    if (firstVisiblePosition == 0) {
+                        ((AppBarLayout) findViewById(R.id.AppBarLayout)).setExpanded(true, true);
+                    }
+                }
+            }
+        });
 
-        footerView = new EndFooterView(this);
-
-        listView.setAdapter(adapter);
-        listView.addFooterView(footerView);
-
-        ((PullRefreshLayout) findViewById(R.id.root)).setFooter(footerView);
-
-        headerView.setOnRefreshListener(this);
-        footerView.setOnLoadListener(this);
+//        headerView.setOnRefreshListener(this);
+//        footerView.setOnLoadListener(this);
     }
 
     @Override
@@ -65,7 +87,7 @@ public class NormalRefreshActivity extends AppCompatActivity implements BaseHead
                 List<String> datas = getData(5);
                 list.clear();
                 list.addAll(datas);
-                adapter.notifyDataSetChanged();
+                adapter.setData(list);
                 headerView.stopRefresh();
             }
         }, 3000);
@@ -94,6 +116,21 @@ public class NormalRefreshActivity extends AppCompatActivity implements BaseHead
             datas.add("第" + page + "页,第" + i + "条");
         }
         return datas;
+    }
+
+    class RecyclerViewAdapter extends StandardAdapter {
+        @Override
+        public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new ItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(ItemViewHolder holder, int position) {
+            super.onBindViewHolder(holder, position);
+
+            ((TextView) holder.itemView).setText(getItem(position).toString());
+
+        }
     }
 }
 

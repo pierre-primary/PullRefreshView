@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PullRefreshView</string>
+    <string name="FlingBehavior" translatable="true">com.ybao.pullrefreshview.simple.activities.FlingBehavior</string>
 </resources>

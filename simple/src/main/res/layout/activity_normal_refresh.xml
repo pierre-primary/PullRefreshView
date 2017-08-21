@@ -1,40 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.ybao.pullrefreshview.layout.PullRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<com.ybao.pullrefreshview.layout.FlingLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
 
-    <com.ybao.pullrefreshview.simple.view.NormalHeaderView
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-
-    <!--<com.ybao.pullrefreshview.simple.view.NormalFooterView-->
-        <!--android:id="@+id/footer"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content" />-->
-
     <com.ybao.pullrefreshview.layout.SliderBox
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ListView
-            android:id="@+id/list"
+        <com.ybao.pullrefreshview.simple.activities.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/white"
-            android:cacheColorHint="@null"
-            android:divider="#ccc"
-            android:dividerHeight="1px" />
+            android:background="@color/colorPrimary">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@mipmap/ic_launcher" />
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/AppBarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="100dip"
+                    android:background="@android:color/holo_red_dark"
+                    app:layout_scrollFlags="scroll" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="50dip"
+                    android:background="@android:color/holo_green_dark"
+                    app:layout_scrollFlags="enterAlways|scroll" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="50dip"
+                    android:background="@android:color/holo_blue_dark"
+                    android:minHeight="50dp"
+                    app:layout_scrollFlags="exitUntilCollapsed|scroll" />
+
+            </android.support.design.widget.AppBarLayout>
+
+        </com.ybao.pullrefreshview.simple.activities.CoordinatorLayout>
     </com.ybao.pullrefreshview.layout.SliderBox>
 
-</com.ybao.pullrefreshview.layout.PullRefreshLayout>
+</com.ybao.pullrefreshview.layout.FlingLayout>

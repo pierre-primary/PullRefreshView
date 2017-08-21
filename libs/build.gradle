@@ -22,7 +22,7 @@ android {
 
 dependencies {
     compile project(':standardadapter')
-    compile 'com.android.support:recyclerview-v7:23.2.1'
-    compile 'com.android.support:support-v4:23.2.1'
     compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.android.support:support-v4:26.0.0-alpha1'
+    compile 'com.android.support:recyclerview-v7:26.0.0-alpha1'
 }
