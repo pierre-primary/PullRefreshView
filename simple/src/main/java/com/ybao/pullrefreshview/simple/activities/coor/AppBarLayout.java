@@ -3,11 +3,9 @@ package com.ybao.pullrefreshview.simple.activities.coor;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -15,8 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.nineoldandroids.animation.ValueAnimator;
 import com.nineoldandroids.view.ViewHelper;
-import com.ybao.pullrefreshview.support.utils.Utils;
 
 
 /**
@@ -94,6 +92,38 @@ public class AppBarLayout extends LinearLayout {
         }
         mt = t;
         ViewHelper.setTranslationY(this, -mt);
+    }
+
+    ValueAnimator valueAnimator = null;
+
+    public void scrollStateChanged(final View view, int newState) {
+        if (valueAnimator != null) {
+            valueAnimator.cancel();
+            valueAnimator = null;
+        }
+        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+            final int mt = -(int) ViewHelper.getTranslationY(this);
+            if (mt < hh2 && mt >= (hh2 + hh1) / 2) {
+                valueAnimator = ValueAnimator.ofFloat(mt, hh2);
+            } else if (mt > hh1 && mt < (hh2 + hh1) / 2) {
+                valueAnimator = ValueAnimator.ofFloat(mt, hh1);
+            }
+
+            if (valueAnimator == null) {
+                return;
+            }
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                int now = mt;
+
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    int newp = (int) Float.parseFloat(animation.getAnimatedValue().toString());
+                    view.scrollBy(0, newp - now);
+                    now = newp;
+                }
+            });
+            valueAnimator.start();
+        }
     }
 
     public static class ScrollingViewBehavior extends CoordinatorLayout.Behavior {
@@ -188,6 +218,7 @@ public class AppBarLayout extends LinearLayout {
         @Override
         public void onScrollStateChanged(CoordinatorLayout coordinatorLayout, View child, View view, int newState) {
             AppBarLayout appBarLayout = (AppBarLayout) child;
+            appBarLayout.scrollStateChanged(view, newState);
         }
     }
 }
