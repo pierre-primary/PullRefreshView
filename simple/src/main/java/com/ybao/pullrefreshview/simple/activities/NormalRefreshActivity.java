@@ -58,6 +58,12 @@ public class NormalRefreshActivity extends AppCompatActivity implements BaseHead
 
         adapter = new RecyclerViewAdapter();
         adapter.setData(list);
+        adapter.setItemClickListener(new StandardAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                recyclerView.scrollToPosition(position);
+            }
+        });
         linearLayoutManager = new LinearLayoutManager(NormalRefreshActivity.this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
@@ -68,7 +74,7 @@ public class NormalRefreshActivity extends AppCompatActivity implements BaseHead
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     int firstVisiblePosition = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
                     if (firstVisiblePosition == 0) {
-                        ((AppBarLayout) findViewById(R.id.AppBarLayout)).setExpanded(true, true);
+//                        ((AppBarLayout) findViewById(R.id.AppBarLayout)).setExpanded(true, true);
                     }
                 }
             }

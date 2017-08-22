@@ -1,16 +1,17 @@
-package com.ybao.pullrefreshview.simple.activities;
+package com.ybao.pullrefreshview.simple.activities.coor;
 
 import android.content.Context;
-import android.graphics.Point;
 import android.support.design.widget.*;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.view.NestedScrollingChild;
 import android.support.v4.view.NestedScrollingChildHelper;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.WindowInsets;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -98,52 +99,9 @@ public class CoordinatorLayout extends android.support.design.widget.Coordinator
         stopNestedScroll();
     }
 
-    int n = 0;
-
     public void onNestedScroll(View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
-        boolean handled = false;
-        List<Point> list = new ArrayList<>();
-        final int childCount = getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            final View view = getChildAt(i);
-
-            final LayoutParams lp = (LayoutParams) view.getLayoutParams();
-
-            final Behavior viewBehavior = lp.getBehavior();
-            if (viewBehavior instanceof AppBarLayout.ScrollingViewBehavior) {
-                int x = ((AppBarLayout.ScrollingViewBehavior) viewBehavior).getLeftAndRightOffset();
-                int y = ((AppBarLayout.ScrollingViewBehavior) viewBehavior).getTopAndBottomOffset();
-                Point point = new Point();
-                point.x = x;
-                point.y = y;
-                list.add(point);
-            }
-        }
         super.onNestedScroll(target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
-        for (int i = 0; i < childCount; i++) {
-            final View view = getChildAt(i);
-
-            final LayoutParams lp = (LayoutParams) view.getLayoutParams();
-
-            final Behavior viewBehavior = lp.getBehavior();
-            if (viewBehavior instanceof AppBarLayout.ScrollingViewBehavior) {
-                int x = ((AppBarLayout.ScrollingViewBehavior) viewBehavior).getLeftAndRightOffset();
-                int y = ((AppBarLayout.ScrollingViewBehavior) viewBehavior).getTopAndBottomOffset();
-
-                Point point = list.get(i);
-                if (point.x != x || point.y != y) {
-                    handled = true;
-                    break;
-                }
-            }
-        }
-        if (!handled) {
-            n++;
-            if (n > 100) {
-                n = 0;
-                dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, null);
-            }
-        }
+        dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, null);
     }
 
     public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
@@ -170,6 +128,86 @@ public class CoordinatorLayout extends android.support.design.widget.Coordinator
             return true;
         }
         return super.onNestedPreFling(target, velocityX, velocityY);
+    }
+
+    HashMap<RecyclerView, RecyclerView.OnScrollListener> onScrollListenerHashMap = new HashMap<>();
+
+    @Override
+    public void onViewAdded(View child) {
+        super.onViewAdded(child);
+        if (child instanceof RecyclerView) {
+            RecyclerView recyclerView = ((RecyclerView) child);
+            RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    CoordinatorLayout.this.onScrolled(recyclerView, dx, dy);
+                }
+
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    CoordinatorLayout.this.onScrollStateChanged(recyclerView, newState);
+                }
+            };
+            recyclerView.addOnScrollListener(onScrollListener);
+            onScrollListenerHashMap.put(recyclerView, onScrollListener);
+        }
+    }
+
+    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        final int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            final View view = getChildAt(i);
+            if (view.getVisibility() == View.GONE) {
+                continue;
+            }
+            final CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) view.getLayoutParams();
+            final android.support.design.widget.CoordinatorLayout.Behavior behavior = lp.getBehavior();
+            if (behavior instanceof Behavior) {
+                ((Behavior) behavior).onScrolled(CoordinatorLayout.this, view, recyclerView, dx, dy);
+            }
+        }
+    }
+
+    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+        final int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            final View view = getChildAt(i);
+            if (view.getVisibility() == View.GONE) {
+                continue;
+            }
+            final CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) view.getLayoutParams();
+            final android.support.design.widget.CoordinatorLayout.Behavior behavior = lp.getBehavior();
+            if (behavior instanceof Behavior) {
+                ((Behavior) behavior).onScrollStateChanged(CoordinatorLayout.this, view, recyclerView, newState);
+            }
+        }
+    }
+
+    @Override
+    public void onViewRemoved(View child) {
+        super.onViewRemoved(child);
+        if (child instanceof RecyclerView) {
+            RecyclerView recyclerView = ((RecyclerView) child);
+            if (onScrollListenerHashMap.containsKey(recyclerView)) {
+                recyclerView.removeOnScrollListener(onScrollListenerHashMap.remove(recyclerView));
+            }
+        }
+    }
+
+    public static class Behavior<T extends View> extends android.support.design.widget.CoordinatorLayout.Behavior<T> {
+        public Behavior() {
+            super();
+        }
+
+        public Behavior(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+
+        public void onScrolled(android.support.design.widget.CoordinatorLayout coordinatorLayout, View child, T t, int dx, int dy) {
+        }
+
+        public void onScrollStateChanged(android.support.design.widget.CoordinatorLayout coordinatorLayout, View child, T t, int newState) {
+        }
     }
 
     @Override

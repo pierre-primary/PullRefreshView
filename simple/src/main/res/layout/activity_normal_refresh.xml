@@ -11,24 +11,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.ybao.pullrefreshview.simple.activities.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <com.ybao.pullrefreshview.simple.activities.coor.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorPrimary">
-
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/white"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                app:layout_behavior="@string/FlingBehavior" />
 
-            <android.support.design.widget.AppBarLayout
-                android:id="@+id/AppBarLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <com.ybao.pullrefreshview.simple.activities.coor.AppBarLayout
+            android:id="@+id/AppBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <!--<android.support.design.widget.AppBarLayout-->
+                <!--android:id="@+id/AppBarLayout"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content">-->
 
 
                 <View
@@ -41,7 +44,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dip"
                     android:background="@android:color/holo_green_dark"
-                    app:layout_scrollFlags="enterAlways|scroll" />
+                    app:layout_scrollFlags="enterAlways|scroll|snap" />
 
                 <View
                     android:layout_width="match_parent"
@@ -50,9 +53,11 @@
                     android:minHeight="50dp"
                     app:layout_scrollFlags="exitUntilCollapsed|scroll" />
 
-            </android.support.design.widget.AppBarLayout>
+                </com.ybao.pullrefreshview.simple.activities.coor.AppBarLayout>
+            <!--</android.support.design.widget.AppBarLayout>-->
 
-        </com.ybao.pullrefreshview.simple.activities.CoordinatorLayout>
+
+        </com.ybao.pullrefreshview.simple.activities.coor.CoordinatorLayout>
     </com.ybao.pullrefreshview.layout.SliderBox>
 
 </com.ybao.pullrefreshview.layout.FlingLayout>
