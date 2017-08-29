@@ -20,8 +20,12 @@ import com.nineoldandroids.view.ViewHelper;
 /**
  * Created by Y-bao on 2017/8/21 0021.
  */
-@CoordinatorLayout.DefaultBehavior(AppBarLayout.Behavior.class)
-public class AppBarLayout extends LinearLayout {
+@CoordinatorLayout.DefaultBehavior(BaseAppBarLayout.Behavior.class)
+public class AppBarLayout extends BaseAppBarLayout {
+
+    ValueAnimator valueAnimator = null;
+    private PartnerImpt mPartner;
+
     public AppBarLayout(Context context) {
         super(context);
         setOrientation(VERTICAL);
@@ -49,8 +53,8 @@ public class AppBarLayout extends LinearLayout {
 
     @Override
     protected android.support.design.widget.AppBarLayout.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
-        if (Build.VERSION.SDK_INT >= 19 && p instanceof LinearLayout.LayoutParams) {
-            return new android.support.design.widget.AppBarLayout.LayoutParams((LinearLayout.LayoutParams) p);
+        if (Build.VERSION.SDK_INT >= 19 && p instanceof LayoutParams) {
+            return new android.support.design.widget.AppBarLayout.LayoutParams((LayoutParams) p);
         } else if (p instanceof MarginLayoutParams) {
             return new android.support.design.widget.AppBarLayout.LayoutParams((MarginLayoutParams) p);
         }
@@ -64,8 +68,12 @@ public class AppBarLayout extends LinearLayout {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         int height = 0;
+        hh2 = 0;
         for (int i = 0, n = getChildCount(); i < n; i++) {
             View view = getChildAt(i);
+            if (view.getVisibility() == View.GONE) {
+                continue;
+            }
             android.support.design.widget.AppBarLayout.LayoutParams lp = (android.support.design.widget.AppBarLayout.LayoutParams) view.getLayoutParams();
             int scrollFlags = lp.getScrollFlags();
             if ((scrollFlags & android.support.design.widget.AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS) != 0) {
@@ -75,150 +83,83 @@ public class AppBarLayout extends LinearLayout {
             }
             height += view.getMeasuredHeight() + lp.topMargin + lp.bottomMargin;
         }
+        if (hh2 <= 0) {
+            hh2 = height;
+        }
     }
 
-    public void scroll(int y, int dy) {
-        int mt = -(int) ViewHelper.getTranslationY(this);
-        int t = y;
-        if (y > 0 && mt < y - dy) {
-            t = mt;
-            t += dy;
-            if (t < hh1) {
-                t = hh1;
-            }
-        }
-        if (t > hh2) {
-            t = hh2;
-        }
-        mt = t;
-        ViewHelper.setTranslationY(this, -mt);
+    @Override
+    protected int getMaxDragOffset() {
+        return -hh2;
     }
 
-    ValueAnimator valueAnimator = null;
-
-    public void scrollStateChanged(final View view, int newState) {
+    public void onPartnerScrollStart() {
+        stopScroll();
         if (valueAnimator != null) {
             valueAnimator.cancel();
             valueAnimator = null;
         }
-        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-            final int mt = -(int) ViewHelper.getTranslationY(this);
-            if (mt < hh2 && mt >= (hh2 + hh1) / 2) {
-                valueAnimator = ValueAnimator.ofFloat(mt, hh2);
-            } else if (mt > hh1 && mt < (hh2 + hh1) / 2) {
-                valueAnimator = ValueAnimator.ofFloat(mt, hh1);
-            }
+    }
 
-            if (valueAnimator == null) {
-                return;
-            }
-            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                int now = mt;
 
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    int newp = (int) Float.parseFloat(animation.getAnimatedValue().toString());
-                    view.scrollBy(0, newp - now);
+    public void onPartnerScrollStop() {
+        final int mt = -(int) ViewHelper.getTranslationY(this);
+        if (mt < hh2 && mt >= (hh2 + hh1) / 2) {
+            valueAnimator = ValueAnimator.ofFloat(mt, hh2);
+        } else if (mt > hh1 && mt < (hh2 + hh1) / 2) {
+            valueAnimator = ValueAnimator.ofFloat(mt, hh1);
+        }
+
+        if (valueAnimator == null) {
+            return;
+        }
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            int now = mt;
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int newp = (int) Float.parseFloat(animation.getAnimatedValue().toString());
+                if (mPartner != null) {
+                    mPartner.scrollBy(0, newp - now);
                     now = newp;
                 }
-            });
-            valueAnimator.start();
-        }
+            }
+        });
+        valueAnimator.start();
     }
 
-    public static class ScrollingViewBehavior extends CoordinatorLayout.Behavior {
-
-        public ScrollingViewBehavior() {
-        }
-
-        public ScrollingViewBehavior(Context context, AttributeSet attrs) {
-            super(context, attrs);
-        }
-
-        @Override
-        public boolean onMeasureChild(CoordinatorLayout parent, View child, int parentWidthMeasureSpec, int widthUsed, int parentHeightMeasureSpec, int heightUsed) {
-            final int childLpHeight = child.getLayoutParams().height;
-            if (childLpHeight == ViewGroup.LayoutParams.MATCH_PARENT || childLpHeight == ViewGroup.LayoutParams.WRAP_CONTENT) {
-
-                int availableHeight = View.MeasureSpec.getSize(parentHeightMeasureSpec);
-                if (availableHeight == 0) {
-                    availableHeight = parent.getHeight();
-                }
-
-                final int height = availableHeight;
-                final int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, childLpHeight == ViewGroup.LayoutParams.MATCH_PARENT
-                        ? View.MeasureSpec.EXACTLY
-                        : View.MeasureSpec.AT_MOST);
-                parent.onMeasureChild(child, parentWidthMeasureSpec, widthUsed, heightMeasureSpec, heightUsed);
-                return true;
+    public void onPartnerScrolled(boolean hasY, int y, int dy) {
+        int currentOffset = getCurrentOffset();
+        int t = y;
+        if (!hasY || (y < 0 && currentOffset > y - dy)) {
+            t = currentOffset;
+            t += dy;
+            if (t > -hh1) {
+                t = -hh1;
             }
-            return false;
         }
-
-        @Override
-        public boolean onLayoutChild(CoordinatorLayout parent, View child, int layoutDirection) {
-            final CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) child.getLayoutParams();
-            final Rect available = new Rect();
-            available.set(parent.getPaddingLeft() + lp.leftMargin, parent.getPaddingTop() + lp.topMargin,
-                    parent.getWidth() - parent.getPaddingRight() - lp.rightMargin,
-                    parent.getHeight() - parent.getPaddingBottom() - lp.bottomMargin);
-
-            final Rect out = new Rect();
-
-            GravityCompat.apply(resolveGravity(lp.gravity), child.getMeasuredWidth(),
-                    child.getMeasuredHeight(), available, out, layoutDirection);
-
-            child.layout(out.left, out.top, out.right, out.bottom);
-
-            final View header = findFirstDependency(parent);
-
-            if (header != null) {
-                if (child instanceof ViewGroup) {
-                    child.setPadding(0, header.getMeasuredHeight(), 0, 0);
-                    ((ViewGroup) child).setClipToPadding(false);
-                    ((RecyclerView) child).scrollToPosition(0);
-                    ((RecyclerView) child).scrollBy(0, -header.getMeasuredHeight());
-                }
-            }
-            return false;
+        if (t < -hh2) {
+            t = -hh2;
         }
-
-        AppBarLayout findFirstDependency(ViewGroup parent) {
-            for (int i = 0, z = parent.getChildCount(); i < z; i++) {
-                View view = parent.getChildAt(i);
-                if (view instanceof AppBarLayout) {
-                    return (AppBarLayout) view;
-                }
-            }
-            return null;
-        }
-
-        private static int resolveGravity(int gravity) {
-            return gravity == Gravity.NO_GRAVITY ? GravityCompat.START | Gravity.TOP : gravity;
-        }
+        setOffset(t);
     }
 
-    static class Behavior extends com.ybao.pullrefreshview.simple.activities.coor.CoordinatorLayout.Behavior {
-
-        int y = 0;
-
-        @Override
-        public void onScrolled(CoordinatorLayout coordinatorLayout, View child, View view, int dx, int dy) {
-            RecyclerView recyclerView = (RecyclerView) view;
-            RecyclerView.ViewHolder topViewHolder = recyclerView.findViewHolderForAdapterPosition(0);
-            if (topViewHolder == null) {
-                y += dy;
-            } else {
-                y = -topViewHolder.itemView.getTop();
-            }
-            AppBarLayout appBarLayout = (AppBarLayout) child;
-            appBarLayout.scroll(y + child.getMeasuredHeight(), dy);
+    public void setPartner(PartnerImpt mPartner) {
+        if (this.mPartner != null) {
+            this.mPartner.setPartner(null);
         }
+        this.mPartner = mPartner;
+        this.mPartner.setPartner(this);
+    }
 
-        @Override
-        public void onScrollStateChanged(CoordinatorLayout coordinatorLayout, View child, View view, int newState) {
-            AppBarLayout appBarLayout = (AppBarLayout) child;
-            appBarLayout.scrollStateChanged(view, newState);
+    public PartnerImpt getPartner() {
+        return mPartner;
+    }
+
+    protected void onScroll(int dy) {
+        if (this.mPartner != null) {
+            this.mPartner.stopScroll();
+            this.mPartner.scrollBy(0, dy);
         }
     }
 }

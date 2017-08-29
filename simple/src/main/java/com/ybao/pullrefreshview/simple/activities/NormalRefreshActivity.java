@@ -22,6 +22,7 @@ import com.ybao.pullrefreshview.layout.BaseHeaderView;
 import com.ybao.pullrefreshview.layout.FlingLayout;
 import com.ybao.pullrefreshview.layout.PullRefreshLayout;
 import com.ybao.pullrefreshview.simple.R;
+import com.ybao.pullrefreshview.simple.activities.coor.RecyclerPartnerView;
 import com.ybao.pullrefreshview.simple.fragment.Fragment1;
 import com.ybao.pullrefreshview.simple.view.EndFooterView;
 import com.ybao.pullrefreshview.simple.view.NormalFooterView;
@@ -34,7 +35,7 @@ import java.util.List;
  */
 public class NormalRefreshActivity extends AppCompatActivity implements BaseHeaderView.OnRefreshListener, BaseFooterView.OnLoadListener {
 
-    RecyclerView recyclerView;
+    RecyclerPartnerView recyclerView;
     BaseHeaderView headerView;
     BaseFooterView footerView;
 
@@ -48,11 +49,11 @@ public class NormalRefreshActivity extends AppCompatActivity implements BaseHead
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_normal_refresh);
 
-//        ((FlingLayout) findViewById(R.id.root)).setNestedScrollingEnabled(true);
 
-        recyclerView = (RecyclerView) findViewById(R.id.list);
+        recyclerView = (RecyclerPartnerView) findViewById(R.id.list);
         headerView = (BaseHeaderView) findViewById(R.id.header);
         footerView = (BaseFooterView) findViewById(R.id.footer);
+        ((com.ybao.pullrefreshview.simple.activities.coor.AppBarLayout) findViewById(R.id.AppBarLayout)).setPartner(recyclerView);
 
         list = getData(50);
 
@@ -67,21 +68,6 @@ public class NormalRefreshActivity extends AppCompatActivity implements BaseHead
         linearLayoutManager = new LinearLayoutManager(NormalRefreshActivity.this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
-        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    int firstVisiblePosition = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
-                    if (firstVisiblePosition == 0) {
-//                        ((AppBarLayout) findViewById(R.id.AppBarLayout)).setExpanded(true, true);
-                    }
-                }
-            }
-        });
-
-//        headerView.setOnRefreshListener(this);
-//        footerView.setOnLoadListener(this);
     }
 
     @Override

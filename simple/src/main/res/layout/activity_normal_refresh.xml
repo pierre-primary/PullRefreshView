@@ -7,57 +7,46 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
 
-    <com.ybao.pullrefreshview.layout.SliderBox
+    <com.ybao.pullrefreshview.simple.activities.coor.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary">
 
-        <com.ybao.pullrefreshview.simple.activities.coor.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.ybao.pullrefreshview.simple.activities.coor.RecyclerPartnerView
+            android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary">
+            android:background="@android:color/white" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/white"
-                app:layout_behavior="@string/FlingBehavior" />
+        <com.ybao.pullrefreshview.simple.activities.coor.AppBarLayout
 
-            <com.ybao.pullrefreshview.simple.activities.coor.AppBarLayout
             android:id="@+id/AppBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <!--<android.support.design.widget.AppBarLayout-->
-                <!--android:id="@+id/AppBarLayout"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content">-->
 
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="100dip"
-                    android:background="@android:color/holo_red_dark"
-                    app:layout_scrollFlags="scroll" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="100dip"
+                android:background="@android:color/holo_red_dark"
+                app:layout_scrollFlags="scroll" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="50dip"
-                    android:background="@android:color/holo_green_dark"
-                    app:layout_scrollFlags="enterAlways|scroll|snap" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="50dip"
+                android:background="@android:color/holo_green_dark"
+                app:layout_scrollFlags="enterAlways|scroll|snap" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="50dip"
-                    android:background="@android:color/holo_blue_dark"
-                    android:minHeight="50dp"
-                    app:layout_scrollFlags="exitUntilCollapsed|scroll" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="50dip"
+                android:background="@android:color/holo_blue_dark"
+                android:minHeight="50dp"
+                app:layout_scrollFlags="exitUntilCollapsed|scroll" />
 
-                </com.ybao.pullrefreshview.simple.activities.coor.AppBarLayout>
-            <!--</android.support.design.widget.AppBarLayout>-->
+        </com.ybao.pullrefreshview.simple.activities.coor.AppBarLayout>
 
 
-        </com.ybao.pullrefreshview.simple.activities.coor.CoordinatorLayout>
-    </com.ybao.pullrefreshview.layout.SliderBox>
+    </com.ybao.pullrefreshview.simple.activities.coor.CoordinatorLayout>
 
 </com.ybao.pullrefreshview.layout.FlingLayout>
