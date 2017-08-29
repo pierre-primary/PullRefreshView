@@ -13,7 +13,7 @@ public interface PartnerImpt {
 
     int getTopItemOffset();
 
-    void scrollBy(int paramInt1, int paramInt2);
+    int scrollBy(int dy);
 
     void stopScroll();
 }

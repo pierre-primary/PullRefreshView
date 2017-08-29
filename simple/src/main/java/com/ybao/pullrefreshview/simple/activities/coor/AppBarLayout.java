@@ -115,8 +115,7 @@ public class AppBarLayout extends BaseAppBarLayout {
             public void onAnimationUpdate(ValueAnimator animation) {
                 int newp = (int) Float.parseFloat(animation.getAnimatedValue().toString());
                 if (mPartner != null) {
-                    mPartner.scrollBy(0, newp - now);
-                    now = newp;
+                    now += mPartner.scrollBy(newp - now);
                 }
             }
         });
@@ -155,27 +154,7 @@ public class AppBarLayout extends BaseAppBarLayout {
     protected int onScroll(int dy) {
         if (this.mPartner != null) {
             this.mPartner.stopScroll();
-            if (dy > 0) {
-                int bOffset = this.mPartner.getBottomItemOffset();
-                if (bOffset != Integer.MAX_VALUE) {
-                    if (bOffset <= 0) {
-                        dy = 0;
-                    } else if (bOffset > 0 && bOffset - dy <= 0) {
-                        dy = bOffset;
-                    }
-                }
-            } else if (dy < 0) {
-                int tOffset = this.mPartner.getTopItemOffset();
-                if (tOffset != Integer.MAX_VALUE) {
-                    if (tOffset >= 0) {
-                        dy = 0;
-                    } else if (tOffset < 0 && tOffset - dy >= 0) {
-                        dy = tOffset;
-                    }
-                }
-            }
-            this.mPartner.scrollBy(0, dy);
-            return dy;
+            return this.mPartner.scrollBy(dy);
         }
         return 0;
     }

@@ -41,6 +41,31 @@ public class RecyclerPartnerView extends RecyclerView implements PartnerImpt {
     }
 
     @Override
+    public int scrollBy(int dy) {
+        if (dy > 0) {
+            int bOffset = getBottomItemOffset();
+            if (bOffset != Integer.MAX_VALUE) {
+                if (bOffset <= 0) {
+                    dy = 0;
+                } else if (bOffset > 0 && bOffset - dy <= 0) {
+                    dy = bOffset;
+                }
+            }
+        } else if (dy < 0) {
+            int tOffset = getTopItemOffset();
+            if (tOffset != Integer.MAX_VALUE) {
+                if (tOffset >= 0) {
+                    dy = 0;
+                } else if (tOffset < 0 && tOffset - dy >= 0) {
+                    dy = tOffset;
+                }
+            }
+        }
+        scrollBy(0, dy);
+        return dy;
+    }
+
+    @Override
     public boolean canHeaderDrag() {
         return true;
     }

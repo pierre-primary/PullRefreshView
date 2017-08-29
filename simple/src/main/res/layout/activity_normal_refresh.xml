@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.ybao.pullrefreshview.layout.FlingLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.ybao.pullrefreshview.layout.PullRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
+
+    <com.ybao.pullrefreshview.simple.view.NormalHeaderView
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.ybao.pullrefreshview.simple.view.NormalFooterView
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <com.ybao.pullrefreshview.simple.activities.coor.CoordinatorLayout
         android:layout_width="match_parent"
@@ -49,4 +59,4 @@
 
     </com.ybao.pullrefreshview.simple.activities.coor.CoordinatorLayout>
 
-</com.ybao.pullrefreshview.layout.FlingLayout>
+</com.ybao.pullrefreshview.layout.PullRefreshLayout>

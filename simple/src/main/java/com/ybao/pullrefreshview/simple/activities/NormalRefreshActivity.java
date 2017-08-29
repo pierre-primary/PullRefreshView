@@ -69,6 +69,8 @@ public class NormalRefreshActivity extends AppCompatActivity implements BaseHead
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
         headerView.startRefresh(300);
+        headerView.setOnRefreshListener(this);
+        footerView.setOnLoadListener(this);
     }
 
     @Override
