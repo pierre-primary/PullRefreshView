@@ -3,6 +3,8 @@ package com.ybao.pullrefreshview.simple.activities.coor;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.view.NestedScrollingChild;
+import android.support.v4.view.NestedScrollingChildHelper;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ScrollerCompat;
 import android.util.AttributeSet;
@@ -18,24 +20,31 @@ import com.nineoldandroids.view.ViewHelper;
  * Created by ybao on 2017/8/28.
  */
 
-public class BaseAppBarLayout extends LinearLayout {
+public class BaseAppBarLayout extends LinearLayout implements NestedScrollingChild {
     private int mOffset = 0;
     private ScrollerCompat mScroller;
     private FlingRunnable mFlingRunnable;
+    NestedScrollingChildHelper mNestedScrollingChildHelper;
 
     public BaseAppBarLayout(Context context) {
         super(context);
-        setOrientation(VERTICAL);
+        init();
     }
 
     public BaseAppBarLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        setOrientation(VERTICAL);
+        init();
     }
 
     public BaseAppBarLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    private void init() {
         setOrientation(VERTICAL);
+        mNestedScrollingChildHelper = new NestedScrollingChildHelper(this);
+        setNestedScrollingEnabled(true);
     }
 
     public void setOffset(int mOffset) {
@@ -87,9 +96,58 @@ public class BaseAppBarLayout extends LinearLayout {
     protected void onOffsetChanged() {
     }
 
-    protected void onScroll(int paramInt) {
+    protected int onScroll(int paramInt) {
+        return 0;
     }
 
+
+    @Override
+    public void setNestedScrollingEnabled(boolean enabled) {
+        mNestedScrollingChildHelper.setNestedScrollingEnabled(enabled);
+    }
+
+    @Override
+    public boolean isNestedScrollingEnabled() {
+        return mNestedScrollingChildHelper.isNestedScrollingEnabled();
+    }
+
+    @Override
+    public boolean startNestedScroll(int axes) {
+        return mNestedScrollingChildHelper.startNestedScroll(axes);
+    }
+
+    @Override
+    public void stopNestedScroll() {
+        mNestedScrollingChildHelper.stopNestedScroll();
+    }
+
+    @Override
+    public boolean hasNestedScrollingParent() {
+        return mNestedScrollingChildHelper.hasNestedScrollingParent();
+    }
+
+    @Override
+    public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed,
+                                        int dxUnconsumed, int dyUnconsumed, int[] offsetInWindow) {
+        return mNestedScrollingChildHelper.dispatchNestedScroll(dxConsumed, dyConsumed,
+                dxUnconsumed, dyUnconsumed, offsetInWindow);
+    }
+
+    @Override
+    public boolean dispatchNestedPreScroll(int dx, int dy, int[] consumed, int[] offsetInWindow) {
+        return mNestedScrollingChildHelper.dispatchNestedPreScroll(
+                dx, dy, consumed, offsetInWindow);
+    }
+
+    @Override
+    public boolean dispatchNestedFling(float velocityX, float velocityY, boolean consumed) {
+        return mNestedScrollingChildHelper.dispatchNestedFling(velocityX, velocityY, consumed);
+    }
+
+    @Override
+    public boolean dispatchNestedPreFling(float velocityX, float velocityY) {
+        return mNestedScrollingChildHelper.dispatchNestedPreFling(velocityX, velocityY);
+    }
 
     public static class Behavior<V extends BaseAppBarLayout> extends CoordinatorLayout.Behavior<V> {
         private static final int INVALID_POINTER = -1;
@@ -150,6 +208,7 @@ public class BaseAppBarLayout extends LinearLayout {
                     if (yDiff > mTouchSlop) {
                         mIsBeingDragged = true;
                         mLastMotionY = y;
+                        child.startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL);
                     }
                     break;
                 }
@@ -214,7 +273,11 @@ public class BaseAppBarLayout extends LinearLayout {
 
                     if (mIsBeingDragged) {
                         mLastMotionY = y;
-                        scroll(parent, child, dy, child.getMaxDragOffset(), 0);
+                        int[] hh = new int[2];
+                        child.dispatchNestedPreScroll(0, dy, hh, null);
+                        dy -= hh[1];
+                        dy -= scroll(parent, child, dy, child.getMaxDragOffset(), 0);
+                        child.dispatchNestedScroll(0, 0, 0, dy, null);
                     }
                     break;
                 }
@@ -224,11 +287,14 @@ public class BaseAppBarLayout extends LinearLayout {
                         mVelocityTracker.addMovement(ev);
                         mVelocityTracker.computeCurrentVelocity(1000);
                         float yvel = mVelocityTracker.getYVelocity(mActivePointerId);
-                        fling(parent, child, child.getMaxDragOffset(), 0, yvel);
+                        if (!child.dispatchNestedPreFling(0, yvel)) {
+                            child.dispatchNestedFling(0, yvel, fling(parent, child, child.getMaxDragOffset(), 0, yvel));
+                        }
                     }
                 case MotionEvent.ACTION_CANCEL: {
                     mIsBeingDragged = false;
                     mActivePointerId = INVALID_POINTER;
+                    child.stopNestedScroll();
                     if (mVelocityTracker != null) {
                         mVelocityTracker.recycle();
                         mVelocityTracker = null;
@@ -253,12 +319,7 @@ public class BaseAppBarLayout extends LinearLayout {
         }
 
         int setHeaderTopBottomOffset(CoordinatorLayout paramMc, V paramV, int dy, int minOffset, int maxOffset) {
-            int currentOffset = paramV.getCurrentOffset();
-            int newOffset = currentOffset - dy;
-            newOffset = constrain(newOffset, minOffset, maxOffset);
-            dy = currentOffset - newOffset;
-            onScroll(dy, paramV);
-            return dy;
+            return onScroll(dy, paramV);
         }
 
         static int constrain(int offset, int minOffset, int maxOffset) {
@@ -270,8 +331,8 @@ public class BaseAppBarLayout extends LinearLayout {
             return offset;
         }
 
-        protected void onScroll(int dy, V paramV) {
-            paramV.onScroll(dy);
+        protected int onScroll(int dy, V paramV) {
+            return paramV.onScroll(dy);
         }
     }
 

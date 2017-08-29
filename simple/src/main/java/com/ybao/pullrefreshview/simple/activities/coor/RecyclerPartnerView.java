@@ -13,7 +13,6 @@ import android.view.ViewTreeObserver;
 public class RecyclerPartnerView extends RecyclerView implements PartnerImpt {
     public boolean mIsScrolling;
     public AppBarLayout mPartner;
-    public View headerBlock;
 
     public RecyclerPartnerView(Context paramContext) {
         super(paramContext);
@@ -41,28 +40,31 @@ public class RecyclerPartnerView extends RecyclerView implements PartnerImpt {
         }
     }
 
+    @Override
     public boolean canHeaderDrag() {
         return true;
     }
 
+    @Override
     public int getBottomItemOffset() {
         LayoutManager lm = getLayoutManager();
         int n = 0;
         if (lm != null && (n = lm.getChildCount()) > 0) {
             View view = lm.getChildAt(n - 1);
             if (view != null && lm.getPosition(view) == getAdapter().getItemCount() - 1) {
-                return view.getBottom() - getHeight();
+                return view.getBottom() - getHeight() - getPaddingBottom();
             }
         }
         return Integer.MAX_VALUE;
     }
 
-    public int getLeadingItemOffset() {
+    @Override
+    public int getTopItemOffset() {
         LayoutManager lm = getLayoutManager();
         if (lm != null) {
             View view = lm.getChildAt(0);
             if (view != null && lm.getPosition(view) == 0) {
-                return view.getTop();
+                return view.getTop() - getPaddingTop();
             }
         }
         return Integer.MAX_VALUE;
@@ -89,21 +91,9 @@ public class RecyclerPartnerView extends RecyclerView implements PartnerImpt {
         this.mPartner.getViewTreeObserver().addOnPreDrawListener(onPreDrawListener);
     }
 
-    public void setHeaderBlock(View headerBlock) {
-        this.headerBlock = headerBlock;
-    }
-
-
     ViewTreeObserver.OnPreDrawListener onPreDrawListener = new ViewTreeObserver.OnPreDrawListener() {
         @Override
         public boolean onPreDraw() {
-//            if (headerBlock == null) {
-//                return false;
-//            }
-//            ViewGroup.LayoutParams lp = headerBlock.getLayoutParams();
-//            if (lp != null) {
-//                lp.height = mPartner.getMeasuredHeight();
-//            }
             if (height == mPartner.getMeasuredHeight()) {
                 return true;
             }
@@ -142,7 +132,7 @@ public class RecyclerPartnerView extends RecyclerView implements PartnerImpt {
                     hasY = true;
                     y = topViewHolder.itemView.getTop();
                 }
-                mPartner.onPartnerScrolled(hasY, y - mPartner.getMeasuredHeight(), -dy);
+                mPartner.onPartnerScrolled(hasY, y - recyclerView.getPaddingTop(), -dy);
             }
         }
     }

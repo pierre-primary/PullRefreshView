@@ -55,7 +55,7 @@ public class NormalRefreshActivity extends AppCompatActivity implements BaseHead
         footerView = (BaseFooterView) findViewById(R.id.footer);
         ((com.ybao.pullrefreshview.simple.activities.coor.AppBarLayout) findViewById(R.id.AppBarLayout)).setPartner(recyclerView);
 
-        list = getData(50);
+        list = new ArrayList<>();
 
         adapter = new RecyclerViewAdapter();
         adapter.setData(list);
@@ -68,6 +68,7 @@ public class NormalRefreshActivity extends AppCompatActivity implements BaseHead
         linearLayoutManager = new LinearLayoutManager(NormalRefreshActivity.this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
+        headerView.startRefresh(300);
     }
 
     @Override
@@ -76,7 +77,8 @@ public class NormalRefreshActivity extends AppCompatActivity implements BaseHead
             @Override
             public void run() {
                 page = 1;
-                List<String> datas = getData(5);
+                List<String> datas = getData(50);
+                recyclerView.backToTop();
                 list.clear();
                 list.addAll(datas);
                 adapter.setData(list);

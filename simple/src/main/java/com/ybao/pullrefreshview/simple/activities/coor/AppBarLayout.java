@@ -1,17 +1,12 @@
 package com.ybao.pullrefreshview.simple.activities.coor;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.view.GravityCompat;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.nineoldandroids.animation.ValueAnimator;
 import com.nineoldandroids.view.ViewHelper;
@@ -156,10 +151,32 @@ public class AppBarLayout extends BaseAppBarLayout {
         return mPartner;
     }
 
-    protected void onScroll(int dy) {
+    @Override
+    protected int onScroll(int dy) {
         if (this.mPartner != null) {
             this.mPartner.stopScroll();
+            if (dy > 0) {
+                int bOffset = this.mPartner.getBottomItemOffset();
+                if (bOffset != Integer.MAX_VALUE) {
+                    if (bOffset <= 0) {
+                        dy = 0;
+                    } else if (bOffset > 0 && bOffset - dy <= 0) {
+                        dy = bOffset;
+                    }
+                }
+            } else if (dy < 0) {
+                int tOffset = this.mPartner.getTopItemOffset();
+                if (tOffset != Integer.MAX_VALUE) {
+                    if (tOffset >= 0) {
+                        dy = 0;
+                    } else if (tOffset < 0 && tOffset - dy >= 0) {
+                        dy = tOffset;
+                    }
+                }
+            }
             this.mPartner.scrollBy(0, dy);
+            return dy;
         }
+        return 0;
     }
 }
