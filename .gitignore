@@ -29,3 +29,6 @@ proguard/
 #.idea
 .idea/
 *.iml
+.DS_Store
+libs/.DS_Store
+libs/.DS_Store
