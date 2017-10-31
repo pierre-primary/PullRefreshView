@@ -225,13 +225,15 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
 
     @Override
     public void onScrollChange(int state) {
-        scrollState = state;
+        if (headerState != REFRESHING) {
+            scrollState = state;
+        }
     }
 
     @Override
     public boolean onStartrRelease(float nowY) {
         float headerSpanHeight = getSpanHeight();
-        if (nowY >= headerSpanHeight) {
+        if (headerState != REFRESHING && nowY >= headerSpanHeight) {
             pullRefreshLayout.startMoveTo(0, null, nowY, headerSpanHeight);
             setState(REFRESHING);
             return true;

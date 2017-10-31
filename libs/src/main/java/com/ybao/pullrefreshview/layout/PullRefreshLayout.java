@@ -169,11 +169,11 @@ public class PullRefreshLayout extends FlingLayout {
     }
 
     private boolean isShowRefreshView() {
-        return hasHeader && !isLoading && scrollState != SCROLL_STATE_OVER_SCROLL;
+        return hasHeader && scrollState != SCROLL_STATE_OVER_SCROLL;
     }
 
     private boolean isShowLoadView() {
-        return hasFooter && !isRefreshing && scrollState != SCROLL_STATE_OVER_SCROLL;
+        return hasFooter && scrollState != SCROLL_STATE_OVER_SCROLL;
     }
 
     void setRefreshing(boolean refresh) {

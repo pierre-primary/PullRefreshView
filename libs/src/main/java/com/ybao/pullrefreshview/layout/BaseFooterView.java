@@ -245,20 +245,22 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
 
     @Override
     public void onScrollChange(int state) {
-        scrollState = state;
+        if (footerState != LOADING && footerState != LOAD_ClOSE) {
+            scrollState = state;
+        }
     }
 
     @Override
     public boolean onStartrRelease(float nowY) {
         float footerSpanHeight = getSpanHeight();
-        if (nowY <= -footerSpanHeight) {
+        if (footerState != LOADING && footerState != LOAD_ClOSE && nowY <= -footerSpanHeight) {
             pullRefreshLayout.startMoveTo(0, null, nowY, -footerSpanHeight);
             setState(LOADING);
             return true;
         }
         pullRefreshLayout.startMoveTo(0, null, nowY, 0);
         setState(NONE);
-        return false;
+        return true;
     }
 
     public abstract float getSpanHeight();
