@@ -29,6 +29,7 @@ import android.util.Log;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
+import com.nineoldandroids.view.ViewHelper;
 import com.ybao.pullrefreshview.support.anim.AnimListener;
 import com.ybao.pullrefreshview.support.impl.Loadable;
 import com.ybao.pullrefreshview.support.impl.OnEndListener;
@@ -43,6 +44,7 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
     public final static int LOOSENT_O_LOAD = 2;
     public final static int LOADING = 3;
     public final static int LOAD_CLONE = 4;
+    public final static int LOAD_ClOSE = 5;
     private int footerState = NONE;
 
     private PullRefreshLayout pullRefreshLayout;
@@ -71,22 +73,22 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
         setFocusableInTouchMode(false);
     }
 
-    protected boolean isLockState() {
-        return isLockState;
-    }
-
     public int getLayoutType() {
         return LayoutType.LAYOUT_NORMAL;
     }
 
-    private void setState(int state) {
+    protected void setState(int state) {
         if (isLockState || footerState == state) {
+            return;
+        }
+        if (state != LOAD_ClOSE && (footerState == LOADING && state != LOAD_CLONE)) {
             return;
         }
         Log.i("BaseFooterView", "" + state);
         this.footerState = state;
-        if (state == LOADING) {
+        if (state == LOAD_ClOSE) {
             isLockState = true;
+        } else if (state == LOADING) {
             pullRefreshLayout.setLoading(true);
             if (onLoadListener != null) {
                 onLoadListener.onLoad(this);
@@ -159,10 +161,21 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
         stopLoad(null);
     }
 
+    @Override
     public void stopLoad(OnEndListener onEndListener) {
-        isLockState = false;
         setState(LOAD_CLONE);
         close(400, onEndListener);
+    }
+
+    @Override
+    public void closeState() {
+        setState(LOAD_ClOSE);
+    }
+
+    @Override
+    public void reSetCloseState() {
+        isLockState = false;
+        setState(NONE);
     }
 
     private void close(int startDelay, final OnEndListener onEndListener) {
@@ -206,18 +219,18 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
         boolean intercept = false;
         int footerLayoutType = getLayoutType();
         if (footerLayoutType == LayoutType.LAYOUT_SCROLLER) {
-            ViewCompat.setTranslationY(this, -getMeasuredHeight());
+            ViewHelper.setTranslationY(this, -getMeasuredHeight());
         } else if (footerLayoutType == LayoutType.LAYOUT_DRAWER) {
-            ViewCompat.setTranslationY(this, y);
+            ViewHelper.setTranslationY(this, y);
             Pullable pullable = pullRefreshLayout.getPullable();
             if (pullable != null) {
                 ViewCompat.setTranslationY(pullable.getView(), 0);
             }
             intercept = true;
         } else if (footerLayoutType == LayoutType.LAYOUT_NOT_MOVE) {
-            ViewCompat.setTranslationY(this, 0);
+            ViewHelper.setTranslationY(this, 0);
         } else {
-            ViewCompat.setTranslationY(this, y);
+            ViewHelper.setTranslationY(this, y);
         }
         float footerSpanHeight = getSpanHeight();
         if (scrollState == FlingLayout.SCROLL_STATE_TOUCH_SCROLL) {
@@ -259,6 +272,5 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
     public void setOnLoadListener(OnLoadListener onRefreshListener) {
         this.onLoadListener = onRefreshListener;
     }
-
 }
 

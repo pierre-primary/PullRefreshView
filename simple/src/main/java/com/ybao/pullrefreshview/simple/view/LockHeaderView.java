@@ -132,7 +132,7 @@ public class LockHeaderView extends BaseHeaderView {
     public boolean onScroll(float y) {
         boolean intercept = super.onScroll(y);
         ViewHelper.setTranslationY(loadBox, 0.97f * y - loadBox.getHeight());
-        if (!isLockState()) {
+        if (getState() != REFRESHING) {
             ViewHelper.setRotation(progress, y * y * 48 / 31250);
         }
         path.reset();// 重置path

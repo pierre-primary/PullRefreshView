@@ -36,4 +36,6 @@ public interface Refreshable {
     void startRefresh();
 
     void stopRefresh();
+
+    void stopRefresh(OnEndListener onEndListener);
 }

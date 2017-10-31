@@ -74,6 +74,7 @@ public class LockFooterView extends BaseFooterView {
     }
 
     List<Animator> animators = new ArrayList<>();
+
     @Override
     protected void onStateChange(int state) {
         this.state = state;
@@ -118,7 +119,7 @@ public class LockFooterView extends BaseFooterView {
     public boolean onScroll(float y) {
         boolean intercept = super.onScroll(y);
         ViewHelper.setTranslationY(loadBox, 400 + 0.97f * y);
-        if (!isLockState()) {
+        if (getState() != LOADING) {
             ViewHelper.setRotation(progress, y * y * 48 / 31250);
         }
         path.reset();// 重置path

@@ -29,6 +29,7 @@ import android.util.Log;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
+import com.nineoldandroids.view.ViewHelper;
 import com.ybao.pullrefreshview.support.anim.AnimListener;
 import com.ybao.pullrefreshview.support.impl.OnEndListener;
 import com.ybao.pullrefreshview.support.impl.Pullable;
@@ -45,8 +46,6 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
     private int headerState = NONE;
 
     private PullRefreshLayout pullRefreshLayout;
-
-    private boolean isLockState = false;
 
     OnRefreshListener onRefreshListener;
 
@@ -71,23 +70,21 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
         setFocusableInTouchMode(false);
     }
 
-    protected boolean isLockState() {
-        return isLockState;
-    }
-
     public int getLayoutType() {
         return LayoutType.LAYOUT_NORMAL;
     }
 
 
     private void setState(int state) {
-        if (isLockState || headerState == state) {
+        if (headerState == state) {
+            return;
+        }
+        if (headerState == REFRESHING && state != REFRESH_CLONE) {
             return;
         }
         Log.i("BaseHeaderView", "" + state);
         this.headerState = state;
         if (state == REFRESHING) {
-            isLockState = true;
             pullRefreshLayout.setRefreshing(true);
             if (onRefreshListener != null) {
                 onRefreshListener.onRefresh(this);
@@ -162,8 +159,8 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
         stopRefresh(null);
     }
 
+    @Override
     public void stopRefresh(OnEndListener onEndListener) {
-        isLockState = false;
         setState(REFRESH_CLONE);
         close(400, onEndListener);
     }
@@ -202,18 +199,18 @@ public abstract class BaseHeaderView extends RelativeLayout implements Refreshab
         boolean intercept = false;
         int layoutType = getLayoutType();
         if (layoutType == LayoutType.LAYOUT_SCROLLER) {
-            ViewCompat.setTranslationY(this, getMeasuredHeight());
+            ViewHelper.setTranslationY(this, getMeasuredHeight());
         } else if (layoutType == LayoutType.LAYOUT_DRAWER) {
-            ViewCompat.setTranslationY(this, y);
+            ViewHelper.setTranslationY(this, y);
             Pullable pullable = pullRefreshLayout.getPullable();
             if (pullable != null) {
-                ViewCompat.setTranslationY(pullable.getView(), 0);
+                ViewHelper.setTranslationY(pullable.getView(), 0);
             }
             intercept = true;
         } else if (layoutType == LayoutType.LAYOUT_NOT_MOVE) {
-            ViewCompat.setTranslationY(this, 0);
+            ViewHelper.setTranslationY(this, 0);
         } else {
-            ViewCompat.setTranslationY(this, y);
+            ViewHelper.setTranslationY(this, y);
         }
         float headerSpanHeight = getSpanHeight();
         if (scrollState == FlingLayout.SCROLL_STATE_TOUCH_SCROLL) {

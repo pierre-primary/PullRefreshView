@@ -102,7 +102,7 @@ public class ExpandFooterView extends BaseFooterView {
     @Override
     public boolean onScroll(float y) {
         boolean intercept = super.onScroll(y);
-        if (!isLockState()) {
+        if (getState() != LOADING) {
             ViewHelper.setRotation(progress, y * y * 48 / 31250);
         }
         return intercept;

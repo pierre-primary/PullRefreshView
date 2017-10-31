@@ -57,6 +57,7 @@ public class ExpandHeaderView extends BaseHeaderView {
         super.setPullRefreshLayout(refreshLayout);
         refreshLayout.setMaxDistance(300);
     }
+
     List<Animator> animators = new ArrayList<>();
 
     @Override
@@ -101,7 +102,7 @@ public class ExpandHeaderView extends BaseHeaderView {
     @Override
     public boolean onScroll(float y) {
         boolean intercept = super.onScroll(y);
-        if (!isLockState()) {
+        if (getState() != REFRESHING) {
             ViewHelper.setRotation(progress, y * y * 48 / 31250);
         }
         return intercept;

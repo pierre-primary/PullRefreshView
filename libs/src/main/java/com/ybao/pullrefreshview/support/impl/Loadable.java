@@ -36,4 +36,10 @@ public interface Loadable {
     void startLoad();
 
     void stopLoad();
+
+    void stopLoad(OnEndListener onEndListener);
+
+    void closeState();
+
+    void reSetCloseState();
 }
