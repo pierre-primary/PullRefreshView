@@ -23,10 +23,11 @@ android {
 }
 
 dependencies {
-    compile 'com.nineoldandroids:library:2.4.0'
-    compile project(':libs')
-    compile 'com.android.support:support-v4:26.0.0-alpha1'
-    compile 'com.android.support:appcompat-v7:26.0.0-alpha1'
-    compile 'com.android.support:design:26.0.0-alpha1'
-    compile 'com.android.support:recyclerview-v7:26.0.0-alpha1'
+    implementation project(':libs')
+    implementation project(':standardadapter')
+    implementation 'com.nineoldandroids:library:2.4.0'
+    implementation 'com.android.support:support-v4:27.0.0'
+    implementation 'com.android.support:appcompat-v7:27.0.0'
+    implementation 'com.android.support:design:27.0.0'
+    implementation 'com.android.support:recyclerview-v7:27.0.0'
 }

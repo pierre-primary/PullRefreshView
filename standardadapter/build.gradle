@@ -17,5 +17,5 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:recyclerview-v7:26.0.0-alpha1'
+    compileOnly 'com.android.support:recyclerview-v7:27.0.0'
 }
