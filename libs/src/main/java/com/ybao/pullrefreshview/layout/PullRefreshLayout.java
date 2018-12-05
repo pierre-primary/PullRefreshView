@@ -22,18 +22,16 @@
 package com.ybao.pullrefreshview.layout;
 
 import android.content.Context;
-import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
 
 import com.nineoldandroids.animation.Animator;
 import com.ybao.pullrefreshview.support.anim.AnimListener;
 import com.ybao.pullrefreshview.support.impl.Loadable;
 import com.ybao.pullrefreshview.support.impl.Refreshable;
-import com.ybao.pullrefreshview.support.type.LayoutType;
 
 
 /**
@@ -51,6 +49,8 @@ public class PullRefreshLayout extends FlingLayout {
     protected boolean hasFooter = true;
     protected boolean isRefreshing = false;
     protected boolean isLoading = false;
+    Animator disHeaderAnim;
+    Animator disFooterAnim;
 
     public PullRefreshLayout(Context context) {
         this(context, null);
@@ -80,6 +80,45 @@ public class PullRefreshLayout extends FlingLayout {
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (isCloneState()) {
+            return false;
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (isLoadingOrCloneState()) {
+            return false;
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    //处于加载或完成状态
+    private boolean isLoadingOrCloneState() {
+        boolean show = false;
+        if (mHeader instanceof BaseHeaderView) {
+            show = ((BaseHeaderView) mHeader).getType() >= BaseHeaderView.REFRESHING;
+        }
+        if (!show && mFooter instanceof BaseFooterView) {
+            show = ((BaseFooterView) mFooter).getType() >= BaseFooterView.LOADING;
+        }
+        return show;
+    }
+    //处于完成状态
+    private boolean isCloneState() {
+        boolean show = false;
+        if (mHeader instanceof BaseHeaderView) {
+            show = ((BaseHeaderView) mHeader).getType() == BaseHeaderView.REFRESH_CLONE;
+        }
+        if (!show && mFooter instanceof BaseFooterView) {
+            show = ((BaseFooterView) mFooter).getType() == BaseFooterView.LOAD_CLONE;
+        }
+        return show;
     }
 
     @Override
@@ -159,11 +198,13 @@ public class PullRefreshLayout extends FlingLayout {
         int height = getHeight();
         if (mHeader != null && isMyChild((View) mHeader)) {
             View mHeaderView = (View) mHeader;
-            mHeaderView.layout(mHeaderView.getLeft(), -mHeaderView.getMeasuredHeight(), mHeaderView.getRight(), 0);
+            mHeaderView.layout(mHeaderView.getLeft(), -mHeaderView.getMeasuredHeight(),
+                    mHeaderView.getRight(), 0);
         }
         if (mFooter != null && isMyChild((View) mFooter)) {
             View mFooterView = (View) mFooter;
-            mFooterView.layout(mFooterView.getLeft(), height, mFooterView.getRight(), height + mFooterView.getMeasuredHeight());
+            mFooterView.layout(mFooterView.getLeft(), height, mFooterView.getRight(),
+                    height + mFooterView.getMeasuredHeight());
         }
     }
 
@@ -175,23 +216,33 @@ public class PullRefreshLayout extends FlingLayout {
         return hasFooter && !isRefreshing && stateType != SCROLL_STATE_OVER_SCROLL;
     }
 
-    void setRefreshing(boolean refresh) {
-        isRefreshing = refresh;
-    }
-
     public boolean isRefreshing() {
         return isRefreshing;
     }
 
-    void setLoading(boolean loading) {
-        isLoading = loading;
+    void setRefreshing(boolean refresh) {
+        isRefreshing = refresh;
     }
 
     public boolean isLoading() {
         return isLoading;
     }
 
-    Animator disHeaderAnim;
+    void setLoading(boolean loading) {
+        isLoading = loading;
+    }
+
+    private Animator disEnableByAnim(final AnimListener animListener, float startP, float endP) {
+        int duration = (int) Math.abs(endP - startP);
+        int time = Math.min(MAX_DURATION, duration);
+        time = Math.max(MIN_DURATION, time);
+        return animGetter.createMoveToAnim(0, time, new DecelerateInterpolator(), animListener,
+                startP, endP);
+    }
+
+    public boolean isHasHeader() {
+        return hasHeader;
+    }
 
     public void setHasHeader(boolean hasHeader) {
         this.hasHeader = hasHeader;
@@ -229,19 +280,9 @@ public class PullRefreshLayout extends FlingLayout {
         }
     }
 
-    private Animator disEnableByAnim(final AnimListener animListener, float startP, float endP) {
-        int duration = (int) Math.abs(endP - startP);
-        int time = Math.min(MAX_DURATION, duration);
-        time = Math.max(MIN_DURATION, time);
-        return animGetter.createMoveToAnim(0, time, new DecelerateInterpolator(), animListener, startP, endP);
+    public boolean isHasFooter() {
+        return hasFooter;
     }
-
-    public boolean isHasHeader() {
-        return hasHeader;
-    }
-
-
-    Animator disFooterAnim;
 
     public void setHasFooter(boolean hasFooter) {
         this.hasFooter = hasFooter;
@@ -277,9 +318,5 @@ public class PullRefreshLayout extends FlingLayout {
             disFooterAnim.cancel();
             disFooterAnim = null;
         }
-    }
-
-    public boolean isHasFooter() {
-        return hasFooter;
     }
 }
