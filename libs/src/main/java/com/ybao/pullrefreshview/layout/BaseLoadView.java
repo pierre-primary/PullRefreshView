@@ -141,8 +141,22 @@ public abstract class BaseLoadView extends RelativeLayout implements Loadable {
         if (this.pullRefreshLayout != null && loadState != LOADING) {
             float moveP = pullRefreshLayout.getOffset();
             float spanHeight = getSpanHeight();
-            setState(LOADING);
-            pullRefreshLayout.startMoveTo(startDelay, null, moveP, -spanHeight);
+            pullRefreshLayout.startMoveTo(startDelay, new AnimListener() {
+                @Override
+                public void onUpdate(float value) {
+
+                }
+
+                @Override
+                public void onAnimEnd() {
+                    setState(LOADING);
+                }
+
+                @Override
+                public void onAnimCencel() {
+
+                }
+            }, moveP, -spanHeight);
         }
     }
 

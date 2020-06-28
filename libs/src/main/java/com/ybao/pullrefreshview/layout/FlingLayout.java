@@ -29,7 +29,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -45,16 +44,15 @@ import com.nineoldandroids.view.ViewHelper;
 import com.ybao.pullrefreshview.R;
 import com.ybao.pullrefreshview.support.anim.AnimGetter;
 import com.ybao.pullrefreshview.support.anim.AnimListener;
+import com.ybao.pullrefreshview.support.event.EventHorizontalHelper;
 import com.ybao.pullrefreshview.support.event.EventVerticalHelper;
 import com.ybao.pullrefreshview.support.event.IEventHelper;
+import com.ybao.pullrefreshview.support.nested.INestedHelper;
+import com.ybao.pullrefreshview.support.nested.NestedHorizontalHelper;
+import com.ybao.pullrefreshview.support.nested.NestedVerticalHelper;
+import com.ybao.pullrefreshview.support.overscroll.OverScrollController;
 import com.ybao.pullrefreshview.support.pullable.IPullableHelper;
 import com.ybao.pullrefreshview.support.pullable.Pullable;
-import com.ybao.pullrefreshview.support.nested.INestedHelper;
-import com.ybao.pullrefreshview.support.nested.NestedVerticalHelper;
-//import com.ybao.pullrefreshview.support.overscroll.OverScrollController;
-//import com.ybao.pullrefreshview.support.resolver.FlingXResolver;
-//import com.ybao.pullrefreshview.support.resolver.FlingYResolver;
-//import com.ybao.pullrefreshview.support.resolver.IEventResolver;
 import com.ybao.pullrefreshview.support.pullable.PullableHorizontalHelper;
 import com.ybao.pullrefreshview.support.pullable.PullableVerticalHelper;
 import com.ybao.pullrefreshview.support.utils.Utils;
@@ -99,11 +97,6 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
      */
     protected Pullable mPullable;
     /**
-     * 最小触发事件距离
-     */
-    private int mTouchSlop;
-    private int maxOverScrollDist;
-    /**
      * 滑出结束点开关
      */
     private boolean canOverEnd = true;
@@ -123,7 +116,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     /**
      * 默认最大滑动距离
      */
-    private static int MAXDISTANCE = 0;
+    private int MAXDISTANCE = 0;
 
     /**
      * 是否被子控件阻止事件的标识
@@ -133,21 +126,29 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     /**
      * 当前位置
      */
-    float _offset = 0;
+    private float _offset = 0;
 
-    ScrollHelper scrollHelper;
+
+    /**
+     * 动画生成器
+     */
+    protected AnimGetter animGetter;
+
+    /**
+     * 内部类隐藏接口
+     */
+    private ScrollHelper scrollHelper;
+    private ScrollOverHelper scrollOverHelper;
+    /**
+     * 帮助类
+     */
     IPullableHelper pullableHelper;
     IEventHelper eventHelper;
     INestedHelper nestedHelper;
     /**
-     * 动画生成器
-     */
-    AnimGetter animGetter;
-    /**
      * 越界滑动控制器
      */
-//    OverScrollController overScrollController;
-
+    OverScrollController overScrollController;
     /**
      * 主动画
      */
@@ -179,12 +180,10 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     }
 
     private void init(Context context) {
-        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-        maxOverScrollDist = mTouchSlop * 10;
-        scrollHelper = new ScrollHelper();
-//        flingLayoutContext = new FlingLayoutContext();
         animGetter = new AnimGetter();
-//        overScrollController = new OverScrollController(flingLayoutContext);
+        scrollHelper = new ScrollHelper();
+        scrollOverHelper = new ScrollOverHelper();
+        overScrollController = new OverScrollController(this, scrollOverHelper);
     }
 
     private void initAttrs(Context context, AttributeSet attrs) {
@@ -202,7 +201,8 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         if (orientation == HORIZONTAL) {
             MAXDISTANCE = Utils.getScreenWidth(getContext()) * 3 / 5;
             pullableHelper = new PullableHorizontalHelper();
-//            eventResolver = new FlingXResolver(flingLayoutContext);
+            eventHelper = new EventHorizontalHelper(this, scrollHelper);
+            nestedHelper = new NestedHorizontalHelper(this, scrollHelper);
         } else if (orientation == VERTICAL) {
             MAXDISTANCE = Utils.getScreenHeight(getContext()) * 3 / 5;
             pullableHelper = new PullableVerticalHelper();
@@ -252,7 +252,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
      *
      * @param offset 位置
      */
-    protected void offsetTo(float offset) {
+    private void offsetTo(float offset) {
         setOffset(offset);
         Log.i("flingLayout", "offset:" + offset);
         boolean intercept = onScroll(offset);
@@ -292,7 +292,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
                 return;
             }
             if (scrollState != SCROLL_STATE_FLING) {
-//                overScrollController.removeOverScrollListener();
+                overScrollController.removeOverScrollListener();
             }
             this.scrollState = scrollState;
             Log.i("flingLayout", "onScrollChange:" + scrollState);
@@ -329,7 +329,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         int duration = (int) Math.abs(endP - startP);
         int time = Math.min(Utils.MAX_DURATION, duration);
         time = Math.max(Utils.MIN_DURATION, time);
-        startAnim(startDelay, SCROLL_STATE_FLING, time, new AccelerateDecelerateInterpolator(), animListener, startP, endP);
+        startScrollAnim(startDelay, SCROLL_STATE_FLING, time, new AccelerateDecelerateInterpolator(), animListener, startP, endP);
         return time;
     }
 
@@ -343,7 +343,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
      * @param animListener 动画状态回调
      * @param p            关键帧
      */
-    private void startAnim(int startDelay, final int state, int time, Interpolator interpolator, final AnimListener animListener, float... p) {
+    private void startScrollAnim(int startDelay, final int state, int time, Interpolator interpolator, final AnimListener animListener, float... p) {
         stopAnim();
         setScrollState(state);
         animator = animGetter.createMoveToAnim(startDelay, time, interpolator, new AnimListener() {
@@ -397,7 +397,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
                 startMoveTo(0, null, nowOffset, 0);
             }
         } else if (canOverScroll && mPullable != null && !mPullable.canOverStart() && !mPullable.canOverEnd()) {
-//            overScrollController.addOverScrollListener();
+            overScrollController.addOverScrollListener();
         } else {
             setScrollState(SCROLL_STATE_IDLE);
         }
@@ -563,86 +563,9 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
 
     /********************************提供外部事件调用**********************************/
 
-//    public class FlingLayoutContext {
-//
-//        public FlingLayout getFlingLayout() {
-//            return FlingLayout.this;
-//        }
-//
-//        public Pullable getPullable() {
-//            return pullable;
-//        }
-//
-//        public boolean superDispatchTouchEvent(MotionEvent ev) {
-//            return FlingLayout.super.dispatchTouchEvent(ev);
-//        }
-//
-//        public boolean superInterceptTouchEvent(MotionEvent ev) {
-//            return FlingLayout.super.onInterceptTouchEvent(ev);
-//        }
-//
-//        public boolean superTouchEvent(MotionEvent ev) {
-//            return FlingLayout.super.onTouchEvent(ev);
-//        }
-//
-//        public int getTouchSlop() {
-//            return mTouchSlop;
-//        }
-//
-//        public void startRelease() {
-//            FlingLayout.this.startRelease();
-//        }
-//
-//        public boolean canOverStart() {
-//            return FlingLayout.this.canOverStart();
-//        }
-//
-//        public boolean canOverEnd() {
-//            return FlingLayout.this.canOverEnd();
-//        }
-//
-//        public void setScrollState(int scrollState) {
-//            FlingLayout.this.setScrollState(scrollState);
-//        }
-//
-//        public void addScrollState(int scrollState) {
-//            FlingLayout.this.addScrollState(scrollState);
-//        }
-//
-//        public void removeScrollState(int scrollState) {
-//            FlingLayout.this.removeScrollState(scrollState);
-//        }
-//
-//        public int getMaxDistance() {
-//            return FlingLayout.this.getMaxDistance();
-//        }
-//
-//        public void offsetTo(float offset) {
-//            FlingLayout.this.offsetTo(offset);
-//        }
-//
-//        public void offsetBy(float dp) {
-//            FlingLayout.this.offsetBy(dp);
-//        }
-//
-//        public float getOffset() {
-//            return FlingLayout.this.getOffset();
-//        }
-//
-//        public void startAnim(int startDelay, int state, int time, Interpolator interpolator, AnimListener animListener, float... p) {
-//            FlingLayout.this.startAnim(startDelay, state, time, interpolator, animListener, p);
-//        }
-//
-//        public int getMaxOverScrollDist() {
-//            return maxOverScrollDist;
-//        }
-//
-//        public float getVelocity() {
-//            return eventResolver.getVelocity();
-//        }
-//    }
-
     public class ScrollHelper {
+        private float velocity = 0;
+
         public void offsetTo(float offset) {
             FlingLayout.this.offsetTo(offset);
         }
@@ -651,19 +574,35 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
             FlingLayout.this.offsetBy(dp);
         }
 
-        public float getOffset() {
-            return FlingLayout.this.getOffset();
-        }
-
-        public void startScroll() {
+        public void startTouchScroll() {
             FlingLayout.this.setScrollState(SCROLL_STATE_TOUCH_SCROLL);
         }
 
-        public void stopScroll() {
+        public void stopTouchScroll() {
             FlingLayout.this.startRelease();
         }
 
         public void setVelocity(float velocity) {
+            this.velocity = velocity;
+        }
+
+        public float getVelocity() {
+            return velocity;
+        }
+    }
+
+    public class ScrollOverHelper {
+
+        public void setScrollState(int state) {
+            FlingLayout.this.setScrollState(state);
+        }
+
+        public void startScrollAnim(int startDelay, final int state, int time, Interpolator interpolator, final AnimListener animListener, float... p) {
+            FlingLayout.this.startScrollAnim(startDelay, state, time, interpolator, animListener, p);
+        }
+
+        public float getVelocity() {
+            return scrollHelper.getVelocity();
         }
     }
 

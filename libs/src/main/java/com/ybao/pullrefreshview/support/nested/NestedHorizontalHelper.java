@@ -32,7 +32,7 @@ public class NestedHorizontalHelper extends NestedHelper {
 
     @Override
     public void onNestedPreScroll(@NonNull View target, int tdx, int tdy, @NonNull int[] consumed) {
-        int offset = (int) mScrollHelper.getOffset();
+        int offset = (int) mFlingLayout.getOffset();
         if (offset == 0) {
             //未滑动时，直接交给上级控件处理
             dispatchNestedPreScroll(tdx, tdy, consumed, null);
@@ -66,5 +66,11 @@ public class NestedHorizontalHelper extends NestedHelper {
                 consumed[0] = tdx;
             }
         }
+    }
+
+    @Override
+    public boolean onNestedPreFling(View target, float velocityX, float velocityY) {
+        mScrollHelper.setVelocity(-velocityX);
+        return super.onNestedPreFling(target, velocityX, velocityY);
     }
 }

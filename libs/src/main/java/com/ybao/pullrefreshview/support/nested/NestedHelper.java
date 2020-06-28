@@ -88,13 +88,13 @@ public abstract class NestedHelper implements INestedHelper {
     @Override
     public void onNestedScrollAccepted(@NonNull View child, @NonNull View target, int axes) {
         getParentHelper().onNestedScrollAccepted(child, target, axes);
-        mScrollHelper.startScroll();
+        mScrollHelper.startTouchScroll();
         startNestedScroll(axes);//传递上去
     }
 
     @Override
     public void onStopNestedScroll(View target) {
-        mScrollHelper.stopScroll();
+        mScrollHelper.stopTouchScroll();
         stopNestedScroll();
     }
 
@@ -104,8 +104,14 @@ public abstract class NestedHelper implements INestedHelper {
     }
 
     @Override
-    public boolean onNestedPreFling(@NonNull View target, float velocityX, float velocityY) {
-        return dispatchNestedPreFling(velocityX, velocityY);
+    public boolean onNestedPreFling(View target, float velocityX, float velocityY) {
+        if (dispatchNestedPreFling(velocityX, velocityY)) {
+            return true;
+        }
+        if (mFlingLayout.getOffset() != 0) {
+            return true;
+        }
+        return false;
     }
 
     @Override

@@ -30,18 +30,18 @@ public abstract class EventHelper implements IEventHelper {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        mScrollHelper.startScroll();
         acquireVelocityTracker(ev);
         int pointerCount = ev.getPointerCount();
         int pointerIndex = ev.getActionIndex();
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
+                mScrollHelper.startTouchScroll();
                 mPointerId = ev.getPointerId(pointerIndex);
                 float x = ev.getX(pointerIndex);
                 float y = ev.getY(pointerIndex);
                 tepmY = downY = y;
                 tepmX = downX = x;
-                float offset = mScrollHelper.getOffset();
+                float offset = mFlingLayout.getOffset();
                 if (offset != 0) {
                     return true;
                 }
@@ -72,7 +72,7 @@ public abstract class EventHelper implements IEventHelper {
             case MotionEvent.ACTION_UP:
                 createVelocity(ev);
             case MotionEvent.ACTION_CANCEL:
-                mScrollHelper.stopScroll();
+                mScrollHelper.stopTouchScroll();
                 isScrolling = false;
                 releaseVelocityTracker();
                 break;
@@ -93,6 +93,8 @@ public abstract class EventHelper implements IEventHelper {
 
     protected abstract boolean dispatchScroll(MotionEvent ev, int dx, int dy);
 
+    protected abstract void dispatchFling(float velocityX, float velocityY);
+
     @Override
     public boolean touchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
@@ -104,13 +106,9 @@ public abstract class EventHelper implements IEventHelper {
 
     protected void createVelocity(MotionEvent ev) {
         mVelocityTracker.computeCurrentVelocity(1000);
-        float yvelocity = mVelocityTracker.getYVelocity();
-        float xvelocity = mVelocityTracker.getXVelocity();
-        if (Math.abs(xvelocity) > Math.abs(yvelocity)) {
-            velocity = 0;
-        } else {
-            velocity = yvelocity;
-        }
+        float velocityX = mVelocityTracker.getXVelocity();
+        float velocityY = mVelocityTracker.getYVelocity();
+        dispatchFling(velocityX, velocityY);
     }
 
     protected void acquireVelocityTracker(final MotionEvent event) {

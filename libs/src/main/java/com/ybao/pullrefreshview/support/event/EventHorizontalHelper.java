@@ -14,7 +14,7 @@ public class EventHorizontalHelper extends EventHelper {
         if (isScrolling || Math.abs(tdx) > Math.abs(tdy)) {
             isScrolling = true;
             mFlingLayout.getParent().requestDisallowInterceptTouchEvent(true);
-            int offset = (int) mScrollHelper.getOffset();
+            int offset = (int) mFlingLayout.getOffset();
             int mdx = tdx;
             if (offset == 0) {
                 //开始时 在0,0处
@@ -51,5 +51,10 @@ public class EventHorizontalHelper extends EventHelper {
             ev.setLocation(downX, tdy);
         }
         return false;
+    }
+
+    @Override
+    protected void dispatchFling(float velocityX, float velocityY) {
+        mScrollHelper.setVelocity(velocityX);
     }
 }
