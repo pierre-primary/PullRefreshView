@@ -1,7 +1,7 @@
 package com.ybao.pullrefreshview.support.resolver;
 
-import android.support.v4.view.NestedScrollingChild;
-import android.support.v4.view.NestedScrollingParent;
+import androidx.core.view.NestedScrollingChild;
+import androidx.core.view.NestedScrollingParent;
 import android.view.MotionEvent;
 import android.view.View;
 

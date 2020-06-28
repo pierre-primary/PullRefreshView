@@ -23,10 +23,6 @@ package com.ybao.pullrefreshview.layout;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.IntDef;
-import android.support.v4.view.NestedScrollingChild;
-import android.support.v4.view.NestedScrollingParent;
-import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -36,6 +32,11 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
+
+import androidx.annotation.IntDef;
+import androidx.core.view.NestedScrollingChild;
+import androidx.core.view.NestedScrollingParent;
+import androidx.core.view.ViewCompat;
 
 import com.nineoldandroids.animation.Animator;
 import com.ybao.pullrefreshview.R;
@@ -374,7 +375,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     private void startRelease() {
         float nowP = getMoveP();
         if (nowP != 0) {
-            if (!onStartrRelease(nowP)) {
+            if (!onStartRelease(nowP)) {
                 startMoveTo(0, null, nowP, 0);
             }
         } else if (canOverScroll && pullable != null && !pullable.canOverStart() && !pullable.canOverEnd()) {
@@ -626,7 +627,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         return false;
     }
 
-    protected boolean onStartrRelease(float nowY) {
+    protected boolean onStartRelease(float nowY) {
         return false;
     }
 

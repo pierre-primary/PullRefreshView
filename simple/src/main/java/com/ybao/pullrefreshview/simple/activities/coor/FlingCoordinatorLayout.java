@@ -1,9 +1,12 @@
 package com.ybao.pullrefreshview.simple.activities.coor;
 
 import android.content.Context;
-import android.support.v4.view.NestedScrollingChild;
-import android.support.v4.view.NestedScrollingChildHelper;
-import android.support.v4.view.ViewCompat;
+
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.NestedScrollingChild;
+import androidx.core.view.NestedScrollingChildHelper;
+import androidx.core.view.ViewCompat;
+
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,19 +18,19 @@ import com.ybao.pullrefreshview.support.utils.VCanPullUtil;
  * Created by Y-bao on 2017/8/21 0021.
  */
 
-public class CoordinatorLayout extends android.support.design.widget.CoordinatorLayout implements VPullable, NestedScrollingChild {
+public class FlingCoordinatorLayout extends CoordinatorLayout implements VPullable, NestedScrollingChild {
     private VPullable mPullable;
     NestedScrollingChildHelper mNestedScrollingChildHelper;
 
-    public CoordinatorLayout(Context context) {
+    public FlingCoordinatorLayout(Context context) {
         this(context, null);
     }
 
-    public CoordinatorLayout(Context context, AttributeSet attrs) {
+    public FlingCoordinatorLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public CoordinatorLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public FlingCoordinatorLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }

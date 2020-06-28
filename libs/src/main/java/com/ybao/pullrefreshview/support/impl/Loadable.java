@@ -31,9 +31,11 @@ public interface Loadable {
 
     void onScrollChange(int state);
 
-    boolean onStartrRelease(float offsetTop);
+    boolean onStartRelease(float offsetTop);
 
     void startLoad();
+
+    void startLoad(int startDelay);
 
     void stopLoad();
 

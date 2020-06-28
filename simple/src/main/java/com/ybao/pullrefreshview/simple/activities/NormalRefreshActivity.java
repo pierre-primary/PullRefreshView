@@ -1,31 +1,19 @@
 package com.ybao.pullrefreshview.simple.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.ybao.adapter.recyclerview.StandardAdapter;
 import com.ybao.pullrefreshview.layout.BaseFooterView;
 import com.ybao.pullrefreshview.layout.BaseHeaderView;
-import com.ybao.pullrefreshview.layout.FlingLayout;
-import com.ybao.pullrefreshview.layout.PullRefreshLayout;
 import com.ybao.pullrefreshview.simple.R;
 import com.ybao.pullrefreshview.simple.activities.coor.RecyclerPartnerView;
-import com.ybao.pullrefreshview.simple.fragment.Fragment1;
-import com.ybao.pullrefreshview.simple.view.EndFooterView;
-import com.ybao.pullrefreshview.simple.view.NormalFooterView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +41,7 @@ public class NormalRefreshActivity extends AppCompatActivity implements BaseHead
         recyclerView = (RecyclerPartnerView) findViewById(R.id.list);
         headerView = (BaseHeaderView) findViewById(R.id.header);
         footerView = (BaseFooterView) findViewById(R.id.footer);
-        ((com.ybao.pullrefreshview.simple.activities.coor.AppBarLayout) findViewById(R.id.AppBarLayout)).setPartner(recyclerView);
+        ((com.ybao.pullrefreshview.simple.activities.coor.FlingAppBarLayout) findViewById(R.id.AppBarLayout)).setPartner(recyclerView);
 
         list = new ArrayList<>();
 
@@ -68,7 +56,6 @@ public class NormalRefreshActivity extends AppCompatActivity implements BaseHead
         linearLayoutManager = new LinearLayoutManager(NormalRefreshActivity.this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
-        headerView.startRefresh(300);
         headerView.setOnRefreshListener(this);
         footerView.setOnLoadListener(this);
     }

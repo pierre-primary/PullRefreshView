@@ -16,12 +16,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    productFlavors {
+    compileOptions {
+        sourceCompatibility JAVA_SOURCE_VERSION
+        targetCompatibility JAVA_TARGET_VERSION
     }
 }
 
 dependencies {
-    compileOnly 'com.nineoldandroids:library:2.4.0'
-    compileOnly 'com.android.support:support-v4:27.0.0'
-    compileOnly 'com.android.support:recyclerview-v7:27.0.0'
+    compileOnly 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.core:core:1.3.0'
+    implementation 'com.nineoldandroids:library:2.4.0'
 }

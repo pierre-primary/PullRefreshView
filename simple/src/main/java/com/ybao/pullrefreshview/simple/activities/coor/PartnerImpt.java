@@ -5,7 +5,7 @@ package com.ybao.pullrefreshview.simple.activities.coor;
  */
 
 public interface PartnerImpt {
-    void setPartner(AppBarLayout appBarLayout);
+    void setPartner(FlingAppBarLayout appBarLayout);
 
     boolean canHeaderDrag();
 

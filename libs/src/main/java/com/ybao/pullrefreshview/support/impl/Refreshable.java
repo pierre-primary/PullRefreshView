@@ -31,9 +31,11 @@ public interface Refreshable {
 
     void onScrollChange(int state);
 
-    boolean onStartrRelease(float offsetTop);
+    boolean onStartRelease(float offsetTop);
 
     void startRefresh();
+
+    void startRefresh(int startDelay);
 
     void stopRefresh();
 

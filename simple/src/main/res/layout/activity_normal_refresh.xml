@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.ybao.pullrefreshview.simple.activities.coor.CoordinatorLayout
+    <com.ybao.pullrefreshview.simple.activities.coor.FlingCoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorPrimary">
@@ -28,8 +28,7 @@
             android:layout_height="match_parent"
             android:background="@android:color/white" />
 
-        <com.ybao.pullrefreshview.simple.activities.coor.AppBarLayout
-
+        <com.ybao.pullrefreshview.simple.activities.coor.FlingAppBarLayout
             android:id="@+id/AppBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -54,9 +53,9 @@
                 android:minHeight="50dp"
                 app:layout_scrollFlags="exitUntilCollapsed|scroll" />
 
-        </com.ybao.pullrefreshview.simple.activities.coor.AppBarLayout>
+        </com.ybao.pullrefreshview.simple.activities.coor.FlingAppBarLayout>
 
 
-    </com.ybao.pullrefreshview.simple.activities.coor.CoordinatorLayout>
+    </com.ybao.pullrefreshview.simple.activities.coor.FlingCoordinatorLayout>
 
 </com.ybao.pullrefreshview.layout.PullRefreshLayout>

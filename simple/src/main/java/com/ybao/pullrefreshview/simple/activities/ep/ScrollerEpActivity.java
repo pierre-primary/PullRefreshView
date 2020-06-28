@@ -1,9 +1,10 @@
 package com.ybao.pullrefreshview.simple.activities.ep;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.ybao.pullrefreshview.layout.BaseFooterView;
 import com.ybao.pullrefreshview.layout.BaseHeaderView;
@@ -41,6 +42,7 @@ public class ScrollerEpActivity extends AppCompatActivity implements BaseHeaderV
 
         headerView.setOnRefreshListener(this);
         footerView.setOnLoadListener(this);
+        footerView.startLoad(300);
     }
 
 

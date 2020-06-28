@@ -1,15 +1,15 @@
 package com.ybao.pullrefreshview.simple.activities.other;
 
 import android.os.Bundle;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.ybao.pullrefreshview.layout.BaseFooterView;
-import com.ybao.pullrefreshview.layout.BaseHeaderView;
 import com.ybao.pullrefreshview.layout.FlingLayout;
 import com.ybao.pullrefreshview.simple.R;
 import com.ybao.pullrefreshview.support.utils.ViewScrollUtil;

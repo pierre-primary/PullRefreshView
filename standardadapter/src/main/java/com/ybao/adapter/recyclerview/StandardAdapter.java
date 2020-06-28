@@ -8,10 +8,10 @@
  */
 package com.ybao.adapter.recyclerview;
 
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ import java.util.List;
  * @Description: TODO Recyclerview 通用的适配器
  * @date 2015年6月8日 下午4:23:15
  */
-public class StandardAdapter extends Adapter<StandardAdapter.ItemViewHolder> {
+public class StandardAdapter extends RecyclerView.Adapter<StandardAdapter.ItemViewHolder> {
 
     private List<?> mList;
 

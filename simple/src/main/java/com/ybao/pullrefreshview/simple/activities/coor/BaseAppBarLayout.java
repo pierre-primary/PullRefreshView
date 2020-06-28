@@ -1,18 +1,19 @@
 package com.ybao.pullrefreshview.simple.activities.coor;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.view.NestedScrollingChild;
-import android.support.v4.view.NestedScrollingChildHelper;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.widget.ScrollerCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.LinearLayout;
+import android.widget.Scroller;
+
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.NestedScrollingChild;
+import androidx.core.view.NestedScrollingChildHelper;
+import androidx.core.view.ViewCompat;
 
 import com.nineoldandroids.view.ViewHelper;
 
@@ -22,7 +23,7 @@ import com.nineoldandroids.view.ViewHelper;
 
 public class BaseAppBarLayout extends LinearLayout implements NestedScrollingChild {
     private int mOffset = 0;
-    private ScrollerCompat mScroller;
+    private Scroller mScroller;
     private FlingRunnable mFlingRunnable;
     NestedScrollingChildHelper mNestedScrollingChildHelper;
 
@@ -67,7 +68,7 @@ public class BaseAppBarLayout extends LinearLayout implements NestedScrollingChi
     public boolean fliing(int minY, int maxY, float velocityY) {
         stopScroll();
         if (this.mScroller == null) {
-            this.mScroller = ScrollerCompat.create(getContext());
+            this.mScroller = new Scroller(getContext());
         }
         this.mScroller.fling(0, getCurrentOffset(), 0, Math.round(velocityY), 0, 0, minY, maxY);
         if (this.mScroller.computeScrollOffset()) {
@@ -169,7 +170,7 @@ public class BaseAppBarLayout extends LinearLayout implements NestedScrollingChi
         }
 
         @Override
-        public boolean onInterceptTouchEvent(CoordinatorLayout parent, V child, MotionEvent ev) {
+        public boolean onInterceptTouchEvent(androidx.coordinatorlayout.widget.CoordinatorLayout parent, V child, MotionEvent ev) {
             if (mTouchSlop < 0) {
                 mTouchSlop = ViewConfiguration.get(parent.getContext()).getScaledTouchSlop();
             }
@@ -233,7 +234,7 @@ public class BaseAppBarLayout extends LinearLayout implements NestedScrollingChi
         }
 
         @Override
-        public boolean onTouchEvent(CoordinatorLayout parent, V child, MotionEvent ev) {
+        public boolean onTouchEvent(androidx.coordinatorlayout.widget.CoordinatorLayout parent, V child, MotionEvent ev) {
             if (mTouchSlop < 0) {
                 mTouchSlop = ViewConfiguration.get(parent.getContext()).getScaledTouchSlop();
             }
@@ -310,15 +311,15 @@ public class BaseAppBarLayout extends LinearLayout implements NestedScrollingChi
             return true;
         }
 
-        final boolean fling(CoordinatorLayout paramMc, V paramV, int minY, int maxY, float velocityY) {
+        final boolean fling(androidx.coordinatorlayout.widget.CoordinatorLayout paramMc, V paramV, int minY, int maxY, float velocityY) {
             return paramV.fliing(minY, maxY, velocityY);
         }
 
-        final int scroll(CoordinatorLayout paramMc, V paramV, int dy, int minOffset, int maxOffset) {
+        final int scroll(androidx.coordinatorlayout.widget.CoordinatorLayout paramMc, V paramV, int dy, int minOffset, int maxOffset) {
             return setHeaderTopBottomOffset(paramMc, paramV, dy, minOffset, maxOffset);
         }
 
-        int setHeaderTopBottomOffset(CoordinatorLayout paramMc, V paramV, int dy, int minOffset, int maxOffset) {
+        int setHeaderTopBottomOffset(androidx.coordinatorlayout.widget.CoordinatorLayout paramMc, V paramV, int dy, int minOffset, int maxOffset) {
             return onScroll(dy, paramV);
         }
 

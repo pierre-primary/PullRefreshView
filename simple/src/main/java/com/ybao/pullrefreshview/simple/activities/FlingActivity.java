@@ -1,9 +1,10 @@
 package com.ybao.pullrefreshview.simple.activities;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.ybao.pullrefreshview.simple.R;
 

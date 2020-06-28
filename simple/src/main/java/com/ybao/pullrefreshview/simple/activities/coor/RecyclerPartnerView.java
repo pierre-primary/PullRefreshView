@@ -1,18 +1,21 @@
 package com.ybao.pullrefreshview.simple.activities.coor;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewTreeObserver;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by Y-bao on 2017/8/28 0028.
  */
 
 public class RecyclerPartnerView extends RecyclerView implements PartnerImpt {
-    public boolean mIsScrolling;
-    public AppBarLayout mPartner;
+    private boolean mIsScrolling;
+    private FlingAppBarLayout mPartner;
+
+    private int mLastheight = 0;
 
     public RecyclerPartnerView(Context paramContext) {
         super(paramContext);
@@ -71,6 +74,12 @@ public class RecyclerPartnerView extends RecyclerView implements PartnerImpt {
     }
 
     @Override
+    public void scrollToPosition(int position) {
+        super.scrollToPosition(position);
+        postDelayed(runnable, 200);
+    }
+
+    @Override
     public int getBottomItemOffset() {
         LayoutManager lm = getLayoutManager();
         int n = 0;
@@ -95,7 +104,7 @@ public class RecyclerPartnerView extends RecyclerView implements PartnerImpt {
         return Integer.MAX_VALUE;
     }
 
-    public AppBarLayout getPartner() {
+    public FlingAppBarLayout getPartner() {
         return this.mPartner;
     }
 
@@ -105,7 +114,7 @@ public class RecyclerPartnerView extends RecyclerView implements PartnerImpt {
     }
 
     @Override
-    public void setPartner(AppBarLayout paramxim) {
+    public void setPartner(FlingAppBarLayout paramxim) {
         if (this.mPartner != null) {
             this.mPartner.getViewTreeObserver().removeOnPreDrawListener(onPreDrawListener);
         }
@@ -119,46 +128,60 @@ public class RecyclerPartnerView extends RecyclerView implements PartnerImpt {
     ViewTreeObserver.OnPreDrawListener onPreDrawListener = new ViewTreeObserver.OnPreDrawListener() {
         @Override
         public boolean onPreDraw() {
-            if (height == mPartner.getMeasuredHeight()) {
+            if (mLastheight == mPartner.getMeasuredHeight()) {
                 return true;
             }
-            height = mPartner.getMeasuredHeight();
+            mLastheight = mPartner.getMeasuredHeight();
             setClipToPadding(false);
             setPadding(getPaddingLeft(), mPartner.getMeasuredHeight(), getPaddingRight(), getPaddingBottom());
             return true;
         }
     };
 
-    int height = 0;
+    public void onScrollStateChanged(int newState) {
+        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+            mIsScrolling = false;
+            if (mPartner != null) {
+                mPartner.onPartnerScrollStop();
+            }
+        } else {
+            mIsScrolling = true;
+            if (mPartner != null) {
+                mPartner.onPartnerScrollStart();
+            }
+        }
+    }
+
+    public void onScrolled(int dy) {
+        removeCallbacks(runnable);
+        if (mPartner != null) {
+            RecyclerView.ViewHolder topViewHolder = findViewHolderForAdapterPosition(0);
+            boolean hasY = false;
+            int y = 0;
+            if (topViewHolder != null) {
+                hasY = true;
+                y = topViewHolder.itemView.getTop();
+            }
+            mPartner.onPartnerScrolled(hasY, y - getPaddingTop(), -dy);
+        }
+    }
+
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            onScrolled(0);
+        }
+    };
 
     class MyOnScrollListener extends OnScrollListener {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                mIsScrolling = false;
-                if (mPartner != null) {
-                    mPartner.onPartnerScrollStop();
-                }
-            } else {
-                mIsScrolling = true;
-                if (mPartner != null) {
-                    mPartner.onPartnerScrollStart();
-                }
-            }
+            RecyclerPartnerView.this.onScrollStateChanged(newState);
         }
 
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            if (mPartner != null) {
-                RecyclerView.ViewHolder topViewHolder = findViewHolderForAdapterPosition(0);
-                boolean hasY = false;
-                int y = 0;
-                if (topViewHolder != null) {
-                    hasY = true;
-                    y = topViewHolder.itemView.getTop();
-                }
-                mPartner.onPartnerScrolled(hasY, y - recyclerView.getPaddingTop(), -dy);
-            }
+            RecyclerPartnerView.this.onScrolled(dy);
         }
     }
 }

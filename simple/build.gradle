@@ -18,7 +18,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    productFlavors {
+    compileOptions {
+        sourceCompatibility JAVA_SOURCE_VERSION
+        targetCompatibility JAVA_TARGET_VERSION
     }
 }
 
@@ -26,8 +28,9 @@ dependencies {
     implementation project(':libs')
     implementation project(':standardadapter')
     implementation 'com.nineoldandroids:library:2.4.0'
-    implementation 'com.android.support:support-v4:27.0.0'
-    implementation 'com.android.support:appcompat-v7:27.0.0'
-    implementation 'com.android.support:design:27.0.0'
-    implementation 'com.android.support:recyclerview-v7:27.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'org.jetbrains:annotations:15.0'
 }

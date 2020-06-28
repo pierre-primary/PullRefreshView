@@ -22,18 +22,15 @@
 package com.ybao.pullrefreshview.layout;
 
 import android.content.Context;
-import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
 
 import com.nineoldandroids.animation.Animator;
 import com.ybao.pullrefreshview.support.anim.AnimListener;
 import com.ybao.pullrefreshview.support.impl.Loadable;
 import com.ybao.pullrefreshview.support.impl.Refreshable;
-import com.ybao.pullrefreshview.support.type.LayoutType;
 import com.ybao.pullrefreshview.support.utils.Utils;
 
 
@@ -95,11 +92,11 @@ public class PullRefreshLayout extends FlingLayout {
     }
 
     @Override
-    protected boolean onStartrRelease(float nowY) {
+    protected boolean onStartRelease(float nowY) {
         if (mHeader != null && nowY > 0 && isShowRefreshView()) {
-            return mHeader.onStartrRelease(nowY);
+            return mHeader.onStartRelease(nowY);
         } else if (mFooter != null && nowY < 0 && isShowLoadView()) {
-            return mFooter.onStartrRelease(nowY);
+            return mFooter.onStartRelease(nowY);
         }
         return false;
     }

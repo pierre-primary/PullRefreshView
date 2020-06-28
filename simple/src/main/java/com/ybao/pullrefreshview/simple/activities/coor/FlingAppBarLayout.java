@@ -2,58 +2,59 @@ package com.ybao.pullrefreshview.simple.activities.coor;
 
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
+import com.google.android.material.appbar.AppBarLayout;
 import com.nineoldandroids.animation.ValueAnimator;
 import com.nineoldandroids.view.ViewHelper;
-
 
 /**
  * Created by Y-bao on 2017/8/21 0021.
  */
 @CoordinatorLayout.DefaultBehavior(BaseAppBarLayout.Behavior.class)
-public class AppBarLayout extends BaseAppBarLayout {
+public class FlingAppBarLayout extends BaseAppBarLayout {
 
     ValueAnimator valueAnimator = null;
     private PartnerImpt mPartner;
 
-    public AppBarLayout(Context context) {
+    public FlingAppBarLayout(Context context) {
         super(context);
         setOrientation(VERTICAL);
     }
 
-    public AppBarLayout(Context context, @Nullable AttributeSet attrs) {
+    public FlingAppBarLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setOrientation(VERTICAL);
     }
 
     @Override
     protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
-        return p instanceof android.support.design.widget.AppBarLayout.LayoutParams;
+        return p instanceof AppBarLayout.LayoutParams;
     }
 
     @Override
-    protected android.support.design.widget.AppBarLayout.LayoutParams generateDefaultLayoutParams() {
-        return new android.support.design.widget.AppBarLayout.LayoutParams(android.support.design.widget.AppBarLayout.LayoutParams.MATCH_PARENT, android.support.design.widget.AppBarLayout.LayoutParams.WRAP_CONTENT);
+    protected AppBarLayout.LayoutParams generateDefaultLayoutParams() {
+        return new AppBarLayout.LayoutParams(AppBarLayout.LayoutParams.MATCH_PARENT, AppBarLayout.LayoutParams.WRAP_CONTENT);
     }
 
     @Override
-    public android.support.design.widget.AppBarLayout.LayoutParams generateLayoutParams(AttributeSet attrs) {
-        return new android.support.design.widget.AppBarLayout.LayoutParams(getContext(), attrs);
+    public AppBarLayout.LayoutParams generateLayoutParams(AttributeSet attrs) {
+        return new AppBarLayout.LayoutParams(getContext(), attrs);
     }
 
     @Override
-    protected android.support.design.widget.AppBarLayout.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
+    protected AppBarLayout.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
         if (Build.VERSION.SDK_INT >= 19 && p instanceof LayoutParams) {
-            return new android.support.design.widget.AppBarLayout.LayoutParams((LayoutParams) p);
+            return new AppBarLayout.LayoutParams((LayoutParams) p);
         } else if (p instanceof MarginLayoutParams) {
-            return new android.support.design.widget.AppBarLayout.LayoutParams((MarginLayoutParams) p);
+            return new AppBarLayout.LayoutParams((MarginLayoutParams) p);
         }
-        return new android.support.design.widget.AppBarLayout.LayoutParams(p);
+        return new AppBarLayout.LayoutParams(p);
     }
 
     int hh1 = 0;
@@ -69,11 +70,11 @@ public class AppBarLayout extends BaseAppBarLayout {
             if (view.getVisibility() == View.GONE) {
                 continue;
             }
-            android.support.design.widget.AppBarLayout.LayoutParams lp = (android.support.design.widget.AppBarLayout.LayoutParams) view.getLayoutParams();
+            AppBarLayout.LayoutParams lp = (AppBarLayout.LayoutParams) view.getLayoutParams();
             int scrollFlags = lp.getScrollFlags();
-            if ((scrollFlags & android.support.design.widget.AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS) != 0) {
+            if ((scrollFlags & AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS) != 0) {
                 hh1 = height;
-            } else if ((scrollFlags & android.support.design.widget.AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED) != 0) {
+            } else if ((scrollFlags & AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED) != 0) {
                 hh2 = height;
             }
             height += view.getMeasuredHeight() + lp.topMargin + lp.bottomMargin;
@@ -115,7 +116,8 @@ public class AppBarLayout extends BaseAppBarLayout {
             public void onAnimationUpdate(ValueAnimator animation) {
                 int newp = (int) Float.parseFloat(animation.getAnimatedValue().toString());
                 if (mPartner != null) {
-                    now += mPartner.scrollBy(newp - now);
+                    mPartner.scrollBy(newp - now);
+                    now = newp;
                 }
             }
         });

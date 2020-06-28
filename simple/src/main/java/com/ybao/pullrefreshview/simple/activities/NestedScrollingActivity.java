@@ -1,18 +1,19 @@
 package com.ybao.pullrefreshview.simple.activities;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.ybao.pullrefreshview.simple.R;
 import com.ybao.pullrefreshview.simple.fragment.Fragment0;
+import com.ybao.pullrefreshview.simple.fragment.Fragment1;
 import com.ybao.pullrefreshview.simple.fragment.Fragment2;
 import com.ybao.pullrefreshview.simple.fragment.Fragment3;
-import com.ybao.pullrefreshview.simple.fragment.Fragment1;
 import com.ybao.pullrefreshview.simple.fragment.Fragment4;
 
 import java.util.ArrayList;

@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">PullRefreshView</string>
-    <string name="FlingBehavior" translatable="true">com.ybao.pullrefreshview.simple.activities.coor.AppBarLayout$ScrollingViewBehavior</string>
-    <string name="FlingBehavior2" translatable="true">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+<!--    <string name="FlingBehavior" translatable="true">com.ybao.pullrefreshview.simple.activities.coor.AppBarLayout$ScrollingViewBehavior</string>-->
+<!--    <string name="FlingBehavior2" translatable="true">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>-->
 </resources>

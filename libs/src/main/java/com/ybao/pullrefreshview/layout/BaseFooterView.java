@@ -23,7 +23,9 @@ package com.ybao.pullrefreshview.layout;
 
 import android.content.Context;
 import android.os.Build;
-import android.support.v4.view.ViewCompat;
+
+import androidx.core.view.ViewCompat;
+
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ViewTreeObserver;
@@ -52,6 +54,8 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
     private boolean isLockState = false;
 
     private OnLoadListener onLoadListener;
+
+    private int waitStartLoad = -1;
 
     private int scrollState = FlingLayout.SCROLL_STATE_IDLE;
 
@@ -113,46 +117,34 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
 
     @Override
     public void startLoad() {
+        startLoad(0);
+    }
+
+    @Override
+    public void startLoad(int startDelay) {
         int h = getMeasuredHeight();
         if (h > 0) {
-            toShowAndLoad();
+            toShowAndLoad(startDelay);
         } else {
-            getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    toShowAndLoad();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    } else {
-                        getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    }
-                }
-            });
+            waitStartLoad = Math.max(startDelay, 0);
         }
     }
 
-    private void toShowAndLoad() {
-        if (this.pullRefreshLayout != null) {
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        if (waitStartLoad >= 0) {
+            toShowAndLoad(waitStartLoad);
+            waitStartLoad = -1;
+        }
+    }
+
+    private void toShowAndLoad(int startDelay) {
+        if (this.pullRefreshLayout != null && footerState != LOADING) {
             float moveY = pullRefreshLayout.getMoveP();
-            if (moveY == 0) {
-                float footerSpanHeight = getSpanHeight();
-                pullRefreshLayout.startMoveTo(0, new AnimListener() {
-                    @Override
-                    public void onUpdate(float value) {
-
-                    }
-
-                    @Override
-                    public void onAnimEnd() {
-                        setState(LOADING);
-                    }
-
-                    @Override
-                    public void onAnimCencel() {
-
-                    }
-                }, 0, -footerSpanHeight);
-            }
+            float footerSpanHeight = getSpanHeight();
+            setState(LOADING);
+            pullRefreshLayout.startMoveTo(startDelay, null, moveY, -footerSpanHeight);
         }
     }
 
@@ -251,7 +243,7 @@ public abstract class BaseFooterView extends RelativeLayout implements Loadable 
     }
 
     @Override
-    public boolean onStartrRelease(float nowY) {
+    public boolean onStartRelease(float nowY) {
         float footerSpanHeight = getSpanHeight();
         if (footerState != LOADING && footerState != LOAD_ClOSE && nowY <= -footerSpanHeight) {
             pullRefreshLayout.startMoveTo(0, null, nowY, -footerSpanHeight);
