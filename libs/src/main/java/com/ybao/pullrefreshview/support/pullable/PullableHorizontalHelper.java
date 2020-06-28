@@ -1,4 +1,4 @@
-package com.ybao.pullrefreshview.support.utils;
+package com.ybao.pullrefreshview.support.pullable;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,20 +8,25 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ybao.pullrefreshview.support.impl.HPullable;
+import com.ybao.pullrefreshview.layout.FlingLayout;
 
 /**
  * Created by ybao on 16/3/7.
  */
-public class HCanPullUtil {
+public class PullableHorizontalHelper implements IPullableHelper {
 
-    public static HPullable getPullAble(View view) {
+    @Override
+    public Pullable getPullAble(View view) {
+        return convertPullAble(view);
+    }
+
+    public static Pullable convertPullAble(View view) {
         if (view == null) {
             return null;
         }
         view.setOverScrollMode(View.OVER_SCROLL_NEVER);
-        if (view instanceof HPullable) {
-            return (HPullable) view;
+        if (view instanceof Pullable) {
+            return (Pullable) view;
         } else if (view instanceof ScrollView || view instanceof NestedScrollView) {
             return new ScrollViewCanPull((ViewGroup) view);
         } else if (view instanceof RecyclerView) {
@@ -30,7 +35,14 @@ public class HCanPullUtil {
         return null;
     }
 
-    private static class ScrollViewCanPull implements HPullable {
+    public static Pullable convertPullAble(Pullable pullable) {
+        if (pullable instanceof Pullable) {
+            return pullable;
+        }
+        return null;
+    }
+
+    private static class ScrollViewCanPull implements Pullable {
         public ScrollViewCanPull(ViewGroup scrollView) {
             this.scrollView = scrollView;
         }
@@ -62,7 +74,7 @@ public class HCanPullUtil {
         }
 
         @Override
-        public void scrollAViewBy(int dp) {
+        public void scrollBy(int dp) {
             if (scrollView.getChildCount() != 0) {
                 float maxScrollY = scrollView.getChildAt(0).getWidth() - scrollView.getMeasuredWidth();
                 if (scrollView.getScrollX() + dp >= maxScrollY) {
@@ -75,7 +87,7 @@ public class HCanPullUtil {
     }
 
 
-    private static class RecyclerViewCanPull implements HPullable {
+    private static class RecyclerViewCanPull implements Pullable {
         public RecyclerViewCanPull(RecyclerView recyclerView) {
             this.recyclerView = recyclerView;
         }
@@ -126,7 +138,7 @@ public class HCanPullUtil {
         }
 
         @Override
-        public void scrollAViewBy(int dp) {
+        public void scrollBy(int dp) {
             recyclerView.scrollBy(dp, 0);
         }
     }

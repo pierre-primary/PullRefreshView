@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
 
-    <com.ybao.pullrefreshview.simple.view.NormalHeaderView
+    <com.ybao.pullrefreshview.simple.view.NormalRefreshView
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

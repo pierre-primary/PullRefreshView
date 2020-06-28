@@ -207,7 +207,7 @@ BaseHeaderView.OnRefreshListener{
         baseFooterView.stopRefresh();
     }
 }
-headerView.setOnRefreshListener(this);
+refreshView.setOnRefreshListener(this);
         
 BaseFooterView.OnLoadListener{
     public void onLoad(BaseFooterView baseFooterView) {

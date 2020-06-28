@@ -9,8 +9,9 @@ import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.ybao.pullrefreshview.layout.BaseFooterView;
+import com.ybao.pullrefreshview.layout.BaseLoadView;
 import com.ybao.pullrefreshview.layout.FlingLayout;
+import com.ybao.pullrefreshview.simple.Config;
 import com.ybao.pullrefreshview.simple.R;
 import com.ybao.pullrefreshview.support.utils.ViewScrollUtil;
 
@@ -20,11 +21,11 @@ import java.util.List;
 /**
  * Created by Ybao on 16/7/30.
  */
-public class HeaderActivity extends AppCompatActivity implements BaseFooterView.OnLoadListener, AbsListView.OnScrollListener, FlingLayout.OnScrollListener {
+public class HeaderActivity extends AppCompatActivity implements BaseLoadView.OnLoadListener, AbsListView.OnScrollListener, FlingLayout.OnScrollListener {
 
     FlingLayout flingLayout;
     ListView listView;
-    BaseFooterView footerView;
+    BaseLoadView footerView;
     View animHeader;
 
     ArrayAdapter adapter;
@@ -40,11 +41,11 @@ public class HeaderActivity extends AppCompatActivity implements BaseFooterView.
 
         flingLayout = (FlingLayout) findViewById(R.id.root);
         listView = (ListView) findViewById(R.id.list);
-        footerView = (BaseFooterView) findViewById(R.id.footer);
+        footerView = (BaseLoadView) findViewById(R.id.footer);
         animHeader = findViewById(R.id.anim_header);
         scrollGeter = ViewScrollUtil.getScrollGeter(listView);
 
-        list = getData(15);
+        list = getData(Config.DataSize);
 
         adapter = new ArrayAdapter(this, R.layout.item, list);
 
@@ -55,12 +56,12 @@ public class HeaderActivity extends AppCompatActivity implements BaseFooterView.
     }
 
     @Override
-    public void onLoad(BaseFooterView baseFooterView) {
+    public void onLoad(BaseLoadView baseFooterView) {
         baseFooterView.postDelayed(new Runnable() {
             @Override
             public void run() {
                 page++;
-                List<String> datas = getData(5);
+                List<String> datas = getData(Config.DataSize);
                 list.addAll(datas);
                 adapter.notifyDataSetChanged();
                 footerView.stopLoad();
@@ -101,7 +102,7 @@ public class HeaderActivity extends AppCompatActivity implements BaseFooterView.
 
 
     private void onMove() {
-        int oy = (int) flingLayout.getMoveP() - scrollGeter.getScrollY();
+        int oy = (int) flingLayout.getOffset() - scrollGeter.getScrollY();
         if (oy > 0) {
             int imgHeaderHeigth = animHeader.getMeasuredHeight();
             float ph = 1 + (float) oy / (float) imgHeaderHeigth;

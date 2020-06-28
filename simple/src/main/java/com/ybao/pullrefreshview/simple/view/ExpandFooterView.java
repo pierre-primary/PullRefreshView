@@ -7,10 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
-import com.ybao.pullrefreshview.layout.BaseFooterView;
-import com.ybao.pullrefreshview.layout.FlingLayout;
+import com.ybao.pullrefreshview.layout.BaseLoadView;
 import com.ybao.pullrefreshview.layout.PullRefreshLayout;
 import com.ybao.pullrefreshview.simple.R;
 import com.ybao.pullrefreshview.simple.utils.AnimUtil;
@@ -22,7 +20,7 @@ import java.util.List;
 /**
  * Created by Ybao on 2015/11/3 0003.
  */
-public class ExpandFooterView extends BaseFooterView {
+public class ExpandFooterView extends BaseLoadView {
     View progress;
     View stateImg;
     View loadBox;

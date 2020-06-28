@@ -5,10 +5,10 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.ybao.pullrefreshview.support.impl.VPullable;
+import com.ybao.pullrefreshview.support.pullable.Pullable;
 
 
-public class PullableImageView extends ImageView implements VPullable {
+public class PullableImageView extends ImageView implements Pullable {
 
     public PullableImageView(Context context) {
         super(context);
@@ -39,6 +39,6 @@ public class PullableImageView extends ImageView implements VPullable {
     }
 
     @Override
-    public void scrollAViewBy(int dp) {
+    public void scrollBy(int dp) {
     }
 }

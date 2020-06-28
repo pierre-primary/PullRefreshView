@@ -1,25 +1,24 @@
 package com.ybao.pullrefreshview.simple.activities.coor;
 
 import android.content.Context;
+import android.util.AttributeSet;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.NestedScrollingChild;
 import androidx.core.view.NestedScrollingChildHelper;
 import androidx.core.view.ViewCompat;
 
-import android.util.AttributeSet;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.ybao.pullrefreshview.support.impl.VPullable;
-import com.ybao.pullrefreshview.support.utils.VCanPullUtil;
+import com.ybao.pullrefreshview.support.pullable.Pullable;
+import com.ybao.pullrefreshview.support.pullable.PullableVerticalHelper;
 
 /**
  * Created by Y-bao on 2017/8/21 0021.
  */
 
-public class FlingCoordinatorLayout extends CoordinatorLayout implements VPullable, NestedScrollingChild {
-    private VPullable mPullable;
+public class FlingCoordinatorLayout extends CoordinatorLayout implements NestedScrollingChild, Pullable {
+    private Pullable mPullable;
     NestedScrollingChildHelper mNestedScrollingChildHelper;
 
     public FlingCoordinatorLayout(Context context) {
@@ -44,11 +43,10 @@ public class FlingCoordinatorLayout extends CoordinatorLayout implements VPullab
 
     @Override
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
-        VPullable pullable;
-        if (this.mPullable == null && (pullable = VCanPullUtil.getPullAble(child)) != null) {
+        Pullable pullable = PullableVerticalHelper.convertPullAble(child);
+        if (pullable != null) {
             this.mPullable = pullable;
         }
-
         super.addView(child, index, params);
     }
 
@@ -68,9 +66,9 @@ public class FlingCoordinatorLayout extends CoordinatorLayout implements VPullab
     }
 
     @Override
-    public void scrollAViewBy(int dp) {
+    public void scrollBy(int dp) {
         if (this.mPullable != null) {
-            this.mPullable.scrollAViewBy(dp);
+            this.mPullable.scrollBy(dp);
         }
     }
 

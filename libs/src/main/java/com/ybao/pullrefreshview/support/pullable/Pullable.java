@@ -19,7 +19,7 @@
  * <p/>
  * Email：392579823@qq.com
  */
-package com.ybao.pullrefreshview.support.impl;
+package com.ybao.pullrefreshview.support.pullable;
 
 import android.view.View;
 
@@ -31,5 +31,5 @@ public interface Pullable {
 
     View getView();
 
-    void scrollAViewBy(int dp);
+    void scrollBy(int dp);
 }

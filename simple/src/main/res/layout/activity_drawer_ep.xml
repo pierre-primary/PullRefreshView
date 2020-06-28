@@ -13,7 +13,7 @@
         android:divider="#ccc"
         android:dividerHeight="1px" />
 
-    <com.ybao.pullrefreshview.simple.view.ExpandHeaderView
+    <com.ybao.pullrefreshview.simple.view.ExpandRefreshView
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

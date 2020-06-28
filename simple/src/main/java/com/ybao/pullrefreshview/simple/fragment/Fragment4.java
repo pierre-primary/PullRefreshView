@@ -11,18 +11,18 @@ import android.webkit.WebViewClient;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.ybao.pullrefreshview.layout.BaseFooterView;
-import com.ybao.pullrefreshview.layout.BaseHeaderView;
+import com.ybao.pullrefreshview.layout.BaseLoadView;
+import com.ybao.pullrefreshview.layout.BaseRefreshView;
 import com.ybao.pullrefreshview.simple.R;
 
 /**
  * Created by Ybao on 16/7/25.
  */
-public class Fragment4 extends Fragment implements BaseHeaderView.OnRefreshListener, BaseFooterView.OnLoadListener {
+public class Fragment4 extends Fragment implements BaseRefreshView.OnRefreshListener, BaseLoadView.OnLoadListener {
     View view;
 
-    BaseHeaderView headerView;
-    BaseFooterView footerView;
+    BaseRefreshView refreshView;
+    BaseLoadView footerView;
 
     @Nullable
     @Override
@@ -44,27 +44,27 @@ public class Fragment4 extends Fragment implements BaseHeaderView.OnRefreshListe
             }
         });
         webView.loadUrl("http://www.baidu.com");
-        headerView = findViewById(R.id.header);
+        refreshView = findViewById(R.id.header);
         footerView = findViewById(R.id.footer);
 
-        headerView.setOnRefreshListener(this);
+        refreshView.setOnRefreshListener(this);
         footerView.setOnLoadListener(this);
         return view;
     }
 
 
     @Override
-    public void onRefresh(BaseHeaderView baseHeaderView) {
-        baseHeaderView.postDelayed(new Runnable() {
+    public void onRefresh(BaseRefreshView baseRefreshView) {
+        baseRefreshView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                headerView.stopRefresh();
+                refreshView.stopRefresh();
             }
         }, 3000);
     }
 
     @Override
-    public void onLoad(BaseFooterView baseFooterView) {
+    public void onLoad(BaseLoadView baseFooterView) {
         baseFooterView.postDelayed(new Runnable() {
             @Override
             public void run() {

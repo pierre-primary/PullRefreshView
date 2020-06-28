@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.view.ViewHelper;
-import com.ybao.pullrefreshview.layout.BaseHeaderView;
+import com.ybao.pullrefreshview.layout.BaseRefreshView;
 import com.ybao.pullrefreshview.simple.R;
 import com.ybao.pullrefreshview.simple.utils.AnimUtil;
 import com.ybao.pullrefreshview.support.type.LayoutType;
@@ -19,22 +19,22 @@ import java.util.List;
 /**
  * Created by Ybao on 2015/11/3 0003.
  */
-public class NormalHeaderView extends BaseHeaderView {
+public class NormalRefreshView extends BaseRefreshView {
     TextView textView;
     View tagImg;
     View progress;
     View stateImg;
 
 
-    public NormalHeaderView(Context context) {
+    public NormalRefreshView(Context context) {
         this(context, null);
     }
 
-    public NormalHeaderView(Context context, AttributeSet attrs) {
+    public NormalRefreshView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public NormalHeaderView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public NormalRefreshView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }

@@ -14,7 +14,7 @@
         android:divider="#ccc"
         android:dividerHeight="1px" />
 
-    <com.ybao.pullrefreshview.simple.view.LockHeaderView
+    <com.ybao.pullrefreshview.simple.view.LockRefreshView
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

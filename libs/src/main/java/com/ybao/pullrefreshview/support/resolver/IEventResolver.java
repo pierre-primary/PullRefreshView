@@ -5,7 +5,7 @@ import androidx.core.view.NestedScrollingParent;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.ybao.pullrefreshview.support.impl.Pullable;
+import com.ybao.pullrefreshview.support.pullable.Pullable;
 
 /**
  * Created by ybao on 2017/5/14.

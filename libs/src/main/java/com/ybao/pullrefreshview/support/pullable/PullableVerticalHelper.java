@@ -1,4 +1,4 @@
-package com.ybao.pullrefreshview.support.utils;
+package com.ybao.pullrefreshview.support.pullable;
 
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,20 +10,23 @@ import android.webkit.WebView;
 import android.widget.AbsListView;
 import android.widget.ScrollView;
 
-import com.ybao.pullrefreshview.support.impl.VPullable;
-
 /**
  * Created by ybao on 16/3/7.
  */
-public class VCanPullUtil {
+public class PullableVerticalHelper implements IPullableHelper {
 
-    public static VPullable getPullAble(View view) {
+    @Override
+    public Pullable getPullAble(View view) {
+        return convertPullAble(view);
+    }
+
+    public static Pullable convertPullAble(View view) {
         if (view == null) {
             return null;
         }
         view.setOverScrollMode(View.OVER_SCROLL_NEVER);
-        if (view instanceof VPullable) {
-            return (VPullable) view;
+        if (view instanceof Pullable) {
+            return (Pullable) view;
         } else if (view instanceof AbsListView) {
             return new AbsListViewCanPull((AbsListView) view);
         } else if (view instanceof ScrollView || view instanceof NestedScrollView) {
@@ -36,7 +39,14 @@ public class VCanPullUtil {
         return null;
     }
 
-    private static class AbsListViewCanPull implements VPullable {
+    public static Pullable convertPullAble(Pullable pullable) {
+        if (pullable instanceof Pullable) {
+            return pullable;
+        }
+        return null;
+    }
+
+    private static class AbsListViewCanPull implements Pullable {
         public AbsListViewCanPull(AbsListView absListView) {
             this.absListView = absListView;
         }
@@ -74,12 +84,12 @@ public class VCanPullUtil {
         }
 
         @Override
-        public void scrollAViewBy(int dp) {
+        public void scrollBy(int dp) {
             absListView.smoothScrollBy(dp, 0);
         }
     }
 
-    private static class ScrollViewCanPull implements VPullable {
+    private static class ScrollViewCanPull implements Pullable {
         public ScrollViewCanPull(ViewGroup scrollView) {
             this.scrollView = scrollView;
         }
@@ -111,7 +121,7 @@ public class VCanPullUtil {
         }
 
         @Override
-        public void scrollAViewBy(int dp) {
+        public void scrollBy(int dp) {
             if (scrollView.getChildCount() != 0) {
                 float maxScrollY = scrollView.getChildAt(0).getHeight() - scrollView.getMeasuredHeight();
                 if (scrollView.getScrollY() + dp >= maxScrollY) {
@@ -124,7 +134,7 @@ public class VCanPullUtil {
     }
 
 
-    private static class RecyclerViewCanPull implements VPullable {
+    private static class RecyclerViewCanPull implements Pullable {
         public RecyclerViewCanPull(RecyclerView recyclerView) {
             this.recyclerView = recyclerView;
         }
@@ -175,12 +185,12 @@ public class VCanPullUtil {
         }
 
         @Override
-        public void scrollAViewBy(int dp) {
+        public void scrollBy(int dp) {
             recyclerView.scrollBy(0, dp);
         }
     }
 
-    private static class WebViewCanPull implements VPullable {
+    private static class WebViewCanPull implements Pullable {
         public WebViewCanPull(WebView webView) {
             this.webView = webView;
         }
@@ -209,7 +219,7 @@ public class VCanPullUtil {
         }
 
         @Override
-        public void scrollAViewBy(int dp) {
+        public void scrollBy(int dp) {
 
             float maxScrollY = webView.getContentHeight() * webView.getScale() - webView.getMeasuredHeight();
             if (webView.getScrollY() + dp >= maxScrollY) {

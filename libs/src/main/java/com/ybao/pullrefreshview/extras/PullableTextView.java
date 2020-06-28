@@ -8,9 +8,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.ybao.pullrefreshview.support.impl.OnScrollListener;
-import com.ybao.pullrefreshview.support.impl.VPullable;
+import com.ybao.pullrefreshview.support.pullable.Pullable;
 
-public class PullableTextView extends TextView implements VPullable {
+public class PullableTextView extends TextView implements Pullable {
     private OnScrollListener onScrollListener = null;
 
     public PullableTextView(Context context) {
@@ -62,7 +62,7 @@ public class PullableTextView extends TextView implements VPullable {
     }
 
     @Override
-    public void scrollAViewBy(int dp) {
+    public void scrollBy(int dp) {
         int maxScrollY = (getLayout().getHeight() - getMeasuredHeight() + getCompoundPaddingBottom() + getCompoundPaddingTop());
         if (getScrollY() + dp >= maxScrollY) {
             scrollTo(0, maxScrollY);

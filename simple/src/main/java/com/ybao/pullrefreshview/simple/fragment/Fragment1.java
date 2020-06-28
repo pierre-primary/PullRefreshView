@@ -13,8 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ybao.adapter.recyclerview.StandardAdapter;
-import com.ybao.pullrefreshview.layout.BaseFooterView;
-import com.ybao.pullrefreshview.layout.BaseHeaderView;
+import com.ybao.pullrefreshview.layout.BaseLoadView;
+import com.ybao.pullrefreshview.layout.BaseRefreshView;
+import com.ybao.pullrefreshview.simple.Config;
 import com.ybao.pullrefreshview.simple.R;
 
 import java.util.ArrayList;
@@ -23,13 +24,13 @@ import java.util.List;
 /**
  * Created by Ybao on 16/7/25.
  */
-public class Fragment1 extends Fragment implements BaseHeaderView.OnRefreshListener, BaseFooterView.OnLoadListener {
+public class Fragment1 extends Fragment implements BaseRefreshView.OnRefreshListener, BaseLoadView.OnLoadListener {
     View view;
 
 
     RecyclerView recyclerView;
-    BaseHeaderView headerView;
-    BaseFooterView footerView;
+    BaseRefreshView refreshView;
+    BaseLoadView footerView;
 
     RecyclerViewAdapter adapter;
 
@@ -42,10 +43,10 @@ public class Fragment1 extends Fragment implements BaseHeaderView.OnRefreshListe
 
 
         recyclerView =  findViewById(R.id.list);
-        headerView =  findViewById(R.id.header);
+        refreshView =  findViewById(R.id.header);
         footerView = findViewById(R.id.footer);
 
-        list = getData(15);
+        list = getData(Config.DataSize);
 
         adapter = new RecyclerViewAdapter();
         adapter.setData(list);
@@ -53,33 +54,33 @@ public class Fragment1 extends Fragment implements BaseHeaderView.OnRefreshListe
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
-        headerView.setOnRefreshListener(this);
+        refreshView.setOnRefreshListener(this);
         footerView.setOnLoadListener(this);
 
         return view;
     }
     @Override
-    public void onRefresh(BaseHeaderView baseHeaderView) {
-        baseHeaderView.postDelayed(new Runnable() {
+    public void onRefresh(BaseRefreshView baseRefreshView) {
+        baseRefreshView.postDelayed(new Runnable() {
             @Override
             public void run() {
                 page = 1;
-                List<String> datas = getData(5);
+                List<String> datas = getData(Config.DataSize);
                 list.clear();
                 list.addAll(datas);
                 adapter.setData(list);
-                headerView.stopRefresh();
+                refreshView.stopRefresh();
             }
         }, 3000);
     }
 
     @Override
-    public void onLoad(BaseFooterView baseFooterView) {
+    public void onLoad(BaseLoadView baseFooterView) {
         baseFooterView.postDelayed(new Runnable() {
             @Override
             public void run() {
                 page++;
-                List<String> datas = getData(5);
+                List<String> datas = getData(Config.DataSize);
                 list.addAll(datas);
                 adapter.notifyDataSetChanged();
                 footerView.stopLoad();

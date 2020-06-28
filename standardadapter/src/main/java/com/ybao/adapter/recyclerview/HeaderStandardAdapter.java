@@ -27,14 +27,14 @@ public class HeaderStandardAdapter extends StandardAdapter {
         mHeaderViews = new ArrayList<>();
     }
 
-    public void addHeaderView(View headerView) {
-        if (headerView != null) {
-            mHeaderViews.add(headerView);
+    public void addHeaderView(View refreshView) {
+        if (refreshView != null) {
+            mHeaderViews.add(refreshView);
             notifyItemInserted(0);
         }
     }
 
-    public List<View> getmHeaderViews() {
+    public List<View> getHeaderView() {
         return mHeaderViews;
     }
 

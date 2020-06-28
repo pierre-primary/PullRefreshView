@@ -9,10 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
-import com.ybao.pullrefreshview.layout.BaseFooterView;
-import com.ybao.pullrefreshview.layout.FlingLayout;
+import com.ybao.pullrefreshview.layout.BaseLoadView;
 import com.ybao.pullrefreshview.simple.R;
 import com.ybao.pullrefreshview.simple.utils.AnimUtil;
 import com.ybao.pullrefreshview.support.type.LayoutType;
@@ -23,7 +21,7 @@ import java.util.List;
 /**
  * Created by Ybao on 2015/11/3 0003.
  */
-public class LockFooterView extends BaseFooterView {
+public class LockFooterView extends BaseLoadView {
     View progress;
     View stateImg;
     View loadBox;

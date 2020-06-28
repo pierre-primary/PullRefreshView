@@ -6,6 +6,7 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ybao.pullrefreshview.simple.Config;
 import com.ybao.pullrefreshview.simple.R;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class MIFlingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mifling);
         listView = (ListView) findViewById(R.id.list);
-        list = getData(15);
+        list = getData(Config.DataSize);
         adapter = new ArrayAdapter(this, R.layout.item, list);
 
         listView.setAdapter(adapter);

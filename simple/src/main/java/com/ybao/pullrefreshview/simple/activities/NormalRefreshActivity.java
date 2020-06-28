@@ -10,8 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.ybao.adapter.recyclerview.StandardAdapter;
-import com.ybao.pullrefreshview.layout.BaseFooterView;
-import com.ybao.pullrefreshview.layout.BaseHeaderView;
+import com.ybao.pullrefreshview.layout.BaseLoadView;
+import com.ybao.pullrefreshview.layout.BaseRefreshView;
+import com.ybao.pullrefreshview.simple.Config;
 import com.ybao.pullrefreshview.simple.R;
 import com.ybao.pullrefreshview.simple.activities.coor.RecyclerPartnerView;
 
@@ -21,11 +22,11 @@ import java.util.List;
 /**
  * Created by Ybao on 2015/11/3 0003.
  */
-public class NormalRefreshActivity extends AppCompatActivity implements BaseHeaderView.OnRefreshListener, BaseFooterView.OnLoadListener {
+public class NormalRefreshActivity extends AppCompatActivity implements BaseRefreshView.OnRefreshListener, BaseLoadView.OnLoadListener {
 
     RecyclerPartnerView recyclerView;
-    BaseHeaderView headerView;
-    BaseFooterView footerView;
+    BaseRefreshView refreshView;
+    BaseLoadView footerView;
 
     RecyclerViewAdapter adapter;
 
@@ -39,11 +40,11 @@ public class NormalRefreshActivity extends AppCompatActivity implements BaseHead
 
 
         recyclerView = (RecyclerPartnerView) findViewById(R.id.list);
-        headerView = (BaseHeaderView) findViewById(R.id.header);
-        footerView = (BaseFooterView) findViewById(R.id.footer);
+        refreshView = (BaseRefreshView) findViewById(R.id.header);
+        footerView = (BaseLoadView) findViewById(R.id.footer);
         ((com.ybao.pullrefreshview.simple.activities.coor.FlingAppBarLayout) findViewById(R.id.AppBarLayout)).setPartner(recyclerView);
 
-        list = new ArrayList<>();
+        list = getData(Config.DataSize);
 
         adapter = new RecyclerViewAdapter();
         adapter.setData(list);
@@ -56,33 +57,34 @@ public class NormalRefreshActivity extends AppCompatActivity implements BaseHead
         linearLayoutManager = new LinearLayoutManager(NormalRefreshActivity.this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
-        headerView.setOnRefreshListener(this);
+        refreshView.setOnRefreshListener(this);
         footerView.setOnLoadListener(this);
+        refreshView.startRefresh();
     }
 
     @Override
-    public void onRefresh(BaseHeaderView baseHeaderView) {
-        baseHeaderView.postDelayed(new Runnable() {
+    public void onRefresh(BaseRefreshView baseRefreshView) {
+        baseRefreshView.postDelayed(new Runnable() {
             @Override
             public void run() {
                 page = 1;
-                List<String> datas = getData(50);
+                List<String> datas = getData(Config.DataSize);
                 recyclerView.backToTop();
                 list.clear();
                 list.addAll(datas);
                 adapter.setData(list);
-                headerView.stopRefresh();
+                refreshView.stopRefresh();
             }
         }, 3000);
     }
 
     @Override
-    public void onLoad(BaseFooterView baseFooterView) {
+    public void onLoad(BaseLoadView baseFooterView) {
         baseFooterView.postDelayed(new Runnable() {
             @Override
             public void run() {
                 page++;
-                List<String> datas = getData(5);
+                List<String> datas = getData(Config.DataSize);
                 list.addAll(datas);
                 adapter.notifyDataSetChanged();
                 footerView.stopLoad();
