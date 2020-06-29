@@ -67,21 +67,22 @@ public class LockRefreshView extends BaseRefreshView {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, 400);
-        setMeasuredDimension(widthMeasureSpec, MeasureSpec.makeMeasureSpec(400, MeasureSpec.EXACTLY));
-        width = getWidth();
+        heightMeasureSpec = MeasureSpec.makeMeasureSpec(400, MeasureSpec.EXACTLY);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
     }
 
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        width = getMeasuredWidth();
+    }
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
         canvas.drawPath(path, paint);
         super.dispatchDraw(canvas);
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
     }
 
     List<Animator> animators = new ArrayList<>();
@@ -142,6 +143,8 @@ public class LockRefreshView extends BaseRefreshView {
         path.moveTo(0, 0);
         // 设置贝赛尔曲线的操作点以及终止点
         path.quadTo(width / 2, 1.94f * y, width, 0);
+        path.close();
+        ;
         invalidate();
         return intercept;
     }
