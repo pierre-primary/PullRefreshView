@@ -230,8 +230,22 @@ public abstract class BaseRefreshView extends RelativeLayout implements Refresha
     public boolean onStartRelease(float nowP) {
         float spanHeight = getSpanHeight();
         if (refreshState != REFRESHING && nowP >= spanHeight) {
-            pullRefreshLayout.startMoveTo(0, null, nowP, spanHeight);
-            setState(REFRESHING);
+            pullRefreshLayout.startMoveTo(0, new AnimListener() {
+                @Override
+                public void onUpdate(float value) {
+
+                }
+
+                @Override
+                public void onAnimEnd() {
+                    setState(REFRESHING);
+                }
+
+                @Override
+                public void onAnimCencel() {
+
+                }
+            }, nowP, spanHeight);
             return true;
         }
         pullRefreshLayout.startMoveTo(0, null, nowP, 0);
